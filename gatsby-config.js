@@ -1,8 +1,6 @@
-const {
-  GRAPHQL_URL = 'https://api.github.com/graphql',
-  GRAPHQL_TOKEN = process.env.GITHUB_TOKEN,
-  PUBLIC_URL = 'http://localhost:8000',
-} = process.env;
+const PUBLIC_URL = process.env.PUBLIC_URL || 'http://localhost:8000';
+const GRAPHQL_URL = process.env.GRAPHQL_URL || 'https://api.github.com/graphql';
+const GRAPHQL_TOKEN = process.env.GITHUB_TOKEN;
 
 const fullName = 'Frédéric Woelffel';
 const shortName = 'F. Woelffel';
