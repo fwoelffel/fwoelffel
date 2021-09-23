@@ -1,0 +1,34 @@
+name: Deploy
+on:
+  workflow_run:
+    workflows: ["Build"]
+    branches: ["main"]
+    types:
+      - completed
+
+jobs:
+  cancel-previous:
+    name: Cancel previous runs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: styfle/cancel-workflow-action@0.9.1
+
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Download build artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: build
+        path: public
+    - name: Deploy to Github Pages
+      uses: JamesIves/github-pages-deploy-action@4.1.5
+      with:
+        branch: gh-pages
+        folder: public
+        clean: true
+        single-commit: true
+        commit-message: 'chore: deploy to Github Pages from ${{ github.sha }}'
