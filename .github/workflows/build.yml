@@ -59,4 +59,4 @@ jobs:
       env:
         PUBLIC_URL: ${{ secrets.PUBLIC_URL }}
         GRAPHQL_URL: https://api.github.com/graphql
-        GRAPHQL_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GRAPHQL_TOKEN: ${{ secrets.GRAPHQL_TOKEN || secrets.GITHUB_TOKEN }}
