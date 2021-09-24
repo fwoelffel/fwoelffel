@@ -2,7 +2,7 @@ import React from 'react';
 import { graphql, useStaticQuery } from 'gatsby';
 import SocialLinks from './social-links';
 import Img from 'gatsby-image';
-import styles from './identity.module.scss';
+import * as styles from './identity.module.scss';
 
 const query = graphql`
   query {

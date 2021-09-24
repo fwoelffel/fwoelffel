@@ -1,6 +1,6 @@
 import React from 'react';
 import { FaEnvelope, FaGithub, FaLinkedin, FaTwitter } from 'react-icons/fa';
-import styles from './social-links.module.scss';
+import * as styles from './social-links.module.scss';
 import ExternalLink from './external-link';
 
 const SocialLinks = ({ size = '2.5em' }) => (

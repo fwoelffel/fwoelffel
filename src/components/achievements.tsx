@@ -1,6 +1,6 @@
 import React from 'react';
 import { FaTrophy } from 'react-icons/fa';
-import styles from './achievements.module.scss';
+import * as styles from './achievements.module.scss';
 import { graphql, useStaticQuery } from 'gatsby';
 
 const query = graphql`

@@ -43,12 +43,7 @@ module.exports = {
         icon: `src/images/favicon.png`,
       },
     },
-    {
-       resolve: 'gatsby-plugin-sass',
-       options: {
-        implementation: require('sass'),
-       },
-    },
+    'gatsby-plugin-sass',
     'gatsby-transformer-yaml',
     {
       resolve: 'gatsby-source-graphql',

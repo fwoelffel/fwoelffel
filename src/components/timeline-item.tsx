@@ -1,6 +1,6 @@
 import React from 'react';
 import ExternalLink from './external-link';
-import styles from './timeline-item.module.scss';
+import  * as styles from './timeline-item.module.scss';
 
 const TimelineItem = ({
   start,
