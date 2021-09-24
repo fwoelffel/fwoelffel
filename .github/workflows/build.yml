@@ -49,21 +49,14 @@ jobs:
       with:
         path: node_modules/
         key: ${{ hashFiles('package-lock.json') }}
+    - name: Cache build result
+      uses: actions/cache@v2
+      with:
+        path: public/
+        key: ${{ github.ref }}-${{ github.sha }}
     - name: Build
       run: npm run build
       env:
         PUBLIC_URL: ${{ secrets.PUBLIC_URL }}
         GRAPHQL_URL: https://api.github.com/graphql
         GRAPHQL_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  
-  artifact:
-    name: Upload build artifact
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-    - name: Upload build artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: build
-        path: public
-

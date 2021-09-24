@@ -18,13 +18,17 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2
-    - name: Download build artifact
-      uses: actions/download-artifact@v2
+    - name: Get build result from cache
+      id: cache
+      uses: actions/cache@v2
       with:
-        name: build
-        path: public
+        path: public/
+        key: ${{ github.ref }}-${{ github.sha }}
+        restore-keys: |
+          ${{ github.ref }}
     - name: Deploy to Github Pages
       uses: JamesIves/github-pages-deploy-action@4.1.5
+      if: steps.cache.outputs.cache-hit == 'true'
       with:
         branch: gh-pages
         folder: public
