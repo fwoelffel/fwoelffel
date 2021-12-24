@@ -1,6 +1,4 @@
 const PUBLIC_URL = process.env.PUBLIC_URL || 'http://localhost:8000';
-const GRAPHQL_URL = process.env.GRAPHQL_URL || 'https://api.github.com/graphql';
-const GRAPHQL_TOKEN = process.env.GRAPHQL_TOKEN;
 
 const fullName = 'Frédéric Woelffel';
 const shortName = 'F. Woelffel';
@@ -22,13 +20,6 @@ module.exports = {
         path: `${__dirname}/src/images`,
       },
     },
-    {
-      resolve: `gatsby-source-filesystem`,
-      options: {
-        name: `data`,
-        path: `${__dirname}/data`,
-      },
-    },
     `gatsby-transformer-sharp`,
     `gatsby-plugin-sharp`,
     {
@@ -44,18 +35,5 @@ module.exports = {
       },
     },
     'gatsby-plugin-sass',
-    'gatsby-transformer-yaml',
-    {
-      resolve: 'gatsby-source-graphql',
-      options: {
-        typeName: 'GitHub',
-        fieldName: 'github',
-        url: GRAPHQL_URL,
-        headers: {
-          Authorization: `Bearer ${GRAPHQL_TOKEN}`,
-        },
-      },
-    },
-    
   ],
 };
