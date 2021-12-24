@@ -4,8 +4,6 @@
   "author": "Frédéric Woelffel <hello@fwoelffel.me>",
   "devDependencies": {
     "bulma": "0.9.3",
-    "bulma-divider": "0.2.0",
-    "bulma-timeline": "3.0.4",
     "gatsby": "3.14.6",
     "gatsby-image": "3.11.0",
     "gatsby-plugin-manifest": "3.14.0",
