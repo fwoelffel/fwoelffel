@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaEnvelope, FaGithub, FaLinkedin, FaTwitter } from 'react-icons/fa';
+import { FaGithub, FaLinkedin, FaTwitter } from 'react-icons/fa';
 import * as styles from './social-links.module.scss';
 import ExternalLink from './external-link';
 
@@ -22,12 +22,6 @@ const SocialLinks = ({ size = '2.5em' }) => (
       label='Github'
       to='https://github.com/fwoelffel'>
       <FaGithub size={size} />
-    </ExternalLink>
-    <ExternalLink
-      className={styles.socialLink}
-      label='contact'
-      to='https://frdricwoelffel.typeform.com/to/TgRdLj'>
-      <FaEnvelope size={size} />
     </ExternalLink>
   </div>
 );
