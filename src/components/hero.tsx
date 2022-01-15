@@ -1,5 +1,4 @@
 import React from 'react';
-import './layout.scss';
 
 const Hero = ({ children }) => (
   <div className={'hero is-fullheight'}>
