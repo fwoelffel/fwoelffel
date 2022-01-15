@@ -1,7 +1,7 @@
 import React from 'react';
 import { graphql, useStaticQuery } from 'gatsby';
+import { GatsbyImage } from 'gatsby-plugin-image';
 import SocialLinks from './social-links';
-import Img from 'gatsby-image';
 
 const query = graphql`
   query {
@@ -14,9 +14,13 @@ const query = graphql`
     }
     file(relativePath: { eq: "avatar.jpeg" }) {
       childImageSharp {
-        fixed(width: 200, height: 200, quality: 100) {
-          ...GatsbyImageSharpFixed_tracedSVG
-        }
+        gatsbyImageData(
+          layout: FIXED,
+          width: 200,
+          height: 200,
+          placeholder: TRACED_SVG,
+          quality: 100
+        )
       }
     }
   }
@@ -25,14 +29,15 @@ const query = graphql`
 const Identity = () => {
   const { site, file } = useStaticQuery(query);
   const { position, title, about } = site.siteMetadata;
+  console.debug({ file })
   return (
     <div className='has-text-centered'>
-      <Img
-        fixed={file.childImageSharp.fixed}
+      <GatsbyImage
+        image={file.childImageSharp.gatsbyImageData}
         alt='avatar'
         style={{
           borderRadius: '50%',
-          margin: 30,
+          margin: '30px auto',
           boxShadow:
             '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)',
         }}
