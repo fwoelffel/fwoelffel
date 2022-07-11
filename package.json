@@ -4,7 +4,7 @@
   "author": "Frédéric Woelffel <hello@fwoelffel.me>",
   "devDependencies": {
     "bulma": "0.9.3",
-    "gatsby": "4.12.1",
+    "gatsby": "4.18.0",
     "gatsby-image": "3.11.0",
     "gatsby-plugin-image": "2.13.0",
     "gatsby-plugin-react-helmet": "5.13.0",
