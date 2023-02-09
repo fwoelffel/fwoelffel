@@ -6,7 +6,6 @@ module.exports = {
     about: `I'm a Node.js expert and javascript/typescript developer, fluent with Nestjs.`,
   },
   plugins: [
-    'gatsby-plugin-react-helmet',
     {
       resolve: 'gatsby-source-filesystem',
       options: {

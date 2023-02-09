@@ -15,10 +15,10 @@ const query = graphql`
     file(relativePath: { eq: "avatar.jpeg" }) {
       childImageSharp {
         gatsbyImageData(
-          layout: FIXED,
-          width: 200,
-          height: 200,
-          placeholder: TRACED_SVG,
+          layout: FIXED
+          width: 200
+          height: 200
+          placeholder: BLURRED
           quality: 100
         )
       }
@@ -29,7 +29,6 @@ const query = graphql`
 const Identity = () => {
   const { site, file } = useStaticQuery(query);
   const { position, title, about } = site.siteMetadata;
-  console.debug({ file })
   return (
     <div className='has-text-centered'>
       <GatsbyImage
