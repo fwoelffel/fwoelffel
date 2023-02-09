@@ -1,3 +1,9 @@
 @charset "utf-8";
 
-@import "~bulma/bulma.sass";
+@import '~bulma/bulma.sass';
+
+// @for $index from 1 through 6 {
+//   h#{$index} {
+//     @extend .title, .is-#{$index};
+//   }
+// }
