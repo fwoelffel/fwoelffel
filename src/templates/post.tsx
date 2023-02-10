@@ -1,6 +1,5 @@
 import * as React from 'react';
 import Layout from '../components/layout';
-import { FaGithub, FaLinkedin, FaTwitter } from 'react-icons/fa';
 
 export default function PostPage({ pageContext: { post } }) {
   return (

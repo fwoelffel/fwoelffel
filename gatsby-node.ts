@@ -19,7 +19,7 @@ export async function createPages({ graphql, actions }) {
       }
     }
   `);
-  const postTemplate = resolve(`src/pages/post.tsx`);
+  const postTemplate = resolve(`src/templates/post.tsx`);
   queryResults.data.allMarkdownRemark.edges.forEach(({ node }) => {
     createPage({
       path: `/posts/${node.frontmatter.slug}`,
