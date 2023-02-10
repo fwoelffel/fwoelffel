@@ -5,6 +5,7 @@ import Identity from '../components/identity';
 import { graphql, useStaticQuery } from 'gatsby';
 
 import '../styles.scss';
+import Posts from '../components/posts';
 
 const query = graphql`
   query {
@@ -40,6 +41,7 @@ const IndexPage = () => (
     <Hero>
       <Identity />
     </Hero>
+    <Posts />
   </Layout>
 );
 
