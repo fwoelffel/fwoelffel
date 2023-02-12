@@ -2,16 +2,13 @@ import { resolve } from 'path';
 
 export async function createPages({ graphql, actions }) {
   const { createPage } = actions;
-  const queryResults = await graphql(`
+  const allPostsQuery = await graphql(`
     query AllPosts {
       allMarkdownRemark {
         edges {
           node {
             id
-            html
             frontmatter {
-              title
-              date
               slug
             }
           }
@@ -20,11 +17,11 @@ export async function createPages({ graphql, actions }) {
     }
   `);
   const postTemplate = resolve(`src/templates/post.tsx`);
-  queryResults.data.allMarkdownRemark.edges.forEach(({ node }) => {
+  allPostsQuery.data.allMarkdownRemark.edges.forEach(({ node }) => {
     createPage({
       path: `/posts/${node.frontmatter.slug}`,
       component: postTemplate,
-      context: { post: node },
+      context: { id: node.id },
     });
   });
 }
