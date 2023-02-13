@@ -25,7 +25,26 @@ module.exports = {
         // GitHub Flavored Markdown mode (default: true)
         gfm: true,
         // Add your gatsby-remark-* plugins here
-        plugins: [],
+        plugins: [
+          {
+            resolve: `gatsby-remark-prismjs`,
+            options: {
+              classPrefix: 'language-',
+              inlineCodeMarker: null,
+              aliases: {},
+              showLineNumbers: false,
+              noInlineHighlight: false,
+              // Customize the prompt used in shell output
+              // Values below are default
+              prompt: {
+                user: 'root',
+                host: 'localhost',
+                global: false,
+              },
+              escapeEntities: {},
+            },
+          },
+        ],
         // Enable JS for https://github.com/jonschlinkert/gray-matter#optionsengines (default: false)
         // It's not advised to set this to "true" and this option will likely be removed in the future
         jsFrontmatterEngine: false,

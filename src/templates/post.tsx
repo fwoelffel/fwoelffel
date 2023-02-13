@@ -4,6 +4,8 @@ import { FaBookOpen } from 'react-icons/fa';
 import Hero from '../components/hero';
 import Layout from '../components/layout';
 
+import '../prism.scss';
+
 export const query = graphql`
   query Post($id: String!) {
     markdownRemark(id: { eq: $id }) {
