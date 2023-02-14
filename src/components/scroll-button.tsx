@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaAngleUp } from 'react-icons/fa';
 
 export default function ScrollButton() {
@@ -20,7 +20,9 @@ export default function ScrollButton() {
     });
   };
 
-  window.addEventListener('scroll', toggleVisible);
+  useEffect(() => {
+    window.addEventListener('scroll', toggleVisible);
+  });
 
   return (
     <div
