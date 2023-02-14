@@ -26,6 +26,7 @@ module.exports = {
         gfm: true,
         // Add your gatsby-remark-* plugins here
         plugins: [
+          `gatsby-remark-autolink-headers`,
           {
             resolve: `gatsby-remark-prismjs`,
             options: {
