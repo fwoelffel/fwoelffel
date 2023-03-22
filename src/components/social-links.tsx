@@ -10,14 +10,10 @@ const SocialLinks = ({ size = '2.5em' }) => (
     >
       <FaLinkedin size={size} />
     </ExternalLink>
-    <ExternalLink
-      label='Twitter'
-      to='https://twitter.com/fwoelffel'>
+    <ExternalLink label='Twitter' to='https://twitter.com/fwoelffel'>
       <FaTwitter size={size} />
     </ExternalLink>
-    <ExternalLink
-      label='Github'
-      to='https://github.com/fwoelffel'>
+    <ExternalLink label='Github' to='https://github.com/fwoelffel'>
       <FaGithub size={size} />
     </ExternalLink>
   </div>

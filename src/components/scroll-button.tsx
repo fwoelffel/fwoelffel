@@ -35,7 +35,8 @@ export default function ScrollButton() {
         height: '20px',
         cursor: 'pointer',
         opacity: '0.9',
-      }}>
+      }}
+    >
       <button className={'button is-outlined is-rounded'} onClick={scrollToTop}>
         <FaAngleUp size='1.5rem' />
       </button>

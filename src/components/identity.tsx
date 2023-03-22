@@ -49,7 +49,8 @@ const Identity = () => {
           className=' has-text-centered is-family-code'
           style={{
             margin: 20,
-          }}>
+          }}
+        >
           {about}
         </div>
       ) : null}

@@ -16,6 +16,7 @@
     "gatsby-transformer-remark": "6.8.0",
     "gatsby-transformer-sharp": "5.8.0",
     "github-markdown-css": "^5.2.0",
+    "prettier": "^2.8.6",
     "prismjs": "^1.29.0",
     "prop-types": "15.8.1",
     "react": "18.2.0",
@@ -27,7 +28,7 @@
   "scripts": {
     "build": "gatsby build",
     "develop": "gatsby develop -o",
-    "format": "prettier --write src/**/*.{js,jsx}",
+    "format": "prettier --write src/**/*.{ts,tsx,js,jsx}",
     "start": "npm run develop",
     "serve": "gatsby serve",
     "test": "echo \"Write tests! -> https://gatsby.dev/unit-testing\""
