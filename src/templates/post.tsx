@@ -31,7 +31,7 @@ export default function PostPage({ data: { markdownRemark: post } }) {
   return (
     <Layout>
       <Hero>
-        <article>
+        <article className={'container is-max-desktop p-4'}>
           <div className={'level'}>
             <div className={'level-left'}>
               <div className={'level-item'}>
