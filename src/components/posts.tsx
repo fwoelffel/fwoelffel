@@ -3,8 +3,11 @@ import { graphql, Link, useStaticQuery } from 'gatsby';
 import { FaArrowRight, FaCalendar } from 'react-icons/fa';
 
 export const query = graphql`
-  query {
-    allMarkdownRemark(filter: { frontmatter: { published: { eq: true } } }) {
+  {
+    allMarkdownRemark(
+      sort: { frontmatter: { date: ASC } }
+      filter: { frontmatter: { published: { eq: true } } }
+    ) {
       edges {
         node {
           id
