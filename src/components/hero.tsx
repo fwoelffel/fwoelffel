@@ -1,11 +1,9 @@
 import React from 'react';
 
 const Hero = ({ children }) => (
-  <div className={'hero is-fullheight'}>
-    <div className={'hero-body'}>
-      <section className={'container'}>{children}</section>
-    </div>
-  </div>
+  <section className={'hero is-fullheight'}>
+    <div className={'hero-body container'}>{children}</div>
+  </section>
 );
 
 export default Hero;

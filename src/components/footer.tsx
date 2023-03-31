@@ -1,7 +1,7 @@
 import React from 'react';
 import { graphql, useStaticQuery } from 'gatsby';
 
-const siteBuildTimeQuery = graphql`
+const query = graphql`
   query GetSiteBuildTime {
     site {
       buildTime(formatString: "llll")
@@ -10,14 +10,13 @@ const siteBuildTimeQuery = graphql`
 `;
 
 const Footer = () => {
-  const { site } = useStaticQuery(siteBuildTimeQuery);
-  const { buildTime } = site;
+  const { site } = useStaticQuery(query);
   return (
     <footer className={'footer has-text-centered'}>
-      <div className='container'>Last built {buildTime}</div>
-      <span className='is-size-7 has-text-grey is-family-secondary'>
+      <p>Last built {site.buildTime}</p>
+      <p className='is-size-7 has-text-grey is-family-secondary'>
         ©{new Date().getFullYear()} Frédéric Woelffel
-      </span>
+      </p>
     </footer>
   );
 };

@@ -52,8 +52,7 @@ const Posts = () => {
               <div className={'has-text-right'}>
                 <Link
                   className={'is-small'}
-                  to={`/posts/${node.frontmatter.slug}`}
-                >
+                  to={`/posts/${node.frontmatter.slug}`}>
                   <FaArrowRight className={'icon is-small'} />
                 </Link>
               </div>

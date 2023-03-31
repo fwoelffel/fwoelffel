@@ -30,7 +30,7 @@ const Identity = () => {
   const { site, file } = useStaticQuery(query);
   const { position, title, about } = site.siteMetadata;
   return (
-    <div className='has-text-centered'>
+    <section className='has-text-centered'>
       <GatsbyImage
         image={file.childImageSharp.gatsbyImageData}
         alt='avatar'
@@ -49,12 +49,11 @@ const Identity = () => {
           className=' has-text-centered is-family-code'
           style={{
             margin: 20,
-          }}
-        >
+          }}>
           {about}
         </div>
       ) : null}
-    </div>
+    </section>
   );
 };
 

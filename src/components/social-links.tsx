@@ -6,8 +6,7 @@ const SocialLinks = ({ size = '2.5em' }) => (
   <div className='is-block'>
     <ExternalLink
       label='LinkedIn'
-      to='https://www.linkedin.com/in/fredericwoelffel/'
-    >
+      to='https://www.linkedin.com/in/fredericwoelffel/'>
       <FaLinkedin size={size} />
     </ExternalLink>
     <ExternalLink label='Twitter' to='https://twitter.com/fwoelffel'>

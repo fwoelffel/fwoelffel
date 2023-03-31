@@ -6,11 +6,7 @@ export default function ScrollButton() {
 
   const toggleVisible = () => {
     const scrolled = document.documentElement.scrollTop;
-    if (scrolled > 300) {
-      setVisible(true);
-    } else if (scrolled <= 300) {
-      setVisible(false);
-    }
+    setVisible(scrolled > 300);
   };
 
   const scrollToTop = () => {
@@ -35,8 +31,7 @@ export default function ScrollButton() {
         height: '20px',
         cursor: 'pointer',
         opacity: '0.9',
-      }}
-    >
+      }}>
       <button className={'button is-outlined is-rounded'} onClick={scrollToTop}>
         <FaAngleUp size='1.5rem' />
       </button>
