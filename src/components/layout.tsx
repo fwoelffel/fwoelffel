@@ -4,7 +4,7 @@ import ScrollButton from './scroll-button';
 
 const Layout = ({ children }) => (
   <>
-    <div className='container'>
+    <div className='container pb-6'>
       {children}
       <ScrollButton />
     </div>
