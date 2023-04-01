@@ -5,7 +5,7 @@ import { FaArrowRight, FaCalendar } from 'react-icons/fa';
 export const query = graphql`
   {
     allMarkdownRemark(
-      sort: { frontmatter: { date: ASC } }
+      sort: { frontmatter: { date: DESC } }
       filter: { frontmatter: { published: { eq: true } } }
     ) {
       edges {
