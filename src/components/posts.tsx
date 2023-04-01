@@ -26,7 +26,7 @@ export const query = graphql`
 const Posts = () => {
   const { allMarkdownRemark } = useStaticQuery(query);
   return (
-    !!allMarkdownRemark.edges.length && (
+    (!!allMarkdownRemark.edges.length && (
       <div className={'container is-max-desktop p-4'}>
         <h2 className={'title is-2 has-text-centered'}>Posts</h2>
         <hr></hr>
@@ -63,7 +63,8 @@ const Posts = () => {
           </article>
         ))}
       </div>
-    )
+    )) ||
+    null
   );
 };
 

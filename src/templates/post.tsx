@@ -27,19 +27,21 @@ export const Head = ({ data: { markdownRemark: post } }) => (
   </>
 );
 
-export default function PostPage({ data: { markdownRemark: post } }) {
+export default function PostPage(p) {
+  console.debug(p);
+  const {
+    data: { markdownRemark: post },
+  } = p;
   return (
     <Layout>
-      <Hero>
-        <article className={'container is-max-desktop p-4'}>
-          <div className={'level'}>
+      <article className={'container is-max-desktop p-4'}>
+        <div className={'level hero is-small'}>
+          <div className={'hero-body p-0'}>
             <div className={'level-left'}>
               <div className={'level-item'}>
                 <div>
-                  <p className={'title is-2'}>{post.frontmatter.title}</p>
-                  <p className={'has-text-weight-light'}>
-                    {post.frontmatter.date}
-                  </p>
+                  <h1 className={'title is-1'}>{post.frontmatter.title}</h1>
+                  <p className={'has-text-weight-light'}></p>
                 </div>
               </div>
             </div>
@@ -52,16 +54,16 @@ export default function PostPage({ data: { markdownRemark: post } }) {
               </div>
             </div>
           </div>
+        </div>
 
-          <section className={'content has-text-justified	'}>
-            <div
-              dangerouslySetInnerHTML={{
-                __html: post.html,
-              }}
-            />
-          </section>
-        </article>
-      </Hero>
+        <section className={'content has-text-justified'}>
+          <div
+            dangerouslySetInnerHTML={{
+              __html: post.html,
+            }}
+          />
+        </section>
+      </article>
     </Layout>
   );
 }
