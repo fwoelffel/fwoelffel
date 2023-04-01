@@ -33,32 +33,25 @@ const Posts = () => {
         {allMarkdownRemark.edges.map(({ node }) => (
           <article className={'media'}>
             <div className={'media-content'}>
-              <div className={'content'}>
-                <div className={'level'}>
-                  <div className={'level-left'}>
-                    <div className={'level-item'}>
-                      <p className={'title is-3'}>{node.frontmatter.title}</p>
+              <Link to={`/posts/${node.frontmatter.slug}`}>
+                <div className={'content'}>
+                  <div className={'level'}>
+                    <div className={'level-left'}>
+                      <div className={'level-item'}>
+                        <p className={'title is-3'}>{node.frontmatter.title}</p>
+                      </div>
                     </div>
-                  </div>
-                  <div className={'level-right'}>
-                    <div className={'level-item has-text-grey-light'}>
-                      <FaCalendar className={'icon is-small mr-1'} />
-                      <p className={'has-text-weight-light'}>
-                        {node.frontmatter.date}
-                      </p>
+                    <div className={'level-right'}>
+                      <div className={'level-item has-text-grey-light'}>
+                        <FaCalendar className={'icon is-small mr-1'} />
+                        <p className={'has-text-weight-light'}>
+                          {node.frontmatter.date}
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
-                <br />
-                {node.excerpt}
-              </div>
-              <div className={'has-text-right'}>
-                <Link
-                  className={'is-small'}
-                  to={`/posts/${node.frontmatter.slug}`}>
-                  <FaArrowRight className={'icon is-small'} />
-                </Link>
-              </div>
+              </Link>
             </div>
           </article>
         ))}
