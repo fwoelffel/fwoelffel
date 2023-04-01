@@ -15,6 +15,7 @@ export const query = graphql`
       frontmatter {
         date
         title
+        published
       }
     }
   }
@@ -35,6 +36,12 @@ export default function PostPage(p) {
   return (
     <Layout>
       <article className={'container is-max-desktop p-4'}>
+        {(post.frontmatter.published !== true && (
+          <div className={'box has-background-warning'}>
+            <p className={'title has-text-centered'}>DRAFT</p>
+          </div>
+        )) ||
+          null}
         <div className={'level hero is-small'}>
           <div className={'hero-body p-0'}>
             <div className={'level-left'}>
