@@ -8,7 +8,7 @@
     "gatsby-image": "3.11.0",
     "gatsby-plugin-image": "3.9.0",
     "gatsby-plugin-sass": "6.9.0",
-    "gatsby-plugin-sharp": "5.9.0",
+    "gatsby-plugin-sharp": "5.10.0",
     "gatsby-remark-autolink-headers": "^6.9.0",
     "gatsby-remark-prismjs": "^7.9.0",
     "gatsby-source-filesystem": "5.9.0",
