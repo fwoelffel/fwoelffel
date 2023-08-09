@@ -1,6 +1,6 @@
 ---
 title: 'Monads'
-published: false
+published: true
 slug: 'monads'
 date: '2023-04-01'
 ---
