@@ -4,7 +4,7 @@
   "author": "Frédéric Woelffel <hello@fwoelffel.me>",
   "devDependencies": {
     "bulma": "0.9.4",
-    "gatsby": "5.12.6",
+    "gatsby": "5.12.7",
     "gatsby-image": "3.11.0",
     "gatsby-plugin-image": "3.12.1",
     "gatsby-plugin-sass": "6.12.1",
