@@ -3,7 +3,7 @@
   "private": true,
   "author": "Frédéric Woelffel <hello@fwoelffel.me>",
   "devDependencies": {
-    "bulma": "0.9.4",
+    "bulma": "1.0.0",
     "gatsby": "5.13.3",
     "gatsby-image": "3.11.0",
     "gatsby-plugin-image": "3.13.1",
