@@ -14,7 +14,7 @@
     "gatsby-source-filesystem": "5.13.1",
     "gatsby-source-graphql": "5.13.1",
     "gatsby-transformer-remark": "6.13.1",
-    "gatsby-transformer-sharp": "5.13.1",
+    "gatsby-transformer-sharp": "5.14.0",
     "github-markdown-css": "^5.7.0",
     "prettier": "^3.3.3",
     "prismjs": "^1.29.0",
