@@ -26,8 +26,8 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version-file: site/.nvmrc
           cache: npm
@@ -36,7 +36,7 @@ jobs:
       - run: npx prettier --check .
       - run: npm run check
       - run: npm run build
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: site
           path: site/dist/
@@ -52,8 +52,11 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
+      - uses: actions/checkout@v7
+        with:
+          # The deploy action pushes with its own token (see its README).
+          persist-credentials: false
+      - uses: actions/download-artifact@v8
         with:
           name: site
           path: dist/
