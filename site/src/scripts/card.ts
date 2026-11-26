@@ -36,11 +36,7 @@ export function mountCard(): void {
   const card = document.getElementById('card');
   const front = document.getElementById('front');
   const back = document.getElementById('back');
-  const controls = document.getElementById('controls');
-  const flipButton = document.getElementById('flip');
-  const gyroButton = document.getElementById('gyro');
-  if (!card || !front || !back || !controls || !flipButton || !gyroButton)
-    return;
+  if (!card || !front || !back) return;
 
   const style = card.style;
   const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -51,16 +47,12 @@ export function mountCard(): void {
   function setFlipped(value: boolean): void {
     flipped = value;
     card!.classList.toggle('is-flipped', flipped);
-    flipButton!.setAttribute('aria-pressed', String(flipped));
     // Only the visible face is reachable by keyboard and screen readers.
     front!.inert = flipped;
     back!.inert = !flipped;
     front!.setAttribute('aria-hidden', String(flipped));
     back!.setAttribute('aria-hidden', String(!flipped));
   }
-
-  flipButton.addEventListener('click', () => setFlipped(!flipped));
-  controls.hidden = false;
 
   // ---- Tilt state -------------------------------------------------------
 
@@ -252,23 +244,20 @@ export function mountCard(): void {
   const Orientation = window.DeviceOrientationEvent as
     PermissionedOrientation | undefined;
   if (coarse && Orientation && !motion.matches) {
+    // Android: events flow right away. iOS: they flow too if the visitor
+    // already allowed motion access for this site.
+    window.addEventListener('deviceorientation', onOrientation);
     if (typeof Orientation.requestPermission === 'function') {
-      // iOS: offer an explicit button, the prompt must come from a gesture.
-      gyroButton.hidden = false;
-      gyroButton.addEventListener('click', async () => {
-        try {
-          if ((await Orientation.requestPermission!()) === 'granted') {
-            window.addEventListener('deviceorientation', onOrientation);
-          }
-        } catch {
-          // Denied or unsupported: touch and idle drift still work.
-        }
-        // Don't drop keyboard focus on the floor when the button disappears.
-        if (document.activeElement === gyroButton) flipButton.focus();
-        gyroButton.hidden = true;
-      });
-    } else {
-      window.addEventListener('deviceorientation', onOrientation);
+      // iOS only grants sensor access from a user gesture, so ask on the
+      // visitor's first touch anywhere on the page. No button needed; until
+      // then (or if refused) touch drag and the idle drift drive the foil.
+      document.addEventListener(
+        'touchend',
+        () => {
+          Orientation.requestPermission!().catch(() => {});
+        },
+        { once: true, passive: true },
+      );
     }
   }
 
