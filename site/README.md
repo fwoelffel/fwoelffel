@@ -21,13 +21,9 @@ Node version: see [`.nvmrc`](.nvmrc).
 
 ## Edit the content
 
-Everything personal lives in [`src/config.ts`](src/config.ts): name, role, card stats and links. Adding a link there adds it to the card.
+Everything personal lives in [`src/config.ts`](src/config.ts): name, role, card stats and links. Adding a link there adds it to the card. The photo is the live GitHub avatar.
 
-After changing the avatar or the name, regenerate the favicons and the Open Graph image:
-
-```bash
-node scripts/make-images.mjs
-```
+The favicons and the Open Graph image (`public/og.png`) are static files: replace them by hand if needed.
 
 ## Deploy
 
