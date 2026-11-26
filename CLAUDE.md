@@ -30,6 +30,7 @@ This repository is named after the GitHub username, so it is also the **GitHub p
 ## Code rules
 
 - Paths below are relative to `site/`.
+- This project's Baseline target is Baseline 2024: use web platform features that are Baseline 2024 or older without fallbacks; anything newer needs a progressive-enhancement fallback.
 - Personal data and links live in `src/config.ts` only; components read from it.
 - Fonts are self-hosted through `@fontsource` (Latin subsets only). No third-party requests at runtime (no Google Fonts, no hotlinked images, no analytics).
 - Icons come from `@phosphor-icons/core`, inlined at build time through `src/components/Icon.astro`.
