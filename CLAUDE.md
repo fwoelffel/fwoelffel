@@ -46,4 +46,8 @@ This repository is named after the GitHub username, so it is also the **GitHub p
 
 ## Deployment
 
-`.github/workflows/deploy.yml` builds on every push and PR that touches `site/` (profile README edits don't trigger it), and on `main` publishes `site/dist/` to the `gh-pages` branch (GitHub Pages source). `site/public/CNAME` and `site/public/.nojekyll` must stay: without `.nojekyll`, GitHub Pages runs Jekyll, which drops the `_astro/` folder (images and fonts 404).
+`.github/workflows/deploy.yml` builds on every push and PR that touches `site/` (profile README edits don't trigger it), and on `main` publishes `site/dist/` to the `gh-pages` branch (GitHub Pages source). It can also be run by hand (`workflow_dispatch`).
+
+Dependabot PRs auto-merge (squash) from the same workflow's `automerge` job once the build passes: patch and minor updates only, majors wait for review. The merge uses `GITHUB_TOKEN`, which doesn't trigger push workflows, so the job then dispatches the workflow on `main` to deploy. No PAT, no branch protection needed (direct pushes to `main` stay allowed).
+
+`site/public/CNAME` and `site/public/.nojekyll` must stay: without `.nojekyll`, GitHub Pages runs Jekyll, which drops the `_astro/` folder (images and fonts 404).
