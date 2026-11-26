@@ -53,7 +53,7 @@ export const links: Link[] = [
   {
     label: 'LinkedIn',
     caption: 'Mon parcours',
-    href: 'https://www.linkedin.com/in/fredericwoelffel/',
+    href: 'https://www.linkedin.com/in/fwoelffel/',
     icon: 'linkedin',
   },
   {
