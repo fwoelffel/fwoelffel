@@ -1,8 +1,8 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
+import { identity } from './src/config.ts';
 
 export default defineConfig({
-  site: 'https://fwoelffel.me',
-  trailingSlash: 'ignore',
+  site: identity.url,
   build: { inlineStylesheets: 'always' },
 });

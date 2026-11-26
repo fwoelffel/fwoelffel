@@ -5,19 +5,16 @@ dist/
 # dependencies
 node_modules/
 
-# logs
-npm-debug.log*
-
 # environment
 .env
 .env.*
 
 # OS / editors
 .DS_Store
-.vscode/*
-!.vscode/extensions.json
+.vscode/
 .idea/
 
 # local tooling
+.claude/launch.json
 graft/
 .ignore

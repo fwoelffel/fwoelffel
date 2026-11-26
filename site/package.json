@@ -2,14 +2,8 @@
   "name": "fwoelffel.me",
   "private": true,
   "type": "module",
-  "author": "Frédéric Woelffel <hello@fwoelffel.me>",
-  "license": "MIT",
-  "engines": {
-    "node": ">=22.23.4"
-  },
   "scripts": {
     "dev": "astro dev",
-    "start": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
     "format": "prettier --write .",

@@ -39,9 +39,9 @@ export const card = {
   ],
 } as const;
 
-export type IconName = 'github' | 'linkedin' | 'rss' | 'mail';
+export type IconName = 'github' | 'linkedin';
 
-export interface Link {
+interface Link {
   label: string;
   /** Short line under the label. */
   caption: string;

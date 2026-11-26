@@ -1,12 +1,6 @@
 {
-  "endOfLine": "lf",
-  "semi": true,
   "singleQuote": true,
-  "tabWidth": 2,
-  "trailingComma": "all",
-  "bracketSpacing": true,
   "jsxSingleQuote": true,
   "bracketSameLine": true,
-  "arrowParens": "always",
   "plugins": ["prettier-plugin-astro"]
 }

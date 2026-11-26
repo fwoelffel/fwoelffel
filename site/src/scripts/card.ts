@@ -211,14 +211,9 @@ export function mountCard(): void {
   let baseline: number | null = null;
   // Sensor angles are in the device frame; remap them to the screen frame.
   function screenAngle(): number {
-    const angle =
-      screen.orientation?.angle ??
-      (window as { orientation?: number }).orientation ??
-      0;
-    return ((angle % 360) + 360) % 360;
+    return ((screen.orientation.angle % 360) + 360) % 360;
   }
-  screen.orientation?.addEventListener('change', () => (baseline = null));
-  window.addEventListener('orientationchange', () => (baseline = null));
+  screen.orientation.addEventListener('change', () => (baseline = null));
 
   function onOrientation(e: DeviceOrientationEvent): void {
     if (e.beta === null || e.gamma === null || touchId !== null) return;
