@@ -5,7 +5,9 @@
  *  - swipes (fast, mostly horizontal): switches card, and the click that
  *    may follow is swallowed (no flip, no link);
  *  - or drags: tilts the card when it started on it; no click either.
- * Pinch-zoom (two fingers) is left to the browser.
+ * Pinch-zoom (two fingers) is left to the browser. While the page is
+ * zoomed in, one finger pans it instead: no swipe, and the root gets
+ * `.is-zoomed` (the page and the card relax their touch-action).
  */
 
 const TAP_SLOP = 10; // px a finger may move and still count as a tap
@@ -22,6 +24,8 @@ export interface TouchOptions {
   onSwipe(step: 1 | -1): void;
 }
 
+const isZoomed = () => (window.visualViewport?.scale ?? 1) > 1.01;
+
 export function trackTouches(options: TouchOptions): { touching(): boolean } {
   let id: number | null = null;
   let x0 = 0;
@@ -32,6 +36,10 @@ export function trackTouches(options: TouchOptions): { touching(): boolean } {
   let multi = false;
   let ignoreClicksUntil = 0;
 
+  window.visualViewport?.addEventListener('resize', () =>
+    document.documentElement.classList.toggle('is-zoomed', isZoomed()),
+  );
+
   document.addEventListener(
     'pointerdown',
     (e) => {
@@ -41,6 +49,7 @@ export function trackTouches(options: TouchOptions): { touching(): boolean } {
         return;
       }
       id = e.pointerId;
+      ignoreClicksUntil = 0; // only the gesture that just ended may be swallowed
       x0 = e.clientX;
       y0 = e.clientY;
       t0 = e.timeStamp;
@@ -70,6 +79,7 @@ export function trackTouches(options: TouchOptions): { touching(): boolean } {
     const dy = e.clientY - y0;
     if (
       !multi &&
+      !isZoomed() &&
       Math.abs(dx) >= SWIPE_MIN &&
       Math.abs(dx) > SWIPE_RATIO * Math.abs(dy) &&
       e.timeStamp - t0 < SWIPE_MAX_MS

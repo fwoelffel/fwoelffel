@@ -63,13 +63,21 @@ export function mountDeck(): void {
 
   /** Done leaving: stop painting it, and turn it back front side up. */
   function stash(slot: HTMLElement): void {
+    const card = cards[slots.indexOf(slot)];
     slot.classList.remove('is-leaving');
     slot.hidden = true;
-    setFlipped(cards[slots.indexOf(slot)], false);
+    setFlipped(card, false);
+    tilt.release(card);
   }
 
   function indexFromHash(): number {
-    const index = ids.indexOf(decodeURIComponent(location.hash.slice(1)));
+    let id = '';
+    try {
+      id = decodeURIComponent(location.hash.slice(1));
+    } catch {
+      // A malformed escape (#%E0) is just an unknown hash.
+    }
+    const index = ids.indexOf(id);
     return index < 0 ? 0 : index;
   }
 
@@ -92,15 +100,23 @@ export function mountDeck(): void {
 
     // Cut short a switch still in progress.
     for (const slot of slots) slot.classList.remove('is-entering');
-    if (leaving && leaving !== to) stash(leaving);
+    // Coming back to the card still leaving: stash it too, and apply that
+    // (forced style) while it is hidden, so it does not play a flip-back.
+    if (leaving) {
+      stash(leaving);
+      if (leaving === to) void to.offsetWidth;
+    }
     leaving = null;
-    to.classList.remove('is-leaving');
 
     // The intro only plays once, on the card shown on load.
     for (const card of cards) card.classList.remove('is-intro');
     setFlipped(cards[next], false);
 
-    const hadFocus = from.contains(document.activeElement);
+    // Keep keyboard focus with the selection: on the card it left, or on
+    // the radios (the arrow keys bypass their native navigation).
+    const hadFocus =
+      from.contains(document.activeElement) ||
+      radios.includes(document.activeElement as HTMLInputElement);
     setLive(from, false);
     to.hidden = false;
     setLive(to, true);

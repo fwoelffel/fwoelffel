@@ -45,4 +45,9 @@ const person = {
        its two-finger panning stay available. */
     touch-action: pan-y pinch-zoom;
   }
+
+  /* Zoomed in (set by src/scripts/touch.ts): one finger pans freely. */
+  :global(.is-zoomed) main {
+    touch-action: auto;
+  }
 </style>

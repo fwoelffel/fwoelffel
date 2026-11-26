@@ -77,6 +77,11 @@ const { variant, label, intro = false } = Astro.props;
     -webkit-tap-highlight-color: transparent;
   }
 
+  /* Page zoomed in (src/scripts/touch.ts): a drag pans it, no tilt. */
+  :global(.is-zoomed) .card {
+    touch-action: auto;
+  }
+
   .flipper {
     position: absolute;
     inset: 0;

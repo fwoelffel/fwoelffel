@@ -11,8 +11,10 @@
  */
 
 export interface Tilt {
-  /** Drive this card from now on (the previous one returns to rest). */
+  /** Drive this card from now on, starting from rest. */
   attach(card: HTMLElement): void;
+  /** Return a card no longer driven to rest (once it is out of sight). */
+  release(card: HTMLElement): void;
   /** Aim at a point in card units (0..1, may overshoot a little). */
   input(x: number, y: number, hot?: boolean): void;
   /** Aim at a viewport point. */
@@ -119,10 +121,16 @@ export function createTilt(reducedMotion: MediaQueryList): Tilt {
   }
 
   function attach(next: HTMLElement): void {
-    if (card && card !== next)
-      for (const prop of PROPS) card.style.removeProperty(prop);
-    card = next;
-    driftStart = null; // a new card gets its own short drift
+    if (card !== next) {
+      // The previous card keeps its pose while it leaves (see release);
+      // the new one starts flat, with its own short drift.
+      card = next;
+      current.x = target.x = 0.5;
+      current.y = target.y = 0.5;
+      hot = false;
+      lastInput = -Infinity;
+    }
+    driftStart = null;
     if (reducedMotion.matches) rest();
     else {
       render();
@@ -146,5 +154,10 @@ export function createTilt(reducedMotion: MediaQueryList): Tilt {
     { passive: true },
   );
 
-  return { attach, input, pointAt };
+  function release(released: HTMLElement): void {
+    if (released !== card)
+      for (const prop of PROPS) released.style.removeProperty(prop);
+  }
+
+  return { attach, release, input, pointAt };
 }
