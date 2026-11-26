@@ -1,0 +1,85 @@
+---
+import Foil from '../../components/card/Foil.astro';
+import Frame from '../../components/card/Frame.astro';
+import { identity } from '../../config';
+import Emblem from './Emblem.astro';
+import './theme.css';
+---
+
+<Frame>
+  <div class='inner'>
+    <div class='seal'>
+      <span>{identity.initials}</span>
+    </div>
+    <p>
+      <Emblem class='mark' />
+      {identity.host}
+      <Emblem class='mark' />
+    </p>
+    <Foil />
+  </div>
+</Frame>
+
+<style>
+  .inner {
+    position: relative;
+    height: 100%;
+    border-radius: 0.6em;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.2em;
+    background:
+      repeating-conic-gradient(
+        from 0deg at 50% 44%,
+        rgb(255 255 255 / 0.07) 0 7.5deg,
+        transparent 7.5deg 15deg
+      ),
+      var(--creature-cosmos);
+  }
+
+  /* A hexagonal seal: a bright rim around a deep core holding the
+     initials. Sizes are in its own em (3.4x the card's). */
+  .seal {
+    display: grid;
+    place-items: center;
+    width: 2.7em;
+    height: 3.1em;
+    font: 700 3.4em var(--display);
+    clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+    background: linear-gradient(160deg, #b8fff0, #12a58b 45%, #0b6b5e);
+  }
+
+  .seal span {
+    display: grid;
+    place-items: center;
+    width: 2.35em;
+    height: 2.7em;
+    clip-path: inherit;
+    background: radial-gradient(
+      circle at 50% 35%,
+      #3b2d8f,
+      #16123f 70%,
+      #0b0a24
+    );
+    color: #e9fff6;
+    text-shadow: 0 0 0.25em rgb(120 255 220 / 0.6);
+  }
+
+  p {
+    display: flex;
+    align-items: center;
+    gap: 0.6em;
+    margin: 0;
+    font: 600 1em var(--display);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: #e9fff6;
+  }
+
+  .mark {
+    font-size: 1.1em;
+  }
+</style>

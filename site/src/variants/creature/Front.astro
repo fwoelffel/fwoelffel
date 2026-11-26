@@ -1,0 +1,324 @@
+---
+import Foil from '../../components/card/Foil.astro';
+import Frame from '../../components/card/Frame.astro';
+import Links from '../../components/card/Links.astro';
+import Portrait from '../../components/card/Portrait.astro';
+import { identity } from '../../config';
+import Emblem from './Emblem.astro';
+import creature from './index';
+import './theme.css';
+
+const { weakness, resistance, retreat, talent } = creature;
+---
+
+<Frame>
+  <div class='inner'>
+    <div class='top'>
+      <div class='title'>
+        <span class='stage' aria-hidden='true'>
+          {creature.stage} · Niv. {creature.level}
+        </span>
+        <h1 class='name'>{identity.fullName}</h1>
+      </div>
+      <p class='hp' aria-hidden='true'>
+        <small>PV</small>
+        {creature.hp}
+      </p>
+      <Emblem class='element' />
+    </div>
+    <div class='art'>
+      <Portrait class='portrait' sizes='9rem' />
+      <Foil sweep />
+    </div>
+    <p class='species'>
+      {identity.role} · Type {creature.element} · Habitat : {creature.habitat}
+    </p>
+    <p class='talent'>
+      <b>Talent</b>
+      <strong>{talent.name}</strong> : {talent.text}
+    </p>
+    <Links class='attacks' />
+    <ul
+      class='traits'
+      aria-label='Caractéristiques (pour le fun, totalement inventées)'>
+      <li>
+        <span>Faiblesse</span>
+        <b>
+          {weakness.label} {weakness.value}
+        </b>
+      </li>
+      <li>
+        <span>Résistance</span>
+        <b>
+          {resistance.label} {resistance.value}
+        </b>
+      </li>
+      <li>
+        <span>Retraite</span>
+        <b class='cups' role='img' aria-label={`${retreat} cafés`}>
+          {Array.from({ length: retreat }, () => (
+            <i />
+          ))}
+        </b>
+      </li>
+    </ul>
+    <p class='flavor'>{creature.flavor}</p>
+    <div class='foot' aria-hidden='true'>
+      <span>{creature.credit}</span>
+      <span>{creature.number}</span>
+      <span>{identity.host}</span>
+    </div>
+  </div>
+</Frame>
+
+<style>
+  .inner {
+    height: 100%;
+    border-radius: 0.6em;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35em;
+    padding: 0.45em 0.6em 0.4em;
+    background:
+      repeating-linear-gradient(
+        135deg,
+        rgb(255 255 255 / 0.2) 0 0.25em,
+        transparent 0.25em 0.6em
+      ),
+      linear-gradient(170deg, #f4fffa, #c3f1df 42%, #7fd8c3);
+  }
+
+  .top {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.35em;
+  }
+
+  .title {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .stage {
+    display: inline-block;
+    padding: 0.1em 0.5em;
+    border-radius: 999px;
+    font: 700 0.62em/1.2 var(--display);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    background: var(--creature-ink);
+    color: #e9fff6;
+  }
+
+  .name {
+    margin: 0.1em 0 0;
+    font: 700 1.5em/1 var(--display);
+    letter-spacing: 0.01em;
+  }
+
+  .hp {
+    margin: 0;
+    font: 700 1.5em/1 var(--display);
+    color: #c2185b;
+  }
+
+  .hp small {
+    font-size: 0.45em;
+    margin-right: 0.1em;
+    letter-spacing: 0.08em;
+  }
+
+  .element {
+    font-size: 1.6em;
+  }
+
+  /* The illustration window takes whatever height is left, so the card
+     fits whatever the link rows cost at small sizes. */
+  .art {
+    position: relative;
+    flex: 1 1 0;
+    min-height: 4.5em;
+    container-type: size;
+    overflow: hidden;
+    border: 0.2em solid #fff;
+    border-radius: 0.2em;
+    background: var(--creature-cosmos);
+    box-shadow:
+      0 0 0 0.07em var(--creature-line),
+      inset 0 0 1.4em rgb(0 0 0 / 0.55);
+  }
+
+  .portrait {
+    --portrait-w: min(8.6em, 82cqh);
+    height: 100%;
+  }
+
+  .species {
+    margin: 0;
+    padding: 0.15em 0.6em;
+    border-radius: 999px;
+    text-align: center;
+    font-size: 0.58em;
+    font-style: italic;
+    background: linear-gradient(90deg, #d9dfea, #f8f9ff, #d9dfea);
+    box-shadow: 0 0 0 0.08em var(--creature-line);
+  }
+
+  .talent {
+    margin: 0;
+    font-size: 0.66em;
+    line-height: 1.25;
+  }
+
+  .talent b {
+    margin-right: 0.35em;
+    padding: 0 0.45em;
+    border-radius: 0.25em;
+    font: 700 0.95em var(--display);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background: #c2185b;
+    color: #fff;
+  }
+
+  .talent strong {
+    font: 700 1.15em var(--display);
+    color: #c2185b;
+  }
+
+  /* Each link is an attack: two hexagonal cost tokens (the element, then
+     the network), its name and effect, and the arrow as damage. */
+  .attacks :global(li + li) {
+    border-top: 1px solid var(--creature-line);
+  }
+
+  .attacks :global(.link) {
+    gap: 0.25em;
+    padding-inline: 0.2em 0.4em;
+  }
+
+  .attacks :global(.link)::before {
+    /* The element's chevrons, silent for assistive tech. */
+    content: '<>' / '';
+    display: grid;
+    place-items: center;
+    width: 1.65em;
+    height: 1.85em;
+    flex: none;
+    clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+    font: 700 0.95em var(--display);
+    color: #fff;
+    background: var(--creature-token);
+  }
+
+  .attacks :global(i) {
+    width: 1.65em;
+    height: 1.85em;
+    margin-right: 0.45em;
+    clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+  }
+
+  .attacks :global(b) {
+    font-size: 1.2em;
+    letter-spacing: 0.02em;
+    text-transform: none;
+  }
+
+  .attacks :global(small) {
+    font-size: 0.68em;
+    opacity: 1;
+    color: var(--creature-soft);
+  }
+
+  .attacks :global(em) {
+    font-size: 1.35em;
+    color: #c2185b;
+  }
+
+  .traits {
+    list-style: none;
+    margin: 0;
+    padding: 0.3em 0 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border-top: 0.12em solid var(--creature-ink);
+    text-align: center;
+  }
+
+  .traits li {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    line-height: 1.1;
+  }
+
+  .traits span {
+    font: 600 0.55em var(--display);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--creature-soft);
+  }
+
+  .traits b {
+    font: 700 0.85em var(--display);
+  }
+
+  .cups {
+    display: flex;
+    gap: 0.45em;
+    padding-top: 0.15em;
+  }
+
+  /* A coffee cup: the body, and its handle as ::after. */
+  .cups i {
+    position: relative;
+    width: 0.7em;
+    height: 0.6em;
+    border-radius: 0.08em 0.08em 0.32em 0.32em;
+    background: #6d4c41;
+  }
+
+  .cups i::after {
+    content: '';
+    position: absolute;
+    left: 100%;
+    top: 0.1em;
+    width: 0.2em;
+    height: 0.26em;
+    border: 0.08em solid #6d4c41;
+    border-left: 0;
+    border-radius: 0 0.2em 0.2em 0;
+  }
+
+  .flavor {
+    margin: 0;
+    padding: 0.3em 0.5em;
+    border: 1px solid var(--creature-line);
+    border-radius: 0.3em;
+    font-size: 0.58em;
+    font-style: italic;
+    line-height: 1.3;
+    color: var(--creature-soft);
+  }
+
+  .foot {
+    display: flex;
+    justify-content: space-between;
+    font: 600 0.55em var(--display);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--creature-soft);
+  }
+
+  /* Short landscape phones: the 44px links take most of a small card. */
+  @media (orientation: landscape) and (max-height: 520px) {
+    .inner {
+      gap: 0.25em;
+    }
+
+    .talent {
+      display: none;
+    }
+  }
+</style>
