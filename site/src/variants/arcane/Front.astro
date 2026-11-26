@@ -1,0 +1,300 @@
+---
+import Foil from '../../components/card/Foil.astro';
+import Frame from '../../components/card/Frame.astro';
+import Links from '../../components/card/Links.astro';
+import Portrait from '../../components/card/Portrait.astro';
+import { identity } from '../../config';
+import arcane from './index';
+import './theme.css';
+
+// Our own cost glyphs (16px grid, stroked with currentColor).
+const glyphs: Record<(typeof arcane.cost)[number], string> = {
+  gear: '<circle cx="8" cy="8" r="3.6"/><circle cx="8" cy="8" r="1.2"/><path d="M8 1.6v2.2M8 12.2v2.2M1.6 8h2.2M12.2 8h2.2M3.5 3.5l1.5 1.5M11 11l1.5 1.5M3.5 12.5 5 11M11 5l1.5-1.5"/>',
+  code: '<path d="M5.4 4.4 1.9 8l3.5 3.6M10.6 4.4 14.1 8l-3.5 3.6M9.1 3.2l-2.2 9.6"/>',
+  bean: '<ellipse cx="8" cy="8" rx="3.9" ry="5.8" transform="rotate(32 8 8)"/><path d="M10.9 3.4C7.2 5.6 9 10.2 5.1 12.6"/>',
+};
+---
+
+<Frame>
+  <div class='inner'>
+    <div class='plate title'>
+      <h1>{identity.fullName}</h1>
+      <p class='cost'>
+        <span class='sr-only'>Coût (inventé) : {arcane.costLabel}</span>
+        {arcane.cost.map((c) => (
+          <svg
+            class={c}
+            aria-hidden='true'
+            viewBox='0 0 16 16'
+            set:html={glyphs[c]}
+          />
+        ))}
+      </p>
+    </div>
+    <div class='art'>
+      <Portrait class='photo' sizes='20rem' />
+    </div>
+    <p class='plate type'>
+      <span>
+        {arcane.type} — {identity.role}
+      </span>
+      <i class='mark' aria-hidden='true'>
+        {identity.initials}
+      </i>
+    </p>
+    <div class='rules'>
+      <p class='keywords'>{arcane.keywords}</p>
+      <Links class='abilities' />
+      <p class='flavor'>« {arcane.flavor} »</p>
+    </div>
+    <div class='foot'>
+      <span aria-hidden='true'>{arcane.collector}</span>
+      <span aria-hidden='true'>{identity.host}</span>
+      <p class='pt'>
+        <span aria-hidden='true'>
+          {arcane.power}/{arcane.toughness}
+        </span>
+        <span class='sr-only'>
+          Force {arcane.power}, endurance {arcane.toughness} (pour le fun,
+          totalement inventées)
+        </span>
+      </p>
+    </div>
+  </div>
+  <Foil sweep />
+</Frame>
+
+<style>
+  .inner {
+    position: relative;
+    height: 100%;
+    border-radius: 0.6em;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3em;
+    padding: 0.45em 0.45em 0.3em;
+    background: var(--arcane-aura);
+  }
+
+  p,
+  h1 {
+    margin: 0;
+  }
+
+  /* Title bar and type line: parchment plates with a gilt edge. */
+  .plate {
+    flex: none;
+    min-height: 2em;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.4em;
+    padding: 0.15em 0.35em 0.15em 0.6em;
+    border-radius: 0.9em 0.3em;
+    background: var(--arcane-plate);
+    border: 0.1em solid var(--arcane-gold-line);
+    box-shadow:
+      0 0.12em 0.3em rgb(0 0 0 / 0.45),
+      inset 0 0 0.4em rgb(120 85 35 / 0.35);
+  }
+
+  h1 {
+    font: 700 1.3em/1.1 var(--display);
+    letter-spacing: 0.02em;
+  }
+
+  .cost {
+    display: flex;
+    gap: 0.15em;
+  }
+
+  .cost svg {
+    width: 1.35em;
+    height: 1.35em;
+    padding: 0.2em;
+    border-radius: 50%;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    color: #fff8e6;
+    box-shadow:
+      0 0.06em 0.12em rgb(0 0 0 / 0.5),
+      inset 0 0.1em 0.15em rgb(255 255 255 / 0.35);
+  }
+
+  .gear {
+    background: radial-gradient(circle at 35% 30%, #c79a5a, #6e4a1f);
+  }
+
+  .code {
+    background: radial-gradient(circle at 35% 30%, #5cc7c0, #1d5f66);
+  }
+
+  .bean {
+    background: radial-gradient(circle at 35% 30%, #a0705a, #3f2418);
+  }
+
+  /* Art box: the live avatar, cropped to a landscape picture. */
+  .art {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    margin-inline: 0.35em;
+    overflow: hidden;
+    border: 0.14em solid #15111c;
+    outline: 0.08em solid var(--arcane-gold-line);
+    box-shadow: inset 0 0 0.6em rgb(0 0 0 / 0.5);
+  }
+
+  .art .photo {
+    position: absolute;
+    inset: 0;
+    --portrait-w: 100%;
+    --portrait-h: 100%;
+  }
+
+  .art :global(img) {
+    object-position: 50% 30%;
+  }
+
+  .type {
+    min-height: 1.8em;
+    font: 600 0.95em var(--display);
+    letter-spacing: 0.03em;
+  }
+
+  .type span {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  /* Set mark: our own "FW" rune in a gilt diamond. */
+  .mark {
+    flex: none;
+    width: 2.3em;
+    height: 2.3em;
+    display: grid;
+    place-items: center;
+    font: normal 700 0.68em var(--display);
+    clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+    background: var(--arcane-gold);
+    color: var(--arcane-ink);
+  }
+
+  .rules {
+    flex: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35em;
+    margin-inline: 0.2em;
+    padding: 0.45em 0.55em 0.5em;
+    border-radius: 0.3em;
+    background: var(--arcane-parchment);
+    box-shadow: inset 0 0 0.5em rgb(120 85 35 / 0.45);
+  }
+
+  .keywords {
+    font: 700 1em/1.1 var(--display);
+    letter-spacing: 0.03em;
+  }
+
+  /* The links read as activated abilities: "[icon] GitHub : Mon code." */
+  .abilities :global(a > span:first-of-type) {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: baseline;
+    column-gap: 0.35em;
+  }
+
+  .abilities :global(b) {
+    font-size: 1.05em;
+    text-transform: none;
+  }
+
+  .abilities :global(b)::after {
+    content: ' :' / '';
+  }
+
+  .abilities :global(small) {
+    font-size: 0.85em;
+    font-style: italic;
+    opacity: 1;
+  }
+
+  .abilities :global(small)::after {
+    content: '.' / '';
+  }
+
+  .abilities :global(i) {
+    box-shadow: 0 0 0 0.1em var(--arcane-gold-line);
+  }
+
+  .flavor {
+    padding-top: 0.35em;
+    border-top: 1px solid rgb(90 55 20 / 0.35);
+    font-size: 0.8em;
+    font-style: italic;
+    line-height: 1.25;
+  }
+
+  .foot {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 0.8em;
+    padding-left: 0.3em;
+    font-size: 0.62em;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--arcane-pale);
+  }
+
+  .foot > span {
+    opacity: 0.8;
+  }
+
+  /* Strength box, overlapping the bottom edge of the rules box. */
+  .pt {
+    margin: -0.3em 0 0 auto;
+    padding: 0.1em 0.7em;
+    font: 700 1.9em/1.1 var(--display);
+    letter-spacing: 0.05em;
+    border-radius: 0.3em 0.6em;
+    background: var(--arcane-plate);
+    border: 0.06em solid var(--arcane-gold-line);
+    box-shadow: 0 0.06em 0.15em rgb(0 0 0 / 0.5);
+    color: var(--arcane-ink);
+  }
+
+  /* Text sits above the foil so the hotspot never washes it out. */
+  .plate,
+  .rules,
+  .foot {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Short landscape phones: the card is small and the 44px link floor
+     takes much of it, so tighten the spacing. */
+  @media (orientation: landscape) and (max-height: 520px) {
+    .inner {
+      gap: 0.2em;
+    }
+
+    .rules {
+      gap: 0.2em;
+      padding-block: 0.3em 0.35em;
+    }
+
+    .abilities {
+      --link-gap: 0.25em;
+    }
+
+    .flavor {
+      padding-top: 0.2em;
+    }
+  }
+</style>

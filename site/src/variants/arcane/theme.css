@@ -1,0 +1,77 @@
+/* Arcane palette, shared by its front and back, and the tokens of the shared
+   card parts (Frame, Portrait, Links, Foil). */
+[data-variant='arcane'] {
+  --arcane-ink: #26190d;
+  --arcane-gold: linear-gradient(#fbe7a8, #c9963f);
+  --arcane-gold-line: #d9b46a;
+  --arcane-pale: #f3dfa6;
+  --arcane-violet: #5b2d8c;
+  --arcane-plate: linear-gradient(#f4ead2, #d3c095);
+  --arcane-parchment:
+    radial-gradient(
+      circle at 18% 12%,
+      rgb(255 255 255 / 0.55),
+      transparent 55%
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgb(120 85 35 / 0.05) 0 2px,
+      transparent 2px 5px
+    ),
+    #ebdcb9;
+  --arcane-aura:
+    radial-gradient(
+      circle at 80% 15%,
+      rgb(170 130 255 / 0.35),
+      transparent 50%
+    ),
+    linear-gradient(160deg, #47306e, #26304f 55%, #18403f);
+
+  /* Dark stone border. */
+  --frame-bg:
+    repeating-radial-gradient(
+      circle at 30% 20%,
+      rgb(255 255 255 / 0.035) 0 1px,
+      transparent 1px 4px
+    ),
+    linear-gradient(160deg, #2e2a33, #0e0d12);
+  --frame-ink: var(--arcane-ink);
+
+  --portrait-radius: 0;
+  --portrait-initials-color: var(--arcane-pale);
+  --portrait-backdrop:
+    radial-gradient(circle at 70% 28%, #fff3c4 0 6%, transparent 22%),
+    linear-gradient(transparent 62%, #2c2340 62% 70%, #1b1628 70%),
+    linear-gradient(#f0a868, #8e4f9b 45%, #3a2f6e);
+
+  --link-gap: 0.35em;
+  --link-bg: rgb(90 55 20 / 0.06);
+  --link-bg-hover: rgb(90 55 20 / 0.16);
+  --link-border: 1px solid rgb(90 55 20 / 0.28);
+  --link-radius: 0.4em;
+  --link-color: var(--arcane-ink);
+  --link-focus: var(--arcane-violet);
+  --link-badge-bg: radial-gradient(circle at 35% 30%, #4a3a63, #17121f);
+  --link-badge-color: var(--arcane-pale);
+
+  /* Etched foil: thin diagonal rainbow bands over a fine engraving. */
+  --foil-gradient: repeating-linear-gradient(
+    125deg,
+    #ff9a9a 0,
+    #ffe08a 3%,
+    #9dffb0 6%,
+    #8fd3ff 9%,
+    #c7a2ff 12%,
+    #ff9a9a 15%
+  );
+  --foil-size: 240%;
+  --foil-texture: repeating-linear-gradient(
+    35deg,
+    rgb(255 255 255 / 0.25) 0 1px,
+    transparent 1px 3px
+  );
+  --foil-blend: overlay;
+  --foil-strength: 1.4;
+  --glare-color: rgb(255 238 190 / 0.65);
+  --sweep-color: rgb(255 230 170 / 0.5);
+}
