@@ -12,7 +12,17 @@ export const identity = {
   description:
     'Frédéric Woelffel, ingénieur logiciel. Retrouvez-moi sur GitHub et LinkedIn.',
   url: 'https://fwoelffel.me',
+  /**
+   * GitHub account id (not the username, so a rename doesn't break it).
+   * The card shows this account's live avatar: updating the GitHub avatar
+   * updates the site within minutes, no deploy needed.
+   */
+  githubId: 5467696,
 } as const;
+
+/** URL of the live GitHub avatar at a given pixel size. */
+export const githubAvatar = (size: number) =>
+  `https://avatars.githubusercontent.com/u/${identity.githubId}?s=${size}`;
 
 /** Playful trading-card stats. They are made up, and the page says so. */
 export const card = {

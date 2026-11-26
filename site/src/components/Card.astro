@@ -1,8 +1,11 @@
 ---
-import { Image } from 'astro:assets';
+import { getImage } from 'astro:assets';
 import avatar from '../assets/avatar.jpeg';
 import Icon from './Icon.astro';
-import { card, identity, links } from '../config';
+import { card, githubAvatar, identity, links } from '../config';
+
+// Local copy, used only if GitHub's avatar can't be loaded.
+const fallback = await getImage({ src: avatar, width: 320, format: 'webp' });
 
 const fullName = `${identity.firstName} ${identity.lastName}`;
 const host = new URL(identity.url).host;
@@ -20,14 +23,18 @@ const host = new URL(identity.url).host;
           </div>
           <div class='portrait'>
             <span aria-hidden='true'>{identity.initials}</span>
-            <Image
-              src={avatar}
-              alt={`Photo de ${fullName}`}
-              widths={[160, 320]}
+            <img
+              src={githubAvatar(320)}
+              srcset={`${githubAvatar(160)} 160w, ${githubAvatar(320)} 320w`}
               sizes='10rem'
-              format='webp'
+              width='320'
+              height='320'
+              alt={`Photo de ${fullName}`}
               loading='eager'
               fetchpriority='high'
+              decoding='async'
+              data-fallback={fallback.src}
+              onerror="this.onerror=null;this.removeAttribute('srcset');this.src=this.dataset.fallback"
             />
           </div>
         </div>
