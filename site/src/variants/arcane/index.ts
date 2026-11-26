@@ -19,5 +19,6 @@ export default defineVariant({
   flavor: 'Il ne lance pas de sorts : il les compile.',
   power: 4,
   toughness: 5,
-  collector: '003/003 · FR',
+  /** Printed after the collector number. */
+  language: 'FR',
 });

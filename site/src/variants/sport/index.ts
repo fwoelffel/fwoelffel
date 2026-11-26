@@ -10,7 +10,7 @@ export default defineVariant({
   order: 0,
   rating: 92,
   rank: 'ING',
-  edition: '★ Holo · 001/001',
+  edition: '★ Holo',
   stats: [
     { value: 90, label: 'PRO' },
     { value: 91, label: 'ARC' },

@@ -26,5 +26,4 @@ export default defineVariant({
   flavor:
     'Se nourrit de café et de pull requests. Plus actif la nuit, près des terminaux allumés.',
   credit: 'Illus. avatar GitHub',
-  number: '002/003',
 });

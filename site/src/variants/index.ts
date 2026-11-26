@@ -19,6 +19,10 @@ const backs = import.meta.glob<AstroComponentFactory>('./*/Back.astro', {
   import: 'default',
 });
 
+/** "002/003": the card at `index` (0-based) in a deck of `count`. */
+export const collectorNumber = (index: number, count: number) =>
+  [index + 1, count].map((n) => String(n).padStart(3, '0')).join('/');
+
 /** All variants, sorted by `order`. The first one is the default. */
 export const variants: Variant[] = Object.entries(metas)
   .map(([path, meta]) => {

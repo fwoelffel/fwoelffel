@@ -4,8 +4,12 @@ import Frame from '../../components/card/Frame.astro';
 import Links from '../../components/card/Links.astro';
 import Portrait from '../../components/card/Portrait.astro';
 import { identity } from '../../config';
+import { madeUp, type FrontProps } from '../types';
 import sport from './index';
 import './theme.css';
+
+type Props = FrontProps;
+const { number } = Astro.props;
 ---
 
 <Frame>
@@ -20,9 +24,7 @@ import './theme.css';
     </div>
     <h1 class='name'>{identity.fullName}</h1>
     <p class='role'>{identity.role}</p>
-    <ul
-      class='stats'
-      aria-label='Statistiques (pour le fun, totalement inventées)'>
+    <ul class='stats' aria-label={`Statistiques ${madeUp}`}>
       {sport.stats.map((s) => (
         <li>
           <b>{s.value}</b>
@@ -32,7 +34,9 @@ import './theme.css';
     </ul>
     <Links class='links' />
     <div class='foot' aria-hidden='true'>
-      <span>{sport.edition}</span>
+      <span>
+        {sport.edition} · {number}
+      </span>
       <span>{identity.host}</span>
     </div>
     <Foil sweep />

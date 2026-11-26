@@ -4,10 +4,13 @@ import Frame from '../../components/card/Frame.astro';
 import Links from '../../components/card/Links.astro';
 import Portrait from '../../components/card/Portrait.astro';
 import { identity } from '../../config';
+import { madeUp, type FrontProps } from '../types';
 import Emblem from './Emblem.astro';
 import creature from './index';
 import './theme.css';
 
+type Props = FrontProps;
+const { number } = Astro.props;
 const { weakness, resistance, retreat, talent } = creature;
 ---
 
@@ -38,9 +41,7 @@ const { weakness, resistance, retreat, talent } = creature;
       <strong>{talent.name}</strong> : {talent.text}
     </p>
     <Links class='attacks' />
-    <ul
-      class='traits'
-      aria-label='Caractéristiques (pour le fun, totalement inventées)'>
+    <ul class='traits' aria-label={`Caractéristiques ${madeUp}`}>
       <li>
         <span>Faiblesse</span>
         <b>
@@ -65,7 +66,7 @@ const { weakness, resistance, retreat, talent } = creature;
     <p class='flavor'>{creature.flavor}</p>
     <div class='foot' aria-hidden='true'>
       <span>{creature.credit}</span>
-      <span>{creature.number}</span>
+      <span>{number}</span>
       <span>{identity.host}</span>
     </div>
   </div>

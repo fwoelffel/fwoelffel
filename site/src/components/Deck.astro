@@ -9,7 +9,7 @@
  */
 import Card from './card/Card.astro';
 import { identity } from '../config';
-import { variants } from '../variants';
+import { collectorNumber, variants } from '../variants';
 
 const many = variants.length > 1;
 ---
@@ -33,7 +33,7 @@ const many = variants.length > 1;
           variant={id}
           label={`Carte de ${identity.fullName}`}
           intro={i === 0}>
-          <Front slot='front' />
+          <Front slot='front' number={collectorNumber(i, variants.length)} />
           <Back slot='back' />
         </Card>
       </div>

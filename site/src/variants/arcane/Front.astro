@@ -4,8 +4,12 @@ import Frame from '../../components/card/Frame.astro';
 import Links from '../../components/card/Links.astro';
 import Portrait from '../../components/card/Portrait.astro';
 import { identity } from '../../config';
+import { madeUp, type FrontProps } from '../types';
 import arcane from './index';
 import './theme.css';
+
+type Props = FrontProps;
+const { number } = Astro.props;
 
 // Our own cost glyphs (16px grid, stroked with currentColor).
 const glyphs: Record<(typeof arcane.cost)[number], string> = {
@@ -48,15 +52,16 @@ const glyphs: Record<(typeof arcane.cost)[number], string> = {
       <p class='flavor'>« {arcane.flavor} »</p>
     </div>
     <div class='foot'>
-      <span aria-hidden='true'>{arcane.collector}</span>
+      <span aria-hidden='true'>
+        {number} · {arcane.language}
+      </span>
       <span aria-hidden='true'>{identity.host}</span>
       <p class='pt'>
         <span aria-hidden='true'>
           {arcane.power}/{arcane.toughness}
         </span>
         <span class='sr-only'>
-          Force {arcane.power}, endurance {arcane.toughness} (pour le fun,
-          totalement inventées)
+          Force {arcane.power}, endurance {arcane.toughness} {madeUp}
         </span>
       </p>
     </div>
