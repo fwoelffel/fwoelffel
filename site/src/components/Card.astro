@@ -86,26 +86,26 @@ const host = new URL(identity.url).host;
   </div>
 </div>
 
-<div class='controls' id='controls' hidden>
-  <button
-    class='pill'
-    id='flip'
-    type='button'
-    aria-pressed='false'
-    aria-controls='card'>
-    Retourner la carte
-  </button>
-  <button class='pill' id='gyro' type='button' hidden>
-    Activer l'effet holo
-  </button>
-</div>
-
 <style>
   .card {
-    /* Fits the viewport on any phone, including landscape. */
-    /* rem floor: text keeps growing with browser zoom / font size (WCAG
-       1.4.4); the page scrolls if the card no longer fits. */
-    --w: max(15rem, min(86vw, 340px, calc((100dvh - 8.5rem) * 0.714)));
+    /* Fits the visible viewport on any phone, portrait or landscape
+       (100dvh excludes Safari's toolbars). rem floor: text keeps growing
+       with browser zoom / font size (WCAG 1.4.4); the page scrolls if the
+       card no longer fits. */
+    --w: max(
+      13rem,
+      min(
+        88vw,
+        360px,
+        calc(
+          (
+              100dvh - 2.5rem - env(safe-area-inset-top) -
+                env(safe-area-inset-bottom)
+            ) *
+            0.714
+        )
+      )
+    );
     --rx: 0deg;
     --ry: 0deg;
     --px: 50%;
@@ -508,21 +508,19 @@ const host = new URL(identity.url).host;
     color: #ffe9a6;
   }
 
-  .controls {
-    margin-top: 1.4rem;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 0.5rem;
-  }
-
-  /* Short landscape phones: controls go beside the card. */
+  /* Short landscape phones: the card is small. */
   @media (orientation: landscape) and (max-height: 520px) {
-    .card {
-      --w: max(15rem, min(340px, calc((100dvh - 2rem) * 0.714)));
+    /* The 44px link floor eats into a small card: tighten the spacing. */
+    .top {
+      height: 8.8em;
     }
 
-    /* The 44px link floor eats into a small card: tighten the spacing. */
+    .portrait::before,
+    .portrait img {
+      width: 7.8em;
+      height: 7.8em;
+    }
+
     .role {
       margin: 0.2em 0 0.35em;
     }
@@ -539,34 +537,6 @@ const host = new URL(identity.url).host;
     .foot {
       padding-top: 0.3em;
     }
-
-    .controls {
-      margin-top: 0;
-      flex-direction: column;
-    }
-  }
-
-  .controls[hidden],
-  .pill[hidden] {
-    display: none;
-  }
-
-  .pill {
-    min-height: 2.75rem;
-    padding: 0.45rem 1.1rem;
-    border: 1px solid var(--line);
-    border-radius: 999px;
-    background: none;
-    color: var(--ink);
-    font: inherit;
-    font-size: 0.9rem;
-    cursor: pointer;
-    opacity: 0.85;
-    transition: opacity 0.2s;
-  }
-
-  .pill:hover {
-    opacity: 1;
   }
 
   @media (prefers-reduced-motion: reduce) {

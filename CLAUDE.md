@@ -13,12 +13,14 @@ This repository is named after the GitHub username, so it is also the **GitHub p
 
 ## Product rules
 
-- The card must work as well on a phone as on a desktop: touch drag tilts it, a tap flips it, the tilt sensor drives the foil where available. Check every change at 375×812 as well as on desktop.
+- The card must work as well on a phone as on a desktop: touch drag tilts it, a tap/click flips it, the tilt sensor drives the foil where available. Check every change at 375×812 as well as on desktop.
+- No buttons or controls around the card: the card is the whole UI. The holo/tilt effect is on by default, never behind an opt-in button (on iOS, motion access is requested on the first touch).
+- The whole card, footer included, must be visible without scrolling on phones (size it from `100dvh`).
 - Keep it light. Static output only, no UI framework, no client-side dependency. JavaScript stays a few kB; prefer CSS for anything CSS can do.
 - Animate only transforms, opacity and CSS custom properties. No `filter: blur()` or layout-triggering properties in per-frame updates. Pause work when the tab is hidden.
 - Nothing moves forever: the idle drift settles after a few seconds and the loop stops until the next input (WCAG 2.2.2).
 - Never block pinch-zoom (`touch-action: pinch-zoom` on the card, no `user-scalable=no`), and keep card text scaling with browser zoom (rem floor on the card width).
-- Check portrait (375×812, 320×568) and short landscape (812×375): links stay ≥ 44 px and controls stay visible.
+- Check portrait (375×812, 320×568) and short landscape (812×375): links stay ≥ 44 px and the card footer is fully visible.
 - Honour `prefers-reduced-motion` (no tilt loop, no flip/intro animation) and `prefers-color-scheme` (light and dark backgrounds).
 - The page works without JavaScript: the front of the card and its links are plain HTML.
 - Accessibility: real links and buttons, visible focus, only the visible face of the card is focusable (`inert` on the other one), touch targets at least 44 px.
@@ -42,4 +44,4 @@ This repository is named after the GitHub username, so it is also the **GitHub p
 
 ## Deployment
 
-`.github/workflows/deploy.yml` builds on every push and PR that touches `site/` (profile README edits don't trigger it), and on `main` publishes `site/dist/` to the `gh-pages` branch (GitHub Pages source). `site/public/CNAME` must stay.
+`.github/workflows/deploy.yml` builds on every push and PR that touches `site/` (profile README edits don't trigger it), and on `main` publishes `site/dist/` to the `gh-pages` branch (GitHub Pages source). `site/public/CNAME` and `site/public/.nojekyll` must stay: without `.nojekyll`, GitHub Pages runs Jekyll, which drops the `_astro/` folder (images and fonts 404).
