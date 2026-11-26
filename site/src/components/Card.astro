@@ -153,6 +153,10 @@ const host = new URL(identity.url).host;
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
     overflow: hidden;
+    /* Keep the foil's blend modes inside the face. Without it, Safari
+       isolates the rotating .flipper instead, which flattens the 3D: the
+       back shows mirrored and the faces bleed through each other. */
+    isolation: isolate;
     background: linear-gradient(
       135deg,
       #f6d77a,
@@ -524,17 +528,18 @@ const host = new URL(identity.url).host;
       linear-gradient(160deg, #2a3ba6, #0e1636);
   }
 
+  /* Sizes are in the emblem's own em (3.6x the card's): 2.5em = 9 card em. */
   .emblem {
-    width: 9em;
-    height: 9em;
+    font: 700 3.6em var(--display);
+    width: 2.5em;
+    height: 2.5em;
     border-radius: 50%;
     display: grid;
     place-items: center;
-    font: 700 3.6em var(--display);
     border: 0.08em solid #f6d77a;
     box-shadow:
-      0 0 2em rgb(246 215 122 / 0.4),
-      inset 0 0 1.5em rgb(246 215 122 / 0.25);
+      0 0 0.55em rgb(246 215 122 / 0.4),
+      inset 0 0 0.42em rgb(246 215 122 / 0.25);
     background: radial-gradient(circle at 35% 30%, #4b63ff, #142070);
     color: #ffe9a6;
   }
