@@ -13,7 +13,6 @@ interface Props {
 
 const { title, description, noindex = false } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
-const fullName = `${identity.firstName} ${identity.lastName}`;
 ---
 
 <!doctype html>
@@ -37,7 +36,7 @@ const fullName = `${identity.firstName} ${identity.lastName}`;
     />
     <title>{title}</title>
     <meta name='description' content={description} />
-    <meta name='author' content={fullName} />
+    <meta name='author' content={identity.fullName} />
     {noindex ? (
       <meta name='robots' content='noindex' />
     ) : (
@@ -48,7 +47,7 @@ const fullName = `${identity.firstName} ${identity.lastName}`;
 
     <meta property='og:type' content='profile' />
     <meta property='og:locale' content='fr_FR' />
-    <meta property='og:site_name' content={fullName} />
+    <meta property='og:site_name' content={identity.fullName} />
     <meta property='og:title' content={title} />
     <meta property='og:description' content={description} />
     <meta property='og:url' content={canonical} />
@@ -56,7 +55,7 @@ const fullName = `${identity.firstName} ${identity.lastName}`;
     <meta property='og:image' content={githubAvatar(460)} />
     <meta property='og:image:width' content='460' />
     <meta property='og:image:height' content='460' />
-    <meta property='og:image:alt' content={`Photo de ${fullName}`} />
+    <meta property='og:image:alt' content={`Photo de ${identity.fullName}`} />
     <meta property='profile:first_name' content={identity.firstName} />
     <meta property='profile:last_name' content={identity.lastName} />
     <meta name='twitter:card' content='summary' />

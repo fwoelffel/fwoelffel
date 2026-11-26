@@ -1,0 +1,163 @@
+---
+/**
+ * Card shell shared by every variant: sizing, tilt, flip and the two faces.
+ * Variants fill the `front` and `back` slots; they never re-implement any of
+ * this. The script (src/scripts/) drives it through:
+ *  - `--rx --ry` (tilt), `--px --py` (pointer, %), `--bx --by` (pointer
+ *    clamped to the card, %), `--ho` (foil strength) on `[data-card]`;
+ *  - `.is-flipped` on `[data-card]`, `inert`/`aria-hidden` on `[data-face]`;
+ *  - `.is-intro`: the card plays its intro (turn over + foil sweep).
+ */
+interface Props {
+  /** Variant id, exposed as `data-variant` for the variant's theme. */
+  variant: string;
+  /** Accessible name of the front face. */
+  label: string;
+  /** Play the intro animation (only the card shown on load). */
+  intro?: boolean;
+}
+
+const { variant, label, intro = false } = Astro.props;
+---
+
+<div
+  class:list={['card', { 'is-intro': intro }]}
+  data-card
+  data-variant={variant}>
+  <div class='flipper'>
+    <article class='face front' data-face='front' aria-label={label}>
+      <slot name='front' />
+    </article>
+    <div class='face back' data-face='back' aria-hidden='true' inert>
+      <slot name='back' />
+    </div>
+  </div>
+</div>
+
+<style>
+  .card {
+    /* Fits the visible viewport on any phone, portrait or landscape
+       (100dvh excludes Safari's toolbars), minus whatever sits under the
+       card (--card-reserve, set by the deck). rem floor: text keeps growing
+       with browser zoom / font size (WCAG 1.4.4); the page scrolls if the
+       card no longer fits. */
+    --w: max(
+      13rem,
+      min(
+        88vw,
+        360px,
+        calc(
+          (
+              100dvh - 2.5rem - var(--card-reserve, 0px) -
+                env(safe-area-inset-top) - env(safe-area-inset-bottom)
+            ) *
+            0.714
+        )
+      )
+    );
+    --rx: 0deg;
+    --ry: 0deg;
+    --px: 50%;
+    --py: 50%;
+    --bx: 50%;
+    --by: 50%;
+    --ho: 0.38;
+    position: relative;
+    width: var(--w);
+    aspect-ratio: 5 / 7;
+    /* 1em = 1/21.25 of the card width: variants size everything in em. */
+    font-size: calc(var(--w) * 0.047059);
+    transform: rotateX(var(--rx)) rotateY(var(--ry));
+    transform-style: preserve-3d;
+    cursor: pointer;
+    /* One-finger drags tilt the card; pinch-zoom stays available. */
+    touch-action: pinch-zoom;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .flipper {
+    position: absolute;
+    inset: 0;
+    transform-style: preserve-3d;
+    transition: transform 0.95s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .card.is-flipped .flipper {
+    transform: rotateY(180deg);
+  }
+
+  .face {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    /* Keep the foil's blend modes inside the face. Without it, Safari
+       isolates the rotating .flipper instead, which flattens the 3D: the
+       back shows mirrored and the faces bleed through each other. */
+    isolation: isolate;
+  }
+
+  .back {
+    transform: rotateY(180deg);
+  }
+
+  /* Safari ignores backface-visibility on descendants that get their own
+     layer (blend modes, z-indexed text), so they show through the other
+     face. Hide each face outright when the card passes 90deg: with this
+     easing that is ~13% into the flip (0.12s of 0.95s). */
+  .front,
+  .back {
+    transition: visibility 0s linear 0.12s;
+  }
+
+  .back,
+  .card.is-flipped .front {
+    visibility: hidden;
+  }
+
+  .card.is-flipped .back {
+    visibility: visible;
+  }
+
+  /* Intro: the card starts on its back and turns over at 0.5s + 0.14s. */
+  .card.is-intro .flipper {
+    animation: card-intro 1.1s 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+  }
+
+  .card.is-intro .front {
+    animation: card-face-swap 0.64s step-end;
+  }
+
+  .card.is-intro .back {
+    animation: card-face-swap-back 0.64s step-end;
+  }
+
+  @keyframes card-intro {
+    from {
+      transform: rotateY(-180deg) scale(0.92);
+    }
+  }
+
+  @keyframes card-face-swap {
+    from {
+      visibility: hidden;
+    }
+  }
+
+  @keyframes card-face-swap-back {
+    from {
+      visibility: visible;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card .flipper,
+    .card .front,
+    .card .back {
+      transition: none;
+      animation: none;
+    }
+  }
+</style>

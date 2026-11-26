@@ -1,0 +1,252 @@
+---
+/**
+ * Every registered variant's card, stacked in the same place, plus the
+ * style switcher: a radio group shown as a small segmented control under
+ * the card on mouse/trackpad devices, and position dots on touch screens
+ * (where a horizontal swipe switches; the radios stay available to screen
+ * readers). Without JavaScript only the default card shows and the
+ * switcher stays hidden. Behaviour: src/scripts/deck.ts.
+ */
+import Card from './card/Card.astro';
+import { identity } from '../config';
+import { variants } from '../variants';
+
+const many = variants.length > 1;
+---
+
+<div class:list={['deck', { many }]} data-deck>
+  <script is:inline>
+    // Before the cards paint: a shared #id link waits for deck.ts to show
+    // the right card instead of flashing the default one.
+    document.currentScript.parentElement.dataset.js =
+      location.hash.length > 1 ? 'pending' : 'ready';
+  </script>
+  <div class='stack'>
+    {variants.map(({ id, Front, Back }, i) => (
+      <div
+        class='slot'
+        data-slot={id}
+        hidden={i > 0}
+        inert={i > 0}
+        aria-hidden={i > 0 ? 'true' : undefined}>
+        <Card
+          variant={id}
+          label={`Carte de ${identity.fullName}`}
+          intro={i === 0}>
+          <Front slot='front' />
+          <Back slot='back' />
+        </Card>
+      </div>
+    ))}
+  </div>
+  {many && (
+    <>
+      <fieldset class='switcher'>
+        <legend class='sr-only'>Style de carte</legend>
+        {variants.map(({ id, label }, i) => (
+          <label>
+            <input
+              type='radio'
+              name='card-style'
+              value={id}
+              checked={i === 0}
+            />
+            <span>{label}</span>
+          </label>
+        ))}
+      </fieldset>
+      <ol class='dots' aria-hidden='true'>
+        {variants.map(({ id }, i) => (
+          <li data-dot={id} class:list={{ 'is-active': i === 0 }} />
+        ))}
+      </ol>
+    </>
+  )}
+</div>
+
+<style>
+  .deck {
+    --step: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--deck-gap, 0);
+  }
+
+  /* Room under the card for the switcher (read by the card's sizing). */
+  .deck.many[data-js] {
+    --deck-gap: 0.5rem;
+    --card-reserve: 1rem;
+  }
+
+  .stack {
+    display: grid;
+  }
+
+  .slot {
+    grid-area: 1 / 1;
+    perspective: 1100px;
+  }
+
+  /* Next (step 1): the card leaves to the left, the new one comes from the
+     right; previous (step -1): the other way round. */
+  .slot.is-entering {
+    z-index: 1;
+    animation: deck-enter 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+
+  .slot.is-leaving {
+    pointer-events: none;
+    animation: deck-leave 0.4s cubic-bezier(0.4, 0, 0.7, 0.4) both;
+  }
+
+  @keyframes deck-enter {
+    from {
+      opacity: 0;
+      transform: translateX(calc(var(--step) * 65%))
+        rotate(calc(var(--step) * 7deg));
+    }
+  }
+
+  @keyframes deck-leave {
+    to {
+      opacity: 0;
+      transform: translateX(calc(var(--step) * -65%))
+        rotate(calc(var(--step) * -7deg));
+    }
+  }
+
+  /* Shared link: keep the cards hidden until the right one is shown (with
+     a 1s failsafe should the script never run). */
+  .deck[data-js='pending'] .stack {
+    animation: deck-wait 1s step-end;
+  }
+
+  @keyframes deck-wait {
+    from {
+      visibility: hidden;
+    }
+  }
+
+  .switcher,
+  .dots {
+    display: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Touch screens: dots show the position; the radios stay for screen
+     readers. */
+  .many[data-js] .dots {
+    display: flex;
+    gap: 0.5rem;
+    height: 0.5rem;
+    align-items: center;
+    list-style: none;
+  }
+
+  .dots li {
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 50%;
+    background: var(--line);
+    transition:
+      background-color 0.3s,
+      scale 0.3s;
+  }
+
+  .dots li.is-active {
+    background: var(--ink);
+    scale: 1.3;
+  }
+
+  .many[data-js] .switcher {
+    display: block;
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  /* Mouse or trackpad: a small segmented control instead of the dots. */
+  @media (hover: hover) and (pointer: fine) {
+    .deck.many[data-js] {
+      --deck-gap: 0.75rem;
+      --card-reserve: 3rem;
+    }
+
+    .many[data-js] .dots {
+      display: none;
+    }
+
+    .many[data-js] .switcher {
+      position: static;
+      width: auto;
+      height: auto;
+      overflow: visible;
+      clip-path: none;
+      display: flex;
+      gap: 0.15rem;
+      padding: 0.2rem;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+    }
+  }
+
+  .switcher label {
+    position: relative;
+    display: block;
+  }
+
+  .switcher input {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  .switcher span {
+    display: block;
+    padding: 0.3rem 0.85rem;
+    border-radius: 999px;
+    font: 600 0.85rem / 1.2 var(--display);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink);
+    transition:
+      background-color 0.2s,
+      color 0.2s;
+  }
+
+  .switcher input:hover + span {
+    background: var(--line);
+  }
+
+  .switcher input:checked + span {
+    background: var(--ink);
+    color: var(--s2);
+  }
+
+  .switcher input:focus-visible + span {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .slot.is-entering,
+    .slot.is-leaving {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  import { mountDeck } from '../scripts/deck';
+  mountDeck();
+</script>

@@ -1,0 +1,32 @@
+/* Sport palette, shared by its front and back, and the tokens of the shared
+   card parts (Frame, Portrait, Links). The foil keeps its default look. */
+[data-variant='sport'] {
+  --sport-gold: linear-gradient(#fff3c2, #e9b93f);
+  --sport-gold-line: #f6d77a;
+  --sport-cream: #ffe9a6;
+  --sport-navy: #1b2766;
+
+  --frame-bg: linear-gradient(
+    135deg,
+    #f6d77a,
+    #b88a2b 38%,
+    #f6e3a0 60%,
+    #a67a22
+  );
+
+  --portrait-w: 9.2em;
+  --portrait-backdrop: radial-gradient(
+    circle at 35% 30%,
+    #9db0ff,
+    #3a52e8 55%,
+    #142070
+  );
+  --portrait-glow:
+    0 0 2.2em rgb(150 175 255 / 0.7), inset 0 0 1.4em rgb(255 255 255 / 0.25);
+  --portrait-border: 0.15em solid var(--sport-gold-line);
+  --portrait-shadow: 0 0 2.2em rgb(150 175 255 / 0.7);
+
+  --link-focus: var(--sport-cream);
+  --link-badge-bg: var(--sport-gold);
+  --link-badge-color: var(--sport-navy);
+}

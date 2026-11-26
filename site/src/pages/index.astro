@@ -1,13 +1,12 @@
 ---
 import Base from '../layouts/Base.astro';
-import Card from '../components/Card.astro';
+import Deck from '../components/Deck.astro';
 import { identity, links } from '../config';
 
-const fullName = `${identity.firstName} ${identity.lastName}`;
 const person = {
   '@context': 'https://schema.org',
   '@type': 'Person',
-  name: fullName,
+  name: identity.fullName,
   givenName: identity.firstName,
   familyName: identity.lastName,
   jobTitle: identity.role,
@@ -17,7 +16,7 @@ const person = {
 ---
 
 <Base
-  title={`${fullName} · ${identity.role}`}
+  title={`${identity.fullName} · ${identity.role}`}
   description={identity.description}>
   <script
     type='application/ld+json'
@@ -25,9 +24,7 @@ const person = {
     set:html={JSON.stringify(person)}
   />
   <main>
-    <div class='stage'>
-      <Card />
-    </div>
+    <Deck />
   </main>
 </Base>
 
@@ -43,9 +40,9 @@ const person = {
       max(1rem, env(safe-area-inset-right))
       max(1rem, env(safe-area-inset-bottom))
       max(1rem, env(safe-area-inset-left));
-  }
-
-  .stage {
-    perspective: 1100px;
+    /* Horizontal swipes anywhere around the card switch cards (the deck
+       listens to them), so the page only pans vertically. Pinch-zoom and
+       its two-finger panning stay available. */
+    touch-action: pan-y pinch-zoom;
   }
 </style>

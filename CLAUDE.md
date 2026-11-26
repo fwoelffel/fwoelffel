@@ -1,6 +1,6 @@
 # Conventions
 
-Personal homepage of Frédéric Woelffel, served at https://fwoelffel.me. Its job is to own the domain and point visitors to his profiles (GitHub, LinkedIn, more later). The experience is one interactive holographic trading card.
+Personal homepage of Frédéric Woelffel, served at https://fwoelffel.me. Its job is to own the domain and point visitors to his profiles (GitHub, LinkedIn, more later). The experience is an interactive holographic trading card, available in several styles (variants) the visitor can switch between. The sport card is the default.
 
 ## Repository layout
 
@@ -14,27 +14,48 @@ This repository is named after the GitHub username, so it is also the **GitHub p
 ## Product rules
 
 - The card must work as well on a phone as on a desktop: touch drag tilts it, a tap/click flips it, the tilt sensor drives the foil where available. Check every change at 375×812 as well as on desktop.
-- No buttons or controls around the card: the card is the whole UI. The holo/tilt effect is on by default, never behind an opt-in button (on iOS, motion access is requested on the first touch).
-- The whole card, footer included, must be visible without scrolling on phones (size it from `100dvh`).
+- No buttons or controls around the card: the card is the whole UI. The holo/tilt effect is on by default, never behind an opt-in button (on iOS, motion access is requested on the first touch). One exception: the style selector under the card on mouse/trackpad devices (see Variants).
+- The whole card, footer included, plus the selector or dots under it, must be visible without scrolling on phones (size it from `100dvh`; the deck reserves its room through `--card-reserve`).
 - Keep it light. Static output only, no UI framework, no client-side dependency. JavaScript stays a few kB; prefer CSS for anything CSS can do.
 - Animate only transforms, opacity and CSS custom properties. No `filter: blur()` or layout-triggering properties in per-frame updates. Pause work when the tab is hidden.
 - Nothing moves forever: the idle drift settles after a few seconds and the loop stops until the next input (WCAG 2.2.2).
 - Never block pinch-zoom (`touch-action: pinch-zoom` on the card, no `user-scalable=no`), and keep card text scaling with browser zoom (rem floor on the card width).
-- Check portrait (375×812, 320×568) and short landscape (812×375): links stay ≥ 44 px and the card footer is fully visible.
+- Check portrait (375×812, 393×659, 320×568) and short landscape (812×375), for every variant: links stay ≥ 44 px and the card footer is fully visible.
 - Safari is the reference for the 3D flip: blend modes must stay isolated inside each face (`isolation: isolate`), otherwise Safari flattens the card (mirrored back, faces bleeding through). Faces are also hidden with `visibility` at the 90° mark.
 - Honour `prefers-reduced-motion` (no tilt loop, no flip/intro animation) and `prefers-color-scheme` (light and dark backgrounds).
-- The page works without JavaScript: the front of the card and its links are plain HTML.
-- Accessibility: real links and buttons, visible focus, only the visible face of the card is focusable (`inert` on the other one), touch targets at least 44 px.
+- The page works without JavaScript: the front of the default card and its links are plain HTML; the other variants and the switcher stay hidden.
+- Accessibility: real links and buttons, visible focus, only the visible face of the active card is focusable (`inert` + `aria-hidden` on the other face and on inactive cards), touch targets at least 44 px.
 - Site copy is in French.
 - The card stats are made up for fun; keep them labelled as such for assistive tech.
+
+## Variants
+
+Each card style is a variant. Variant ids: `sport` (default), `creature`, `arcane`.
+
+- Switching: on mouse/trackpad devices (`(hover: hover) and (pointer: fine)`), a small segmented control under the card (a native radio group named "Style de carte"); on touch screens, a horizontal swipe anywhere on the page (left = next, right = previous, wrapping), with non-interactive dots under the card (the radios stay available to screen readers). ArrowLeft/ArrowRight switch too (not in text fields, not with modifiers). The URL hash names the active card (`#creature`; no hash or an unknown one = default) so a style can be shared.
+- Touch: |dx| ≥ 50 px, |dx| > 1.5·|dy| and < 700 ms is a swipe (never flips nor opens a link); a tap under the slop flips; anything else tilts (only when started on the card).
+- Switch animation: the cards slide out/in horizontally with a slight rotation (~400 ms, transform/opacity only); the incoming card shows its front and the intro never replays. Reduced motion: instant swap.
+- With a single variant, no selector, no dots.
+- Intellectual property: variants are "inspired by" trading-card genres only. Never use the names, logos, trademarks, characters, set symbols, energy/mana symbols or exact frame designs of existing games or leagues (FIFA/EA, Pokémon, Magic: The Gathering…) anywhere: UI text, code identifiers, comments, file names. Original, generic designs and our own words only.
+
+### Adding a variant
+
+Add a folder `src/variants/<id>/`; no other file changes. The registry (`src/variants/index.ts`) finds it with `import.meta.glob` and sorts by `order` (0 = default; orders unique; the folder name must equal the id).
+
+- `index.ts`: `export default defineVariant({ id, label, order, ...data })` (`label` is the French name shown in the selector; extra fields are the variant's own content, e.g. made-up stats).
+- `Front.astro` / `Back.astro`: the face contents, no props. Root element: a `Frame` (fills the face, rounded, clipped, shadow). Read shared data (`identity`, `links`) from `src/config.ts` and own data from `./index`.
+- Optional `theme.css`, imported by both faces, scoped to `[data-variant='<id>']`: the variant's palette and the tokens of the shared parts. Prefix keyframes and global names with the id.
+- Compose the shared parts in `src/components/card/`, never re-implement them: `Frame`, `Portrait` (live avatar + initials fallback), `Links` (the profile links, 44 px, new tab), `Foil` (holo/glare/sweep, last child of a positioned box; text that must stay readable above it gets `z-index: 1`), `Icon`. Each documents its `--frame-*`, `--portrait-*`, `--link-*`, `--foil-*`/`--glare-*` custom properties at the top of the file. Size everything in `em` (1 em = 1/21.25 of the card width, same 5:7 geometry for all variants), except touch targets (rem).
+- The card shell (`Card.astro`) owns tilt, flip, faces, Safari fixes and sizing; the scripts (`src/scripts/`: `tilt`, `gyro`, `touch`, `flip`, `deck`) are shared and only drive the active card. Variants add no JavaScript.
+- Check it on every viewport listed above, in light and dark, with reduced motion, and flipped.
 
 ## Code rules
 
 - Paths below are relative to `site/`.
 - This project's Baseline target is Baseline 2024: use web platform features that are Baseline 2024 or older without fallbacks; anything newer needs a progressive-enhancement fallback.
-- Personal data and links live in `src/config.ts` only; components read from it.
+- Shared personal data and links live in `src/config.ts` only; components read from it. Variant-specific content lives in that variant's `index.ts`.
 - Fonts are self-hosted through `@fontsource` (Latin subsets only). The only third-party request at runtime is the live GitHub avatar (`avatars.githubusercontent.com`, by account id, so avatar changes show up without a deploy); if it fails to load, the `<img>` removes itself and the initials drawn underneath show instead (no local fallback photo). Nothing else: no Google Fonts, no analytics.
-- Icons come from `@phosphor-icons/core`, inlined at build time through `src/components/Icon.astro`.
+- Icons come from `@phosphor-icons/core`, inlined at build time through `src/components/card/Icon.astro`.
 - The only image file is `public/favicon.svg`. No PNG favicons, no `og.png`, no local photo: link previews (`og:image`) also use the live GitHub avatar.
 - Before committing: `npx prettier --check .`, `npm run check`, `npm run build`. CI runs the same.
 - Pin exact versions for runtime dependencies.

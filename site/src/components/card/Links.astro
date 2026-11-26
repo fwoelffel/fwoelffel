@@ -1,0 +1,118 @@
+---
+/**
+ * The profile links from `config.ts`, as real links that open in a new tab,
+ * each at least 44px tall. Markup per link:
+ *   a.link > i (icon badge) + span > (b label + small caption) + em (arrow)
+ * Themed by:
+ *  --link-gap                 space between links
+ *  --link-bg, --link-bg-hover background, at rest and hovered/focused
+ *  --link-border              border shorthand
+ *  --link-radius              corners
+ *  --link-color               text colour
+ *  --link-focus               focus outline colour
+ *  --link-font                label font
+ *  --link-badge-bg, --link-badge-color, --link-badge-radius  icon badge
+ * For anything else, style the parts from the variant with `:global()`
+ * under the class you pass (e.g. `.links :global(small)`).
+ */
+import type { HTMLAttributes } from 'astro/types';
+import Icon from './Icon.astro';
+import { links } from '../../config';
+
+type Props = HTMLAttributes<'ul'>;
+
+const { class: className, ...rest } = Astro.props;
+---
+
+<ul class:list={['links', className]} {...rest}>
+  {links.map((link) => (
+    <li>
+      <a class='link' href={link.href} target='_blank' rel='noopener me'>
+        <i>
+          <Icon name={link.icon} />
+        </i>
+        <span>
+          <b>{link.label}</b>
+          <small>{link.caption}</small>
+        </span>
+        <em>
+          <Icon name='arrow' />
+        </em>
+        <span class='sr-only'>(nouvel onglet)</span>
+      </a>
+    </li>
+  ))}
+</ul>
+
+<style>
+  .links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--link-gap, 0.45em);
+  }
+
+  .link {
+    min-height: 2.75rem; /* 44px touch target whatever the card size */
+    display: flex;
+    align-items: center;
+    gap: 0.7em;
+    padding: 0.5em 0.7em;
+    border-radius: var(--link-radius, 0.65em);
+    color: var(--link-color, #fff);
+    text-decoration: none;
+    background: var(--link-bg, rgb(255 255 255 / 0.11));
+    border: var(--link-border, 1px solid rgb(255 255 255 / 0.22));
+    transition:
+      background 0.2s,
+      translate 0.2s;
+  }
+
+  .link:hover,
+  .link:focus-visible {
+    background: var(--link-bg-hover, rgb(255 255 255 / 0.22));
+    translate: 0 -1px;
+  }
+
+  .link:focus-visible {
+    outline: 2px solid var(--link-focus, #fff);
+    outline-offset: 2px;
+  }
+
+  i {
+    width: 2em;
+    height: 2em;
+    border-radius: var(--link-badge-radius, 50%);
+    display: grid;
+    place-items: center;
+    flex: none;
+    font-size: 0.95em;
+    background: var(--link-badge-bg, #fff);
+    color: var(--link-badge-color, #222);
+  }
+
+  span {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.15;
+  }
+
+  b {
+    font: 700 1.15em var(--link-font, var(--display));
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  small {
+    font-size: 0.7em;
+    opacity: 0.8;
+  }
+
+  em {
+    margin-left: auto;
+    font-size: 1.1em;
+    display: grid;
+  }
+</style>

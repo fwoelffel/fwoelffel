@@ -1,0 +1,78 @@
+---
+/**
+ * The live GitHub avatar over the initials. If the photo fails to load, the
+ * <img> removes itself and the initials show instead. Themed by:
+ *  --portrait-w, --portrait-h   photo box (default 9em, square)
+ *  --portrait-radius            its corners (default 50%: a disc)
+ *  --portrait-backdrop          background drawn behind the photo
+ *  --portrait-glow              box-shadow of that backdrop
+ *  --portrait-border            border of the photo (default none)
+ *  --portrait-shadow            box-shadow of the photo
+ *  --portrait-initials-size     font size of the fallback initials
+ *  --portrait-initials-color    their outline colour
+ * The root is a centring grid: size or place it with a `class`.
+ */
+import type { HTMLAttributes } from 'astro/types';
+import { githubAvatar, identity } from '../../config';
+
+type Props = HTMLAttributes<'div'> & {
+  /** `sizes` hint for the photo (its rendered CSS width). */
+  sizes?: string;
+};
+
+const { class: className, sizes = '10rem', ...rest } = Astro.props;
+---
+
+<div class:list={['portrait', className]} {...rest}>
+  <span aria-hidden='true'>{identity.initials}</span>
+  <img
+    src={githubAvatar(320)}
+    srcset={`${githubAvatar(160)} 160w, ${githubAvatar(320)} 320w`}
+    sizes={sizes}
+    width='320'
+    height='320'
+    alt={`Photo de ${identity.fullName}`}
+    loading='eager'
+    fetchpriority='high'
+    decoding='async'
+    onerror='this.remove()'
+  />
+</div>
+
+<style>
+  .portrait {
+    --_w: var(--portrait-w, 9em);
+    --_h: var(--portrait-h, var(--_w));
+    position: relative;
+    display: grid;
+    place-items: center;
+  }
+
+  .portrait::before {
+    content: '';
+    width: var(--_w);
+    height: var(--_h);
+    border-radius: var(--portrait-radius, 50%);
+    background: var(--portrait-backdrop, rgb(255 255 255 / 0.15));
+    box-shadow: var(--portrait-glow, none);
+  }
+
+  span {
+    position: absolute;
+    font: 700 var(--portrait-initials-size, 4.6em) var(--display);
+    color: transparent;
+    -webkit-text-stroke: 0.03em var(--portrait-initials-color, #fff);
+    letter-spacing: 0.02em;
+  }
+
+  img {
+    position: absolute;
+    width: var(--_w);
+    height: var(--_h);
+    border-radius: var(--portrait-radius, 50%);
+    object-fit: cover;
+    border: var(--portrait-border, none);
+    box-shadow: var(--portrait-shadow, none);
+    -webkit-user-drag: none;
+  }
+</style>

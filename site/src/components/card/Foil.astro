@@ -1,0 +1,112 @@
+---
+/**
+ * Holographic layers: rainbow foil, glare hotspot and (optionally) the intro
+ * light sweep. Place it last inside a positioned box: it covers that box and
+ * paints over earlier content, except elements with `z-index: 1` (text).
+ *
+ * Driven by the shell's tilt properties; themed by:
+ *  --foil-gradient      rainbow image the pointer slides around
+ *  --foil-size          its background size (default 320%)
+ *  --foil-texture       extra image layered under it (default none)
+ *  --foil-texture-size  that layer's size (default auto)
+ *  --foil-blend         blend mode of the foil (default color-dodge)
+ *  --foil-strength      multiplier of the live strength --ho (default 1)
+ *  --glare-color        hotspot colour (default rgb(255 255 255 / 0.7))
+ *  --glare-blend        blend mode of the hotspot (default soft-light)
+ *  --sweep-color        colour of the intro sweep
+ */
+interface Props {
+  /** Add the light sweep that crosses the card once during the intro. */
+  sweep?: boolean;
+}
+
+const { sweep = false } = Astro.props;
+---
+
+<div class='holo' aria-hidden='true'></div>
+<div class='glare' aria-hidden='true'></div>
+{sweep && <div class='sweep' aria-hidden='true' />}
+
+<style>
+  .holo,
+  .glare,
+  .sweep {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  /* The pointer moves the gradient; no blur filter, so phones only repaint
+     a few gradient layers per frame. */
+  .holo {
+    mix-blend-mode: var(--foil-blend, color-dodge);
+    opacity: calc(var(--ho) * var(--foil-strength, 1));
+    background:
+      radial-gradient(
+        circle at var(--px) var(--py),
+        rgb(255 255 255 / 0.45),
+        transparent 45%
+      ),
+      var(
+        --foil-gradient,
+        linear-gradient(
+          115deg,
+          #ff7ac8,
+          #ffe66b,
+          #6bffd0,
+          #6bb8ff,
+          #c08bff,
+          #ff7ac8
+        )
+      ),
+      var(--foil-texture, none);
+    background-size:
+      100% 100%,
+      var(--foil-size, 320%) var(--foil-size, 320%),
+      var(--foil-texture-size, auto);
+    background-position:
+      0 0,
+      var(--bx) var(--by),
+      0 0;
+  }
+
+  .glare {
+    mix-blend-mode: var(--glare-blend, soft-light);
+    background: radial-gradient(
+      circle at var(--px) var(--py),
+      var(--glare-color, rgb(255 255 255 / 0.7)),
+      transparent 45%
+    );
+  }
+
+  .sweep {
+    opacity: 0;
+    background: linear-gradient(
+      105deg,
+      transparent 35%,
+      var(--sweep-color, rgb(255 255 255 / 0.55)) 50%,
+      transparent 65%
+    );
+  }
+
+  :global(.is-intro) .sweep {
+    animation: foil-sweep 1.3s 1.4s ease-out;
+  }
+
+  @keyframes foil-sweep {
+    from {
+      opacity: 1;
+      translate: -100% 0;
+    }
+    to {
+      opacity: 1;
+      translate: 100% 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :global(.is-intro) .sweep {
+      animation: none;
+    }
+  }
+</style>

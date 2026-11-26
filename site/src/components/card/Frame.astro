@@ -1,0 +1,29 @@
+---
+/**
+ * The visible card body: fills a face, rounds and clips it, casts the
+ * shadow. Variants theme it with `--frame-bg`, `--frame-radius`,
+ * `--frame-padding`, `--frame-shadow` and `--frame-ink` (text colour).
+ */
+import type { HTMLAttributes } from 'astro/types';
+
+type Props = HTMLAttributes<'div'>;
+
+const { class: className, ...rest } = Astro.props;
+---
+
+<div class:list={['frame', className]} {...rest}>
+  <slot />
+</div>
+
+<style>
+  .frame {
+    position: relative;
+    height: 100%;
+    overflow: hidden;
+    border-radius: var(--frame-radius, 1.15em);
+    padding: var(--frame-padding, 0.65em);
+    background: var(--frame-bg, #8a8fa8);
+    box-shadow: var(--frame-shadow, 0 2em 3.5em -1.2em rgb(0 0 0 / 0.6));
+    color: var(--frame-ink, #fff);
+  }
+</style>

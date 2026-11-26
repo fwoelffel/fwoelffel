@@ -1,0 +1,196 @@
+---
+import Foil from '../../components/card/Foil.astro';
+import Frame from '../../components/card/Frame.astro';
+import Links from '../../components/card/Links.astro';
+import Portrait from '../../components/card/Portrait.astro';
+import { identity } from '../../config';
+import sport from './index';
+import './theme.css';
+---
+
+<Frame>
+  <div class='inner'>
+    <div class='top'>
+      <div class='rate' aria-hidden='true'>
+        <b>{sport.rating}</b>
+        <span>{sport.rank}</span>
+        <i class='crest'>{identity.initials}</i>
+      </div>
+      <Portrait class='portrait' />
+    </div>
+    <h1 class='name'>{identity.fullName}</h1>
+    <p class='role'>{identity.role}</p>
+    <ul
+      class='stats'
+      aria-label='Statistiques (pour le fun, totalement inventées)'>
+      {sport.stats.map((s) => (
+        <li>
+          <b>{s.value}</b>
+          {s.label}
+        </li>
+      ))}
+    </ul>
+    <Links class='links' />
+    <div class='foot' aria-hidden='true'>
+      <span>{sport.edition}</span>
+      <span>{identity.host}</span>
+    </div>
+    <Foil sweep />
+  </div>
+</Frame>
+
+<style>
+  .inner {
+    position: relative;
+    height: 100%;
+    border-radius: 0.7em;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    padding: 0.8em 0.8em 0.7em;
+    background: radial-gradient(
+      circle at 30% 18%,
+      #4b63ff 0,
+      #2338c9 38%,
+      #0f1a5c 100%
+    );
+  }
+
+  .top {
+    display: flex;
+    gap: 0.4em;
+    height: 10.4em;
+  }
+
+  .rate {
+    width: 3.7em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: var(--display);
+    line-height: 1;
+  }
+
+  .rate b {
+    font-size: 3.1em;
+    font-weight: 700;
+    background: var(--sport-gold);
+    background-clip: text;
+    color: transparent;
+  }
+
+  .rate span {
+    font-size: 1.2em;
+    letter-spacing: 0.08em;
+    margin: 0.1em 0 0.6em;
+    color: var(--sport-cream);
+  }
+
+  .crest {
+    width: 2.2em;
+    height: 2.5em;
+    display: grid;
+    place-items: center;
+    font: 700 0.95em var(--display);
+    clip-path: polygon(50% 0, 100% 18%, 100% 70%, 50% 100%, 0 70%, 0 18%);
+    background: linear-gradient(#fff3c2, #c9962f);
+    color: var(--sport-navy);
+  }
+
+  .portrait {
+    flex: 1;
+  }
+
+  .name {
+    margin: 0.35em 0 0;
+    text-align: center;
+    font: 700 1.7em/1 var(--display);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  .role {
+    margin: 0.3em 0 0.5em;
+    text-align: center;
+    font-size: 0.72em;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--sport-cream);
+  }
+
+  .stats {
+    list-style: none;
+    margin: 0 0 0.6em;
+    padding: 0.5em 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.35em 0.4em;
+    border-block: 1px solid rgb(255 255 255 / 0.28);
+  }
+
+  .stats li {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 0.35em;
+    font: 600 0.95em var(--display);
+    letter-spacing: 0.06em;
+    color: #dce3ff;
+  }
+
+  .stats b {
+    font-size: 1.5em;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  .foot {
+    margin-top: auto;
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.62em;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.75;
+    padding-top: 0.5em;
+  }
+
+  /* Text sits above the foil so the hotspot never washes it out. */
+  .name,
+  .role,
+  .stats,
+  .links,
+  .foot {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Short landscape phones: the card is small. */
+  @media (orientation: landscape) and (max-height: 520px) {
+    /* The 44px link floor eats into a small card: tighten the spacing. */
+    .top {
+      height: 8.8em;
+    }
+
+    .portrait {
+      --portrait-w: 7.8em;
+    }
+
+    .role {
+      margin: 0.2em 0 0.35em;
+    }
+
+    .stats {
+      margin-bottom: 0.35em;
+      padding-block: 0.3em;
+    }
+
+    .links {
+      --link-gap: 0.3em;
+    }
+
+    .foot {
+      padding-top: 0.3em;
+    }
+  }
+</style>
