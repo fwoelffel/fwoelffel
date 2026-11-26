@@ -1,38 +1,62 @@
-name: Deploy
+name: Build & deploy
+
 on:
-  workflow_run:
-    workflows: ["Build"]
-    branches: ["main"]
-    types:
-      - completed
+  push:
+    paths: ['site/**', '.github/workflows/deploy.yml']
+  pull_request:
+    paths: ['site/**', '.github/workflows/deploy.yml']
 
 concurrency:
-  group: ${{ github.workflow }}
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
+# The repository root is the GitHub profile (README.md); the site lives in site/.
+defaults:
+  run:
+    working-directory: site
+
 jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: site/.nvmrc
+          cache: npm
+          cache-dependency-path: site/package-lock.json
+      - run: npm ci
+      - run: npx prettier --check .
+      - run: npm run check
+      - run: npm run build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: site
+          path: site/dist/
+          retention-days: 7
 
   deploy:
-    name: Deploy
+    name: Deploy to GitHub Pages
+    needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    permissions:
+      contents: write
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-    - name: Get build result from cache
-      id: cache
-      uses: actions/cache@v4.3.0
-      with:
-        path: public/
-        key: ${{ github.ref }}-${{ github.sha }}
-        restore-keys: |
-          ${{ github.ref }}
-    - name: Deploy to Github Pages
-      uses: JamesIves/github-pages-deploy-action@v4.7.6
-      if: steps.cache.outputs.cache-hit == 'true'
-      with:
-        branch: gh-pages
-        folder: public
-        clean: true
-        single-commit: true
-        commit-message: 'chore: deploy to Github Pages from ${{ github.sha }}'
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: site
+          path: dist/
+      # Pages serves the gh-pages branch (repository setting); dist/ carries the CNAME.
+      - uses: JamesIves/github-pages-deploy-action@v4.7.6
+        with:
+          branch: gh-pages
+          folder: dist
+          clean: true
+          single-commit: true
+          commit-message: 'chore: deploy ${{ github.sha }}'

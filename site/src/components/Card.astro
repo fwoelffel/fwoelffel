@@ -1,0 +1,587 @@
+---
+import { Image } from 'astro:assets';
+import avatar from '../assets/avatar.jpeg';
+import Icon from './Icon.astro';
+import { card, identity, links } from '../config';
+
+const fullName = `${identity.firstName} ${identity.lastName}`;
+const host = new URL(identity.url).host;
+---
+
+<div class='card' id='card'>
+  <div class='flipper' id='flipper'>
+    <article class='face front' id='front' aria-label={`Carte de ${fullName}`}>
+      <div class='inner'>
+        <div class='top'>
+          <div class='rate' aria-hidden='true'>
+            <b>{card.rating}</b>
+            <span>{card.rank}</span>
+            <i class='crest'>{identity.initials}</i>
+          </div>
+          <div class='portrait'>
+            <span aria-hidden='true'>{identity.initials}</span>
+            <Image
+              src={avatar}
+              alt={`Photo de ${fullName}`}
+              widths={[160, 320]}
+              sizes='10rem'
+              format='webp'
+              loading='eager'
+              fetchpriority='high'
+            />
+          </div>
+        </div>
+        <h1 class='name'>{fullName}</h1>
+        <p class='role'>{identity.role}</p>
+        <ul
+          class='stats'
+          aria-label='Statistiques (pour le fun, totalement inventées)'>
+          {card.stats.map((s) => (
+            <li>
+              <b>{s.value}</b>
+              {s.label}
+            </li>
+          ))}
+        </ul>
+        <ul class='links'>
+          {links.map((link) => (
+            <li>
+              <a
+                class='link'
+                href={link.href}
+                target='_blank'
+                rel='noopener me'>
+                <i>
+                  <Icon name={link.icon} />
+                </i>
+                <span>
+                  <b>{link.label}</b>
+                  <small>{link.caption}</small>
+                </span>
+                <em>
+                  <Icon name='arrow' />
+                </em>
+                <span class='sr-only'>(nouvel onglet)</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+        <div class='foot' aria-hidden='true'>
+          <span>{card.edition}</span>
+          <span>{host}</span>
+        </div>
+        <div class='holo' aria-hidden='true'></div>
+        <div class='glare' aria-hidden='true'></div>
+        <div class='sweep' aria-hidden='true'></div>
+      </div>
+    </article>
+    <div class='face back' id='back' aria-hidden='true' inert>
+      <div class='inner'>
+        <div class='emblem'>{identity.initials}</div>
+        <p>{host}</p>
+        <div class='holo'></div>
+        <div class='glare'></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class='controls' id='controls' hidden>
+  <button
+    class='pill'
+    id='flip'
+    type='button'
+    aria-pressed='false'
+    aria-controls='card'>
+    Retourner la carte
+  </button>
+  <button class='pill' id='gyro' type='button' hidden>
+    Activer l'effet holo
+  </button>
+</div>
+
+<style>
+  .card {
+    /* Fits the viewport on any phone, including landscape. */
+    /* rem floor: text keeps growing with browser zoom / font size (WCAG
+       1.4.4); the page scrolls if the card no longer fits. */
+    --w: max(15rem, min(86vw, 340px, calc((100dvh - 8.5rem) * 0.714)));
+    --rx: 0deg;
+    --ry: 0deg;
+    --px: 50%;
+    --py: 50%;
+    --bx: 50%;
+    --by: 50%;
+    --ho: 0.38;
+    position: relative;
+    width: var(--w);
+    aspect-ratio: 5 / 7;
+    font-size: calc(var(--w) * 0.047059);
+    transform: rotateX(var(--rx)) rotateY(var(--ry));
+    transform-style: preserve-3d;
+    cursor: pointer;
+    /* One-finger drags tilt the card; pinch-zoom stays available. */
+    touch-action: pinch-zoom;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .flipper {
+    position: absolute;
+    inset: 0;
+    transform-style: preserve-3d;
+    transition: transform 0.95s cubic-bezier(0.2, 0.8, 0.2, 1);
+    animation: intro 1.1s 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+  }
+
+  :global(.card.is-flipped) .flipper {
+    transform: rotateY(180deg);
+  }
+
+  @keyframes intro {
+    from {
+      transform: rotateY(-180deg) scale(0.92);
+    }
+  }
+
+  .face {
+    position: absolute;
+    inset: 0;
+    border-radius: 1.15em;
+    padding: 0.65em;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    overflow: hidden;
+    background: linear-gradient(
+      135deg,
+      #f6d77a,
+      #b88a2b 38%,
+      #f6e3a0 60%,
+      #a67a22
+    );
+    box-shadow: 0 2em 3.5em -1.2em rgb(0 0 0 / 0.6);
+  }
+
+  .back {
+    transform: rotateY(180deg);
+  }
+
+  .inner {
+    position: relative;
+    height: 100%;
+    border-radius: 0.7em;
+    overflow: hidden;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    padding: 0.8em 0.8em 0.7em;
+    background: radial-gradient(
+      circle at 30% 18%,
+      #4b63ff 0,
+      #2338c9 38%,
+      #0f1a5c 100%
+    );
+  }
+
+  .top {
+    display: flex;
+    gap: 0.4em;
+    height: 10.4em;
+  }
+
+  .rate {
+    width: 3.7em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: var(--display);
+    line-height: 1;
+  }
+
+  .rate b {
+    font-size: 3.1em;
+    font-weight: 700;
+    background: linear-gradient(#fff3c2, #e9b93f);
+    background-clip: text;
+    color: transparent;
+  }
+
+  .rate span {
+    font-size: 1.2em;
+    letter-spacing: 0.08em;
+    margin: 0.1em 0 0.6em;
+    color: #ffe9a6;
+  }
+
+  .crest {
+    width: 2.2em;
+    height: 2.5em;
+    display: grid;
+    place-items: center;
+    font: 700 0.95em var(--display);
+    font-style: normal;
+    clip-path: polygon(50% 0, 100% 18%, 100% 70%, 50% 100%, 0 70%, 0 18%);
+    background: linear-gradient(#fff3c2, #c9962f);
+    color: #1b2766;
+  }
+
+  .portrait {
+    flex: 1;
+    display: grid;
+    place-items: center;
+    position: relative;
+  }
+
+  .portrait::before {
+    content: '';
+    width: 9.2em;
+    height: 9.2em;
+    border-radius: 50%;
+    background: radial-gradient(
+      circle at 35% 30%,
+      #9db0ff,
+      #3a52e8 55%,
+      #142070
+    );
+    box-shadow:
+      0 0 2.2em rgb(150 175 255 / 0.7),
+      inset 0 0 1.4em rgb(255 255 255 / 0.25);
+  }
+
+  .portrait span {
+    position: absolute;
+    font: 700 4.6em var(--display);
+    color: transparent;
+    -webkit-text-stroke: 0.03em #fff;
+    letter-spacing: 0.02em;
+  }
+
+  .portrait img {
+    position: absolute;
+    width: 9.2em;
+    height: 9.2em;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 0.15em solid #f6d77a;
+    box-shadow: 0 0 2.2em rgb(150 175 255 / 0.7);
+    -webkit-user-drag: none;
+  }
+
+  .name {
+    margin: 0.35em 0 0;
+    text-align: center;
+    font: 700 1.7em/1 var(--display);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  .role {
+    margin: 0.3em 0 0.5em;
+    text-align: center;
+    font-size: 0.72em;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #ffe9a6;
+  }
+
+  .stats {
+    list-style: none;
+    margin: 0 0 0.6em;
+    padding: 0.5em 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.35em 0.4em;
+    border-block: 1px solid rgb(255 255 255 / 0.28);
+  }
+
+  .stats li {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 0.35em;
+    font: 600 0.95em var(--display);
+    letter-spacing: 0.06em;
+    color: #dce3ff;
+  }
+
+  .stats b {
+    font-size: 1.5em;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  .links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45em;
+  }
+
+  .link {
+    min-height: 2.75rem; /* 44px touch target whatever the card size */
+    display: flex;
+    align-items: center;
+    gap: 0.7em;
+    padding: 0.5em 0.7em;
+    border-radius: 0.65em;
+    color: #fff;
+    text-decoration: none;
+    background: rgb(255 255 255 / 0.11);
+    border: 1px solid rgb(255 255 255 / 0.22);
+    transition:
+      background 0.2s,
+      translate 0.2s;
+  }
+
+  .link:hover,
+  .link:focus-visible {
+    background: rgb(255 255 255 / 0.22);
+    translate: 0 -1px;
+  }
+
+  .link:focus-visible {
+    outline: 2px solid #ffe9a6;
+    outline-offset: 2px;
+  }
+
+  .link i {
+    width: 2em;
+    height: 2em;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    flex: none;
+    font-size: 0.95em;
+    background: linear-gradient(#fff3c2, #e9b93f);
+    color: #1b2766;
+  }
+
+  .link span {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.15;
+  }
+
+  .link b {
+    font: 700 1.15em var(--display);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .link small {
+    font-size: 0.7em;
+    opacity: 0.8;
+  }
+
+  .link em {
+    margin-left: auto;
+    font-size: 1.1em;
+    display: grid;
+  }
+
+  .foot {
+    margin-top: auto;
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.62em;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.75;
+    padding-top: 0.5em;
+  }
+
+  /* Text sits above the foil so the hotspot never washes it out. */
+  .name,
+  .role,
+  .stats,
+  .links,
+  .foot {
+    position: relative;
+    z-index: 1;
+  }
+
+  .holo,
+  .glare,
+  .sweep {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  /* Rainbow foil. The pointer moves the gradient; no blur filter, so phones
+     only repaint two gradient layers per frame. */
+  .holo {
+    mix-blend-mode: color-dodge;
+    opacity: var(--ho);
+    background:
+      radial-gradient(
+        circle at var(--px) var(--py),
+        rgb(255 255 255 / 0.45),
+        transparent 45%
+      ),
+      linear-gradient(
+        115deg,
+        #ff7ac8,
+        #ffe66b,
+        #6bffd0,
+        #6bb8ff,
+        #c08bff,
+        #ff7ac8
+      );
+    background-size:
+      100% 100%,
+      320% 320%;
+    background-repeat: no-repeat;
+    background-position:
+      0 0,
+      var(--bx) var(--by);
+  }
+
+  .glare {
+    mix-blend-mode: soft-light;
+    background: radial-gradient(
+      circle at var(--px) var(--py),
+      rgb(255 255 255 / 0.7),
+      transparent 45%
+    );
+  }
+
+  .sweep {
+    opacity: 0;
+    background: linear-gradient(
+      105deg,
+      transparent 35%,
+      rgb(255 255 255 / 0.55) 50%,
+      transparent 65%
+    );
+    translate: -100% 0;
+    animation: sweep 1.3s 1.4s ease-out;
+  }
+
+  @keyframes sweep {
+    from {
+      opacity: 1;
+      translate: -100% 0;
+    }
+    to {
+      opacity: 1;
+      translate: 100% 0;
+    }
+  }
+
+  .back .inner {
+    align-items: center;
+    justify-content: center;
+    gap: 1em;
+    background:
+      repeating-radial-gradient(
+        circle at 50% 50%,
+        rgb(255 255 255 / 0.07) 0 2px,
+        transparent 2px 22px
+      ),
+      linear-gradient(160deg, #2a3ba6, #0e1636);
+  }
+
+  .emblem {
+    width: 9em;
+    height: 9em;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font: 700 3.6em var(--display);
+    border: 0.08em solid #f6d77a;
+    box-shadow:
+      0 0 2em rgb(246 215 122 / 0.4),
+      inset 0 0 1.5em rgb(246 215 122 / 0.25);
+    background: radial-gradient(circle at 35% 30%, #4b63ff, #142070);
+    color: #ffe9a6;
+  }
+
+  .back p {
+    margin: 0;
+    font: 600 1em var(--display);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: #ffe9a6;
+  }
+
+  .controls {
+    margin-top: 1.4rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  /* Short landscape phones: controls go beside the card. */
+  @media (orientation: landscape) and (max-height: 520px) {
+    .card {
+      --w: max(15rem, min(340px, calc((100dvh - 2rem) * 0.714)));
+    }
+
+    /* The 44px link floor eats into a small card: tighten the spacing. */
+    .role {
+      margin: 0.2em 0 0.35em;
+    }
+
+    .stats {
+      margin-bottom: 0.35em;
+      padding-block: 0.3em;
+    }
+
+    .links {
+      gap: 0.3em;
+    }
+
+    .foot {
+      padding-top: 0.3em;
+    }
+
+    .controls {
+      margin-top: 0;
+      flex-direction: column;
+    }
+  }
+
+  .controls[hidden],
+  .pill[hidden] {
+    display: none;
+  }
+
+  .pill {
+    min-height: 2.75rem;
+    padding: 0.45rem 1.1rem;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: none;
+    color: var(--ink);
+    font: inherit;
+    font-size: 0.9rem;
+    cursor: pointer;
+    opacity: 0.85;
+    transition: opacity 0.2s;
+  }
+
+  .pill:hover {
+    opacity: 1;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .flipper {
+      transition: none;
+      animation: none;
+    }
+
+    .sweep {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  import { mountCard } from '../scripts/card';
+  mountCard();
+</script>
