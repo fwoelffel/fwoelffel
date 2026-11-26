@@ -21,6 +21,7 @@ This repository is named after the GitHub username, so it is also the **GitHub p
 - Nothing moves forever: the idle drift settles after a few seconds and the loop stops until the next input (WCAG 2.2.2).
 - Never block pinch-zoom (`touch-action: pinch-zoom` on the card, no `user-scalable=no`), and keep card text scaling with browser zoom (rem floor on the card width).
 - Check portrait (375×812, 320×568) and short landscape (812×375): links stay ≥ 44 px and the card footer is fully visible.
+- Safari is the reference for the 3D flip: blend modes must stay isolated inside each face (`isolation: isolate`), otherwise Safari flattens the card (mirrored back, faces bleeding through). Faces are also hidden with `visibility` at the 90° mark.
 - Honour `prefers-reduced-motion` (no tilt loop, no flip/intro animation) and `prefers-color-scheme` (light and dark backgrounds).
 - The page works without JavaScript: the front of the card and its links are plain HTML.
 - Accessibility: real links and buttons, visible focus, only the visible face of the card is focusable (`inert` on the other one), touch targets at least 44 px.
