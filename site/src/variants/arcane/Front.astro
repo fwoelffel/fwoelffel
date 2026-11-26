@@ -9,7 +9,7 @@ import arcane from './index';
 import './theme.css';
 
 type Props = FrontProps;
-const { number } = Astro.props;
+const { number, eager } = Astro.props;
 
 // Our own cost glyphs (16px grid, stroked with currentColor).
 const glyphs: Record<(typeof arcane.cost)[number], string> = {
@@ -36,7 +36,7 @@ const glyphs: Record<(typeof arcane.cost)[number], string> = {
       </p>
     </div>
     <div class='art'>
-      <Portrait class='photo' sizes='20rem' />
+      <Portrait class='photo' sizes='20rem' eager={eager} />
     </div>
     <p class='plate type'>
       <span>

@@ -9,7 +9,7 @@ import sport from './index';
 import './theme.css';
 
 type Props = FrontProps;
-const { number } = Astro.props;
+const { number, eager } = Astro.props;
 ---
 
 <Frame>
@@ -20,7 +20,7 @@ const { number } = Astro.props;
         <span>{sport.rank}</span>
         <i class='crest'>{identity.initials}</i>
       </div>
-      <Portrait class='portrait' />
+      <Portrait class='portrait' eager={eager} />
     </div>
     <h1 class='name'>{identity.fullName}</h1>
     <p class='role'>{identity.role}</p>
@@ -60,10 +60,15 @@ const { number } = Astro.props;
     );
   }
 
+  /* Up to 10.4em tall, but it gives way (down to the rating column) when
+     larger text grows the links, so the footer always fits. */
   .top {
+    flex: 1 1 0;
+    min-height: 7.5em;
+    max-height: 10.4em;
+    container-type: size;
     display: flex;
     gap: 0.4em;
-    height: 10.4em;
   }
 
   .rate {
@@ -103,6 +108,7 @@ const { number } = Astro.props;
 
   .portrait {
     flex: 1;
+    --portrait-w: min(9.2em, 88cqh);
   }
 
   .name {
@@ -173,11 +179,11 @@ const { number } = Astro.props;
   @media (orientation: landscape) and (max-height: 520px) {
     /* The 44px link floor eats into a small card: tighten the spacing. */
     .top {
-      height: 8.8em;
+      max-height: 8.8em;
     }
 
     .portrait {
-      --portrait-w: 7.8em;
+      --portrait-w: min(7.8em, 88cqh);
     }
 
     .role {

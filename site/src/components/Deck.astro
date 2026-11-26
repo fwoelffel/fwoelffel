@@ -33,7 +33,11 @@ const many = variants.length > 1;
           variant={id}
           label={`Carte de ${identity.fullName}`}
           intro={i === 0}>
-          <Front slot='front' number={collectorNumber(i, variants.length)} />
+          <Front
+            slot='front'
+            number={collectorNumber(i, variants.length)}
+            eager={i === 0}
+          />
           <Back slot='back' />
         </Card>
       </div>
@@ -135,8 +139,16 @@ const many = variants.length > 1;
     padding: 0;
   }
 
-  /* Touch screens: dots show the position; the radios stay for screen
-     readers. */
+  /* The style selector: a small segmented control. */
+  .many[data-js] .switcher {
+    display: flex;
+    gap: 0.15rem;
+    padding: 0.2rem;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+  }
+
+  /* Touch screens: dots show the position instead. */
   .many[data-js] .dots {
     display: flex;
     gap: 0.5rem;
@@ -160,18 +172,7 @@ const many = variants.length > 1;
     scale: 1.3;
   }
 
-  .many[data-js] .switcher {
-    display: block;
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip-path: inset(50%);
-    white-space: nowrap;
-    border: 0;
-  }
-
-  /* Mouse or trackpad: a small segmented control instead of the dots. */
+  /* Mouse or trackpad: the segmented control instead of the dots. */
   @media (hover: hover) and (pointer: fine) {
     .deck.many[data-js] {
       --deck-gap: 0.75rem;
@@ -181,18 +182,26 @@ const many = variants.length > 1;
     .many[data-js] .dots {
       display: none;
     }
+  }
 
-    .many[data-js] .switcher {
-      position: static;
-      width: auto;
-      height: auto;
-      overflow: visible;
-      clip-path: none;
-      display: flex;
-      gap: 0.15rem;
-      padding: 0.2rem;
-      border: 1px solid var(--line);
-      border-radius: 999px;
+  /* Touch screens: the radios stay for screen readers, visually hidden,
+     until they hold keyboard focus (a tablet with a keyboard): then the
+     segmented control shows in place of the dots. */
+  @media not all and (hover: hover) and (pointer: fine) {
+    .many[data-js] .switcher:not(:has(:focus-visible)) {
+      position: absolute;
+      width: 1px;
+      min-inline-size: 0; /* a fieldset is at least min-content wide */
+      height: 1px;
+      padding: 0;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .many[data-js]:has(.switcher :focus-visible) .dots {
+      display: none;
     }
   }
 

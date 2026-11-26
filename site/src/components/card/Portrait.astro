@@ -18,9 +18,17 @@ import { githubAvatar, identity } from '../../config';
 type Props = HTMLAttributes<'div'> & {
   /** `sizes` hint for the photo (its rendered CSS width). */
   sizes?: string;
+  /** Fetch the photo right away, at high priority (the card shown on
+   * load); otherwise it loads lazily, once its card is shown. */
+  eager?: boolean;
 };
 
-const { class: className, sizes = '10rem', ...rest } = Astro.props;
+const {
+  class: className,
+  sizes = '10rem',
+  eager = false,
+  ...rest
+} = Astro.props;
 ---
 
 <div class:list={['portrait', className]} {...rest}>
@@ -32,8 +40,8 @@ const { class: className, sizes = '10rem', ...rest } = Astro.props;
     width='320'
     height='320'
     alt={`Photo de ${identity.fullName}`}
-    loading='eager'
-    fetchpriority='high'
+    loading={eager ? 'eager' : 'lazy'}
+    fetchpriority={eager ? 'high' : undefined}
     decoding='async'
     onerror='this.remove()'
   />

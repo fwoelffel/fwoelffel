@@ -10,7 +10,7 @@ import creature from './index';
 import './theme.css';
 
 type Props = FrontProps;
-const { number } = Astro.props;
+const { number, eager } = Astro.props;
 const { weakness, resistance, retreat, talent } = creature;
 ---
 
@@ -30,7 +30,7 @@ const { weakness, resistance, retreat, talent } = creature;
       <Emblem class='element' />
     </div>
     <div class='art'>
-      <Portrait class='portrait' sizes='9rem' />
+      <Portrait class='portrait' sizes='9rem' eager={eager} />
       <Foil sweep />
     </div>
     <p class='species'>

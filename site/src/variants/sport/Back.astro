@@ -1,38 +1,14 @@
 ---
-import Foil from '../../components/card/Foil.astro';
-import Frame from '../../components/card/Frame.astro';
+import CardBack from '../../components/card/Back.astro';
 import { identity } from '../../config';
 import './theme.css';
 ---
 
-<Frame>
-  <div class='inner'>
-    <div class='emblem'>{identity.initials}</div>
-    <p>{identity.host}</p>
-    <Foil />
-  </div>
-</Frame>
+<CardBack>
+  <div class='emblem'>{identity.initials}</div>
+</CardBack>
 
 <style>
-  .inner {
-    position: relative;
-    height: 100%;
-    border-radius: 0.7em;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 1em;
-    background:
-      repeating-radial-gradient(
-        circle at 50% 50%,
-        rgb(255 255 255 / 0.07) 0 2px,
-        transparent 2px 22px
-      ),
-      linear-gradient(160deg, #2a3ba6, #0e1636);
-  }
-
   /* Sizes are in the emblem's own em (3.6x the card's): 2.5em = 9 card em. */
   .emblem {
     font: 700 3.6em var(--display);
@@ -46,14 +22,6 @@ import './theme.css';
       0 0 0.55em rgb(246 215 122 / 0.4),
       inset 0 0 0.42em rgb(246 215 122 / 0.25);
     background: radial-gradient(circle at 35% 30%, #4b63ff, #142070);
-    color: var(--sport-cream);
-  }
-
-  p {
-    margin: 0;
-    font: 600 1em var(--display);
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
     color: var(--sport-cream);
   }
 </style>

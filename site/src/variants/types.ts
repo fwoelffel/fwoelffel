@@ -21,6 +21,8 @@ export const defineVariant = <const T extends VariantMeta>(meta: T): T => meta;
 export interface FrontProps {
   /** Collector number from the card's place in the deck, e.g. "002/003". */
   readonly number: string;
+  /** Whether this card is shown on load: pass it to its `Portrait`. */
+  readonly eager: boolean;
 }
 
 /** Appended to the accessible label of every made-up stat. */

@@ -1,46 +1,18 @@
 ---
-import Foil from '../../components/card/Foil.astro';
-import Frame from '../../components/card/Frame.astro';
+import CardBack from '../../components/card/Back.astro';
 import { identity } from '../../config';
 import './theme.css';
 ---
 
-<Frame>
-  <div class='inner'>
-    <div class='sigil'>
-      <i></i>
-      <i></i>
-      <b>{identity.initials}</b>
-    </div>
-    <p>{identity.host}</p>
-    <Foil />
+<CardBack>
+  <div class='sigil'>
+    <i></i>
+    <i></i>
+    <b>{identity.initials}</b>
   </div>
-</Frame>
+</CardBack>
 
 <style>
-  .inner {
-    position: relative;
-    height: 100%;
-    border-radius: 0.6em;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 1.6em;
-    background:
-      radial-gradient(circle, transparent 30%, rgb(8 6 14 / 0.75) 85%),
-      conic-gradient(
-        from 20deg,
-        #3b2463,
-        #173946,
-        #4a2559,
-        #13283d,
-        #2f2a62,
-        #3b2463
-      );
-  }
-
   /* A swirling seal: two gilt rings, a ring of rune ticks, an eight-point
      star made of two squares, the initials in the middle. */
   .sigil {
@@ -96,13 +68,5 @@ import './theme.css';
     background: var(--arcane-gold);
     background-clip: text;
     color: transparent;
-  }
-
-  p {
-    margin: 0;
-    font: 600 1em var(--display);
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    color: var(--arcane-pale);
   }
 </style>

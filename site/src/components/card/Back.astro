@@ -1,0 +1,51 @@
+---
+/**
+ * The back face shared by every variant: a Frame holding a centred panel
+ * with the variant's emblem (default slot) above the site host, under the
+ * foil. The `host` slot replaces the host line's content (e.g. to frame it
+ * with marks). Themed by:
+ *  --back-bg       panel background
+ *  --back-ink      host line colour
+ *  --back-gap      space between the emblem and the host line (default 1em)
+ *  --back-radius   panel corners (default 0.6em)
+ */
+import { identity } from '../../config';
+import Foil from './Foil.astro';
+import Frame from './Frame.astro';
+---
+
+<Frame>
+  <div class='inner'>
+    <slot />
+    <p>
+      <slot name='host'>{identity.host}</slot>
+    </p>
+    <Foil />
+  </div>
+</Frame>
+
+<style>
+  .inner {
+    position: relative;
+    height: 100%;
+    border-radius: var(--back-radius, 0.6em);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--back-gap, 1em);
+    background: var(--back-bg, none);
+  }
+
+  p {
+    display: flex;
+    align-items: center;
+    gap: 0.6em;
+    margin: 0;
+    font: 600 1em var(--display);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--back-ink, currentColor);
+  }
+</style>

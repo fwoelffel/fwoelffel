@@ -37,6 +37,20 @@
     linear-gradient(160deg, #2e2a33, #0e0d12);
   --frame-ink: var(--arcane-ink);
 
+  --back-bg:
+    radial-gradient(circle, transparent 30%, rgb(8 6 14 / 0.75) 85%),
+    conic-gradient(
+      from 20deg,
+      #3b2463,
+      #173946,
+      #4a2559,
+      #13283d,
+      #2f2a62,
+      #3b2463
+    );
+  --back-ink: var(--arcane-pale);
+  --back-gap: 1.6em;
+
   --portrait-radius: 0;
   --portrait-initials-color: var(--arcane-pale);
   --portrait-backdrop:

@@ -1,45 +1,22 @@
 ---
-import Foil from '../../components/card/Foil.astro';
-import Frame from '../../components/card/Frame.astro';
+import CardBack from '../../components/card/Back.astro';
 import { identity } from '../../config';
 import Emblem from './Emblem.astro';
 import './theme.css';
 ---
 
-<Frame>
-  <div class='inner'>
-    <div class='seal'>
-      <span>{identity.initials}</span>
-    </div>
-    <p>
-      <Emblem class='mark' />
-      {identity.host}
-      <Emblem class='mark' />
-    </p>
-    <Foil />
+<CardBack>
+  <div class='seal'>
+    <span>{identity.initials}</span>
   </div>
-</Frame>
+  <Fragment slot='host'>
+    <Emblem class='mark' />
+    {identity.host}
+    <Emblem class='mark' />
+  </Fragment>
+</CardBack>
 
 <style>
-  .inner {
-    position: relative;
-    height: 100%;
-    border-radius: 0.6em;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 1.2em;
-    background:
-      repeating-conic-gradient(
-        from 0deg at 50% 44%,
-        rgb(255 255 255 / 0.07) 0 7.5deg,
-        transparent 7.5deg 15deg
-      ),
-      var(--creature-cosmos);
-  }
-
   /* A hexagonal seal: a bright rim around a deep core holding the
      initials. Sizes are in its own em (3.4x the card's). */
   .seal {
@@ -66,17 +43,6 @@ import './theme.css';
     );
     color: #e9fff6;
     text-shadow: 0 0 0.25em rgb(120 255 220 / 0.6);
-  }
-
-  p {
-    display: flex;
-    align-items: center;
-    gap: 0.6em;
-    margin: 0;
-    font: 600 1em var(--display);
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    color: #e9fff6;
   }
 
   .mark {
