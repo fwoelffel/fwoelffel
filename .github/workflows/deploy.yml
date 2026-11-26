@@ -5,6 +5,9 @@ on:
     paths: ['site/**', '.github/workflows/deploy.yml']
   pull_request:
     paths: ['site/**', '.github/workflows/deploy.yml']
+  # Lets the auto-merge job redeploy main: merges made with GITHUB_TOKEN
+  # don't trigger push workflows, but a dispatch does.
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -44,7 +47,7 @@ jobs:
   deploy:
     name: Deploy to GitHub Pages
     needs: build
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -62,3 +65,28 @@ jobs:
           clean: true
           single-commit: true
           commit-message: 'chore: deploy ${{ github.sha }}'
+
+  automerge:
+    name: Auto-merge Dependabot
+    needs: build
+    # Only Dependabot PRs, and only once the build above is green.
+    if: github.event_name == 'pull_request' && github.event.pull_request.user.login == 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      actions: write
+    defaults:
+      run:
+        working-directory: .
+    steps:
+      - id: meta
+        uses: dependabot/fetch-metadata@v3
+      # Patch and minor updates merge on their own; majors wait for a human.
+      - if: steps.meta.outputs.update-type != 'version-update:semver-major'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+        run: |
+          gh pr merge "$PR_URL" --squash
+          gh workflow run deploy.yml --repo "$GITHUB_REPOSITORY" --ref main
