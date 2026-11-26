@@ -1,0 +1,90 @@
+:root {
+  --s1: #e9ecff;
+  --s2: #c3c9ea;
+  --ink: #3a4170;
+  --line: rgb(58 65 112 / 0.35);
+  --stars: 0;
+  --focus: #3a4170;
+  --display: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+  --body: 'Bricolage Grotesque', system-ui, sans-serif;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --s1: #1b2150;
+    --s2: #06070f;
+    --ink: #c9d0ff;
+    --line: rgb(255 255 255 / 0.28);
+    --stars: 0.55;
+    --focus: #ffb300;
+    color-scheme: dark;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  overflow-x: hidden;
+  font: 400 1rem/1.4 var(--body);
+  color: var(--ink);
+  background: radial-gradient(ellipse at 50% 40%, var(--s1), var(--s2)) fixed
+    var(--s2);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Starfield, dark theme only. */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: var(--stars);
+  background-image:
+    radial-gradient(1px 1px at 20px 30px, #fff, transparent),
+    radial-gradient(1px 1px at 90px 120px, #fff, transparent),
+    radial-gradient(1.5px 1.5px at 150px 60px, #fff, transparent),
+    radial-gradient(1px 1px at 60px 170px, #fff, transparent);
+  background-size: 180px 200px;
+}
+
+.glow {
+  position: fixed;
+  left: 50%;
+  top: 48%;
+  width: 90vmin;
+  height: 90vmin;
+  translate: -50% -50%;
+  pointer-events: none;
+  /* A wide gradient instead of filter: blur(), which is costly on phones. */
+  background: radial-gradient(
+    circle,
+    rgb(75 99 255 / 0.45),
+    rgb(75 99 255 / 0.12) 45%,
+    transparent 70%
+  );
+}
+
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
