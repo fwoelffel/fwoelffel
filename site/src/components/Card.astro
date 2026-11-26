@@ -167,6 +167,45 @@ const host = new URL(identity.url).host;
     transform: rotateY(180deg);
   }
 
+  /* Safari ignores backface-visibility on descendants that get their own
+     layer (blend modes, z-indexed text), so they show through the other
+     face. Hide each face outright when the card passes 90deg: with this
+     easing that is ~13% into the flip (0.12s of 0.95s). */
+  .front,
+  .back {
+    transition: visibility 0s linear 0.12s;
+  }
+
+  .back,
+  :global(.card.is-flipped) .front {
+    visibility: hidden;
+  }
+
+  :global(.card.is-flipped) .back {
+    visibility: visible;
+  }
+
+  /* Intro: the card starts on its back and turns over at 0.5s + 0.14s. */
+  .front {
+    animation: face-swap 0.64s step-end;
+  }
+
+  .back {
+    animation: face-swap-back 0.64s step-end;
+  }
+
+  @keyframes face-swap {
+    from {
+      visibility: hidden;
+    }
+  }
+
+  @keyframes face-swap-back {
+    from {
+      visibility: visible;
+    }
+  }
+
   .inner {
     position: relative;
     height: 100%;
@@ -540,7 +579,9 @@ const host = new URL(identity.url).host;
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .flipper {
+    .flipper,
+    .front,
+    .back {
       transition: none;
       animation: none;
     }
