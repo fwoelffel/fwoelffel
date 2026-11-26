@@ -35,7 +35,7 @@ This repository is named after the GitHub username, so it is also the **GitHub p
 - Personal data and links live in `src/config.ts` only; components read from it.
 - Fonts are self-hosted through `@fontsource` (Latin subsets only). The only third-party request at runtime is the live GitHub avatar (`avatars.githubusercontent.com`, by account id, so avatar changes show up without a deploy); if it fails to load, the `<img>` removes itself and the initials drawn underneath show instead (no local fallback photo). Nothing else: no Google Fonts, no analytics.
 - Icons come from `@phosphor-icons/core`, inlined at build time through `src/components/Icon.astro`.
-- Static images in `public/` (favicons, Open Graph card) are plain committed files, edited by hand; there is no image generation step and no local photo.
+- The only image file is `public/favicon.svg`. No PNG favicons, no `og.png`, no local photo: link previews (`og:image`) also use the live GitHub avatar.
 - Before committing: `npx prettier --check .`, `npm run check`, `npm run build`. CI runs the same.
 - Pin exact versions for runtime dependencies.
 

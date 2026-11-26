@@ -23,7 +23,7 @@ Node version: see [`.nvmrc`](.nvmrc).
 
 Everything personal lives in [`src/config.ts`](src/config.ts): name, role, card stats and links. Adding a link there adds it to the card. The photo is the live GitHub avatar.
 
-The favicons and the Open Graph image (`public/og.png`) are static files: replace them by hand if needed.
+The favicon is `public/favicon.svg`. Link previews (Open Graph) use the GitHub avatar too.
 
 ## Deploy
 
