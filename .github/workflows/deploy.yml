@@ -37,7 +37,9 @@ jobs:
         with:
           name: site
           path: site/dist/
-          retention-days: 7
+          # Keep .nojekyll: without it Pages runs Jekyll and drops _astro/.
+          include-hidden-files: true
+          retention-days: 3
 
   deploy:
     name: Deploy to GitHub Pages
