@@ -10,49 +10,53 @@ import './theme.css';
 
 type Props = FrontProps;
 const { number, eager } = Astro.props;
+const stats = [
+  { name: 'cost', value: hero.cost, icon: 'M8 1.5 14 6l-6 8.5L2 6Z' },
+  {
+    name: 'attack',
+    value: hero.attack,
+    icon: 'M14 2 5.5 10.5M2.5 8.5l5 5M4 12l-2 2M14 2l-3.2.6M14 2l-.6 3.2',
+  },
+  {
+    name: 'health',
+    value: hero.health,
+    icon: 'M8 14S1.5 10.2 1.5 5.7a3.2 3.2 0 0 1 6.5-1.5 3.2 3.2 0 0 1 6.5 1.5C14.5 10.2 8 14 8 14Z',
+  },
+];
 ---
 
 <Frame>
   <div class='inner'>
-    <b class='cost' aria-hidden='true'>
-      {hero.cost}
-    </b>
     <div class='art'>
       <Portrait class='photo' sizes='15rem' eager={eager} />
     </div>
-    <h1 class='banner'>
-      {identity.fullName}
-      <i class='rarity' aria-hidden='true'></i>
-    </h1>
-    <p class='sr-only'>
-      Coût {hero.cost}, attaque {hero.attack}, santé {hero.health}, rareté
-      {hero.rarity} {madeUp}
-    </p>
+    <h1 class='banner'>{identity.fullName}</h1>
     <div class='text'>
       <p class='keyword'>
         <b>{hero.keyword.name}</b> : {hero.keyword.text}
       </p>
-      <Links class='abilities' />
+      <Links class='abilities' inline />
     </div>
-    <div class='foot' aria-hidden='true'>
-      <span class='stat attack'>
-        <svg viewBox='0 0 16 16'>
-          <path d='M14 2 5.5 10.5M2.5 8.5l5 5M4 12l-2 2M14 2l-3.2.6M14 2l-.6 3.2'></path>
-        </svg>
-        <b>{hero.attack}</b>
-      </span>
-      <p>
+    <div class='foot'>
+      <p class='stats'>
+        <span class='sr-only'>
+          {`Coût ${hero.cost}, attaque ${hero.attack}, santé ${hero.health} ${madeUp}`}
+        </span>
+        {stats.map(({ name, value, icon }) => (
+          <b class={name} aria-hidden='true'>
+            <svg viewBox='0 0 16 16'>
+              <path d={icon}></path>
+            </svg>
+            {value}
+          </b>
+        ))}
+      </p>
+      <p class='role'>
         {identity.role}
-        <small>
+        <small aria-hidden='true'>
           {number} · {identity.host}
         </small>
       </p>
-      <span class='stat health'>
-        <svg viewBox='0 0 16 16'>
-          <path d='M8 14S1.5 10.2 1.5 5.7a3.2 3.2 0 0 1 6.5-1.5 3.2 3.2 0 0 1 6.5 1.5C14.5 10.2 8 14 8 14Z'></path>
-        </svg>
-        <b>{hero.health}</b>
-      </span>
     </div>
   </div>
   <Foil sweep />
@@ -61,12 +65,11 @@ const { number, eager } = Astro.props;
 <style>
   /* Ornate gold border around a dark stone field. */
   .inner {
-    position: relative;
     height: 100%;
     display: flex;
     flex-direction: column;
     gap: 0.3em;
-    padding: 0.5em 0.55em 0.3em;
+    padding: 0.5em 0.55em 0.35em;
     border: 0.35em solid transparent;
     border-radius: 0.9em;
     background:
@@ -80,39 +83,16 @@ const { number, eager } = Astro.props;
     margin: 0;
   }
 
-  /* Cost crystal: a faceted hexagon. Sizes in its own em (1.6x). */
-  .cost {
-    position: absolute;
-    top: 0.25em;
-    left: 0.25em;
-    z-index: 1;
-    width: 1.55em;
-    height: 1.8em;
-    display: grid;
-    place-items: center;
-    font: 700 1.6em/1 var(--display);
-    color: #fff;
-    -webkit-text-stroke: 0.07em #0e1c5c;
-    paint-order: stroke fill;
-    clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
-    background:
-      repeating-conic-gradient(
-        rgb(255 255 255 / 0.2) 0 60deg,
-        rgb(0 0 0 / 0.15) 60deg 120deg
-      ),
-      linear-gradient(160deg, #c4ecff, #3d8bff 45%, #1a2f9c);
-  }
-
-  /* Oval window. */
+  /* Arched window. */
   .art {
     position: relative;
     flex: 1 1 0;
     min-height: 4em;
-    width: 74%;
+    width: 80%;
     align-self: center;
     overflow: hidden;
     border: 0.22em solid var(--hero-gold-line);
-    border-radius: 50%;
+    border-radius: 50% 50% 0.5em 0.5em / 35% 35% 0.5em 0.5em;
     box-shadow:
       0 0 0 0.08em #5a3a0c,
       0 0 1em rgb(255 200 110 / 0.35);
@@ -125,10 +105,9 @@ const { number, eager } = Astro.props;
     --portrait-h: 100%;
   }
 
-  /* Name banner: a notched ribbon (gold edge, then wood) over the
-     window's bottom, the rarity gem hanging from its middle. */
+  /* Name ribbon: notched, gold edge, then wood, tucked under the window. */
   .banner {
-    margin: -1.5em -0.1em 0;
+    margin: -0.8em -0.1em 0;
     padding: 0.25em 1.3em 0.35em;
     text-align: center;
     font: 700 1.25em/1.1 var(--display);
@@ -152,22 +131,9 @@ const { number, eager } = Astro.props;
     background: linear-gradient(#7d4b1d, #3f220a);
   }
 
-  .rarity {
-    position: absolute;
-    left: 50%;
-    bottom: -0.4em;
-    width: 0.6em;
-    height: 0.6em;
-    translate: -50% 0;
-    rotate: 45deg;
-    border: 0.08em solid #fff1b8;
-    background: linear-gradient(135deg, #ffd27a, #ff7b1c 55%, #a83a00);
-    box-shadow: 0 0 0.5em #ff9a3d;
-  }
-
   .text {
     flex: none;
-    padding: 0.55em 0.5em 0.9em;
+    padding: 0.55em 0.5em;
     border-radius: 0.5em;
     background: linear-gradient(#f7e9c8, #dcc493);
     box-shadow:
@@ -187,105 +153,71 @@ const { number, eager } = Astro.props;
   }
 
   /* The links read as card text: "[icon] GitHub : Mon code." */
-  .abilities :global(a > span:first-of-type) {
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-items: baseline;
-    column-gap: 0.35em;
-  }
-
-  .abilities :global(b) {
-    text-transform: none;
-  }
-
-  .abilities :global(b)::after {
-    content: ' :' / '';
-  }
-
   .abilities :global(small) {
     font-size: 0.85em;
-    opacity: 1;
-  }
-
-  .abilities :global(small)::after {
-    content: '.' / '';
   }
 
   .foot {
     display: flex;
-    align-items: flex-end;
-    margin: -1em -0.35em 0;
+    align-items: center;
+    gap: 0.5em;
   }
 
-  .foot p {
+  /* Cost, attack and health: gem-coloured badges, gold rimmed. */
+  .stats {
+    display: flex;
+    gap: 0.3em;
+  }
+
+  .stats b {
+    display: flex;
+    align-items: center;
+    gap: 0.15em;
+    padding: 0.12em 0.4em 0.12em 0.3em;
+    border-radius: 1em;
+    font: 700 1.05em/1 var(--display);
+    color: #fff;
+    box-shadow:
+      0 0 0 0.08em var(--hero-gold-line),
+      0 0.06em 0.15em rgb(0 0 0 / 0.5);
+  }
+
+  .stats svg {
+    width: 0.85em;
+    height: 0.85em;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .cost {
+    background: linear-gradient(#8a63e0, #4c2a9c);
+  }
+
+  .attack {
+    background: linear-gradient(#c88418, #8a4f06);
+  }
+
+  .health {
+    background: linear-gradient(#d8453c, #8e1a1f);
+  }
+
+  .role {
     flex: 1;
     display: flex;
     flex-direction: column;
-    text-align: center;
+    text-align: right;
     font: 600 0.6em/1.25 var(--display);
     letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--hero-gold-line);
   }
 
-  .foot small {
+  .role small {
     font-size: 0.9em;
     opacity: 0.8;
-  }
-
-  /* Stat medallions. Sizes in their own em (1.7x). */
-  .stat {
-    display: grid;
-    place-items: center;
-    width: 1.65em;
-    height: 1.65em;
-    font: 700 1.7em/1 var(--display);
-    color: #fff;
-    -webkit-text-stroke: 0.07em #2b1306;
-    paint-order: stroke fill;
-    box-shadow:
-      0 0 0 0.06em var(--hero-gold-line),
-      0 0.08em 0.2em rgb(0 0 0 / 0.55);
-  }
-
-  .stat > * {
-    grid-area: 1 / 1;
-  }
-
-  .stat svg {
-    width: 72%;
-    height: 72%;
-  }
-
-  .attack {
-    border-radius: 50%;
-    background: radial-gradient(
-      circle at 35% 30%,
-      #ffe08a,
-      #d98a1c 60%,
-      #7a4210
-    );
-  }
-
-  .attack svg {
-    fill: none;
-    stroke: rgb(80 35 0 / 0.5);
-    stroke-width: 1.6;
-    stroke-linecap: round;
-  }
-
-  .health {
-    border-radius: 0.25em 0.25em 50% 50% / 0.25em 0.25em 60% 60%;
-    background: radial-gradient(
-      circle at 35% 30%,
-      #ff9a8a,
-      #d0302a 60%,
-      #6e0e12
-    );
-  }
-
-  .health svg {
-    fill: rgb(255 255 255 / 0.3);
   }
 
   /* Text above the foil so the hotspot never washes it out. */
