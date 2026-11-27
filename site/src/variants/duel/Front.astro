@@ -10,12 +10,16 @@ import './theme.css';
 
 type Props = FrontProps;
 const { number, eager } = Astro.props;
+const stats = [
+  ['Niv', duel.level],
+  ['Atq', duel.attack],
+  ['Déf', duel.defence],
+] as const;
 ---
 
 <Frame>
   <div class='inner'>
     <div class='bar'>
-      <h1>{identity.fullName}</h1>
       <svg
         class='attribute'
         role='img'
@@ -24,26 +28,25 @@ const { number, eager } = Astro.props;
         <circle cx='12' cy='12' r='11'></circle>
         <path d='M8.6 8 4.8 12l3.8 4M15.4 8l3.8 4-3.8 4M13.3 6.4l-2.6 11.2'></path>
       </svg>
+      <h1>{identity.fullName}</h1>
     </div>
-    <p class='level' role='img' aria-label={`Niveau ${duel.level} ${madeUp}`}>
-      {Array.from({ length: duel.level }, () => (
-        <i />
-      ))}
-    </p>
     <div class='art'>
       <Portrait class='photo' sizes='16rem' eager={eager} />
     </div>
     <div class='text'>
-      <p class='type'>[ {duel.type} ]</p>
+      <p class='role'>{identity.role}</p>
       <p class='effect'>{duel.effect}</p>
-      <Links class='effects' />
+      <Links class='effects' inline />
       <p class='stats'>
-        <span aria-hidden='true'>
-          ATQ/{duel.attack} DÉF/{duel.defence}
-        </span>
         <span class='sr-only'>
-          Attaque {duel.attack}, défense {duel.defence} {madeUp}
+          {`Niveau ${duel.level}, attaque ${duel.attack}, défense ${duel.defence} ${madeUp}`}
         </span>
+        {stats.map(([name, value]) => (
+          <b aria-hidden='true'>
+            <small>{name}</small>
+            {value}
+          </b>
+        ))}
       </p>
     </div>
     <div class='foot' aria-hidden='true'>
@@ -63,8 +66,8 @@ const { number, eager } = Astro.props;
     padding: 0.4em 0.45em 0.25em;
     border-radius: 0.5em;
     background:
-      radial-gradient(circle at 50% 30%, rgb(255 190 120 / 0.25), transparent),
-      linear-gradient(170deg, #5a3520, #2b1a10);
+      radial-gradient(circle at 50% 30%, rgb(170 210 255 / 0.2), transparent),
+      linear-gradient(170deg, #34424f, #151c23);
     box-shadow:
       inset 0.08em 0.08em 0 rgb(0 0 0 / 0.5),
       inset -0.08em -0.08em 0 rgb(255 255 255 / 0.3);
@@ -79,11 +82,11 @@ const { number, eager } = Astro.props;
     display: flex;
     align-items: center;
     gap: 0.4em;
-    padding: 0.2em 0.25em 0.2em 0.5em;
+    padding: 0.2em 0.5em 0.2em 0.25em;
     border-radius: 0.15em;
-    background: var(--duel-ivory);
-    border: 0.1em solid var(--duel-copper-line);
-    box-shadow: inset 0 -0.15em 0.3em rgb(110 58 25 / 0.3);
+    background: var(--duel-paper);
+    border: 0.1em solid var(--duel-steel-line);
+    box-shadow: inset 0 -0.15em 0.3em rgb(40 60 80 / 0.3);
   }
 
   h1 {
@@ -93,7 +96,7 @@ const { number, eager } = Astro.props;
     text-transform: uppercase;
   }
 
-  /* Attribute medallion: our own "</>" glyph on a copper disc. */
+  /* Attribute medallion: our own "</>" glyph on a steel disc. */
   .attribute {
     width: 1.7em;
     height: 1.7em;
@@ -103,8 +106,8 @@ const { number, eager } = Astro.props;
   }
 
   .attribute circle {
-    fill: #6e3a19;
-    stroke: var(--duel-copper-line);
+    fill: var(--duel-slate);
+    stroke: var(--duel-steel-line);
     stroke-width: 1.5;
   }
 
@@ -112,30 +115,6 @@ const { number, eager } = Astro.props;
     fill: none;
     stroke: var(--duel-pale);
     stroke-width: 2;
-  }
-
-  /* Level: four-point sparkles, right-aligned. */
-  .level {
-    display: flex;
-    justify-content: flex-end;
-    gap: 0.2em;
-    padding-right: 0.3em;
-  }
-
-  .level i {
-    width: 0.95em;
-    height: 0.95em;
-    clip-path: polygon(
-      50% 0,
-      62% 38%,
-      100% 50%,
-      62% 62%,
-      50% 100%,
-      38% 62%,
-      0 50%,
-      38% 38%
-    );
-    background: linear-gradient(#ffe7b0, #d98b3a);
   }
 
   /* Square art window: as large as the room left allows. */
@@ -148,7 +127,7 @@ const { number, eager } = Astro.props;
   .photo {
     height: 100%;
     --portrait-w: min(100cqw, 100cqh);
-    --portrait-glow: 0 0 0 0.15em #2b1a10, 0 0 0 0.3em var(--duel-copper-line);
+    --portrait-glow: 0 0 0 0.15em #151c23, 0 0 0 0.3em var(--duel-steel-line);
   }
 
   .text {
@@ -157,12 +136,12 @@ const { number, eager } = Astro.props;
     gap: 0.25em;
     padding: 0.3em 0.45em 0.2em;
     border-radius: 0.15em;
-    background: var(--duel-ivory);
-    border: 0.1em solid var(--duel-copper-line);
+    background: var(--duel-paper);
+    border: 0.1em solid var(--duel-steel-line);
     font-family: var(--duel-serif);
   }
 
-  .type {
+  .role {
     font-size: 0.72em;
     font-weight: 700;
     font-variant: small-caps;
@@ -180,39 +159,41 @@ const { number, eager } = Astro.props;
     padding-block: 0.2em;
   }
 
-  .effects :global(a > span:first-of-type) {
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-items: baseline;
-    column-gap: 0.35em;
-  }
-
   .effects :global(b) {
     font: 700 0.95em var(--duel-serif);
     font-variant: small-caps;
-    text-transform: none;
-  }
-
-  .effects :global(b)::after {
-    content: ' :' / '';
   }
 
   .effects :global(small) {
     font-size: 0.75em;
     font-style: italic;
-    opacity: 1;
   }
 
-  .effects :global(small)::after {
-    content: '.' / '';
-  }
-
+  /* Level, attack and defence as three slate badges. */
   .stats {
-    padding-top: 0.15em;
-    border-top: 1px solid rgb(110 58 25 / 0.5);
-    text-align: right;
+    display: flex;
+    justify-content: space-between;
+    gap: 0.3em;
+    padding-top: 0.2em;
+    border-top: 1px solid rgb(40 60 80 / 0.4);
+  }
+
+  .stats b {
+    display: flex;
+    align-items: baseline;
+    gap: 0.3em;
+    padding: 0.1em 0.45em;
+    border-radius: 0.2em;
+    background: var(--duel-slate);
+    color: var(--duel-pale);
     font: 700 0.78em var(--duel-serif);
-    letter-spacing: 0.06em;
+    letter-spacing: 0.04em;
+  }
+
+  .stats small {
+    font: 600 0.75em var(--display);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
   }
 
   .foot {
