@@ -5,6 +5,7 @@
   --comic-paper: #f6ecd2;
   --comic-yellow: #ffd60a;
   --comic-red: #e63946;
+  --comic-red-dark: #a4161a;
   --comic-cyan: #1d9bf0;
   --comic-dots: radial-gradient(
       circle,
@@ -51,7 +52,6 @@
       var(--comic-red) 0 10deg,
       #ff5c68 10deg 20deg
     );
-  --back-ink: var(--comic-paper);
   --back-gap: 1.6em;
   --back-radius: 0.3em;
 

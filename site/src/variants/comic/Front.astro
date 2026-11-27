@@ -25,7 +25,10 @@ const { number, eager } = Astro.props;
       </p>
       <Foil sweep />
     </div>
-    <ul class='powers' aria-label={`Pouvoirs ${madeUp}`}>
+    <ul
+      class='powers'
+      aria-label={`Statistiques de pouvoir ${madeUp}`}
+      style={`--n: ${comic.maxPower}`}>
       {comic.powers.map((p) => (
         <li>
           {p.label}
@@ -39,11 +42,16 @@ const { number, eager } = Astro.props;
     </ul>
     <p class='file'>
       <span>
+        <b>Métier :</b> {identity.role}
+      </span>
+      <span>
         <b>Affiliation :</b> {comic.affiliation}
       </span>
       <span>
-        <b>Niveau de menace :</b> {comic.threat}
-        <span class='sr-only'>{madeUp}</span>
+        <b>
+          Niveau de menace <span class='sr-only'>(inventé)</span> :
+        </b>{' '}
+        {comic.threat}
       </span>
     </p>
     <Links class='actions' />
@@ -96,7 +104,7 @@ const { number, eager } = Astro.props;
     font: 600 0.8em/1.2 var(--display);
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: var(--comic-red);
+    color: var(--comic-red-dark);
   }
 
   /* The panel takes whatever height is left, so the card fits whatever
@@ -167,7 +175,7 @@ const { number, eager } = Astro.props;
     gap: 0.4em;
   }
 
-  /* Seven cells: ink dividers over a red fill of --v (0 to 1). */
+  /* --n cells: ink dividers over a red fill of --v (0 to 1). */
   .powers b {
     flex: 0 1 5.6em;
     height: 0.7em;
@@ -175,8 +183,8 @@ const { number, eager } = Astro.props;
     background:
       repeating-linear-gradient(
         90deg,
-        transparent 0 calc(100% / 7 - 0.12em),
-        var(--comic-ink) 0 calc(100% / 7)
+        transparent 0 calc(100% / var(--n) - 0.12em),
+        var(--comic-ink) 0 calc(100% / var(--n))
       ),
       linear-gradient(90deg, var(--comic-red) calc(var(--v) * 100%), #fff 0);
   }

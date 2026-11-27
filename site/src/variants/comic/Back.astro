@@ -10,6 +10,9 @@ import './theme.css';
     <b>{identity.initials}</b>
     <span>{comic.alias}</span>
   </div>
+  <span slot='host' class='host'>
+    {identity.host}
+  </span>
 </CardBack>
 
 <style>
@@ -45,7 +48,7 @@ import './theme.css';
     background: var(--comic-yellow);
   }
 
-  span {
+  .logo span {
     margin-top: -1.2em;
     padding: 0.25em 0.8em;
     rotate: -6deg;
@@ -55,6 +58,14 @@ import './theme.css';
     font: 700 1.2em var(--display);
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: #fff;
+    color: var(--comic-ink);
+  }
+
+  /* The host on a paper chip, readable over the red rays. */
+  .host {
+    padding: 0.2em 0.3em 0.2em 0.6em;
+    border: 0.12em solid var(--comic-ink);
+    background: var(--comic-paper);
+    color: var(--comic-ink);
   }
 </style>
