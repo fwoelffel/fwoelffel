@@ -4,7 +4,7 @@
 
 My corner of the web: a holographic trading card that points to my GitHub and LinkedIn, in several styles (swipe on a phone, or use the selector under the card).
 
-Built with [Astro](https://astro.build) as a fully static page: one HTML file, inlined CSS, ~6 kB of JavaScript (under 3 kB gzipped), self-hosted fonts.
+Built with [Astro](https://astro.build) as a fully static page: inlined CSS, a few kB of JavaScript, self-hosted fonts.
 
 ## Develop
 
@@ -29,4 +29,4 @@ The favicon is `public/favicon.svg`. Link previews (Open Graph) use the GitHub a
 
 ## Deploy
 
-Every push touching `site/` builds the site. Pushes to `main` publish `dist/` to the `gh-pages` branch, which GitHub Pages serves at <https://fwoelffel.me> (`public/CNAME`).
+Every push and PR touching `site/` (or the workflow) builds the site. Pushes to `main` publish `dist/` to the `gh-pages` branch, which GitHub Pages serves at <https://fwoelffel.me> (`public/CNAME`).

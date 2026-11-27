@@ -9,18 +9,19 @@ This repository is named after the GitHub username, so it is also the **GitHub p
 - `README.md` (root): profile content only, written for profile visitors. It is intentionally empty for now (an empty file hides the profile README). Never put development docs, badges or setup instructions there, and never add `.github/README.md` (it would take over the repository page).
 - `site/`: the website (Astro project, its own `README.md` with dev instructions). All site commands run from `site/`.
 - `.github/`: CI and Dependabot, both pointed at `site/`.
-- Root stays minimal: profile README, `LICENSE`, `CLAUDE.md`, `.github/`, `site/`.
+- Root stays minimal: profile README, `LICENSE`, `CLAUDE.md`, `.gitignore`, `.github/`, `site/`.
+- Paths starting with `src/` or `public/` are relative to `site/`; other paths are relative to the repository root.
 
 ## Product rules
 
-- The card must work as well on a phone as on a desktop: touch drag tilts it, a tap/click flips it, the tilt sensor drives the foil where available. Check every change at 375×812 as well as on desktop.
+- The card must work as well on a phone as on a desktop: touch drag tilts it, a tap/click flips it, the tilt sensor drives the foil where available.
 - No buttons or controls around the card: the card is the whole UI. The holo/tilt effect is on by default, never behind an opt-in button (on iOS, motion access is requested on the first touch). One exception: the style selector under the card on mouse/trackpad devices (see Variants).
 - The whole card, footer included, plus the selector or dots under it, must be visible without scrolling on phones (size it from `100dvh`; the deck reserves its room through `--card-reserve`).
 - Keep it light. Static output only, no UI framework, no client-side dependency. JavaScript stays a few kB; prefer CSS for anything CSS can do.
 - Animate only transforms, opacity and CSS custom properties. No `filter: blur()` or layout-triggering properties in per-frame updates. Pause work when the tab is hidden.
 - Nothing moves forever: the idle drift settles after a few seconds and the loop stops until the next input (WCAG 2.2.2).
 - Never block pinch-zoom (`touch-action: pinch-zoom` on the card, no `user-scalable=no`), and keep card text scaling with browser zoom (rem floor on the card width).
-- Check portrait (375×812, 393×659, 320×568) and short landscape (812×375), for every variant: links stay ≥ 44 px and the card footer is fully visible.
+- Check every change on desktop, in portrait (375×812, 393×659, 320×568) and in short landscape (812×375), for every variant: links stay ≥ 44 px and the card footer is fully visible.
 - Safari is the reference for the 3D flip: blend modes must stay isolated inside each face (`isolation: isolate`), otherwise Safari flattens the card (mirrored back, faces bleeding through). Faces are also hidden with `visibility` at the 90° mark.
 - Honour `prefers-reduced-motion` (no tilt loop, no flip/intro animation) and `prefers-color-scheme` (light and dark backgrounds).
 - The page works without JavaScript: the front of the default card and its links are plain HTML; the other variants and the switcher stay hidden.
@@ -47,13 +48,12 @@ Add a folder `src/variants/<id>/`; no other file changes. The registry (`src/var
 - `Back.astro`: the back face, no props. It wraps its emblem in the shared `components/card/Back.astro` (Frame, centred panel, host line, foil), themed with `--back-*`; it never re-implements that layout.
 - Read shared data (`identity`, `links`) from `src/config.ts` and own data from `./index`.
 - Optional `theme.css`, imported by both faces, scoped to `[data-variant='<id>']`: the variant's palette and the tokens of the shared parts. Prefix keyframes and global names with the id.
-- Compose the shared parts in `src/components/card/`, never re-implement them: `Frame`, `Back` (the back face layout), `Portrait` (live avatar + initials fallback, `eager` only on the card shown on load), `Links` (the profile links, 44 px, new tab), `Foil` (holo/glare/sweep, last child of a positioned box; text that must stay readable above it gets `z-index: 1`), `Icon`. Each documents its `--frame-*`, `--back-*`, `--portrait-*`, `--link-*`, `--foil-*`/`--glare-*` custom properties at the top of the file. Size everything in `em` (1 em = 1/21.25 of the card width, same 5:7 geometry for all variants), except touch targets (rem).
+- Compose the shared parts in `src/components/card/`, never re-implement them: `Frame`, `Back` (the back face layout), `Portrait` (live avatar + initials fallback, `eager` only on the card shown on load), `Links` (the profile links, 44 px, new tab), `Foil` (holo/glare/sweep, last child of a positioned box; text that must stay readable above it gets `z-index: 1`), `Icon`. Each documents its `--frame-*`, `--back-*`, `--portrait-*`, `--link-*`, `--foil-*`/`--glare-*`/`--sweep-*` custom properties at the top of the file. Size everything in `em` (1 em = 1/21.25 of the card width, same 5:7 geometry for all variants), except touch targets (rem).
 - The card shell (`Card.astro`) owns tilt, flip, faces, Safari fixes and sizing; the scripts (`src/scripts/`: `tilt`, `gyro`, `touch`, `flip`, `deck`) are shared and only drive the active card. Variants add no JavaScript.
 - Check it on every viewport listed above, in light and dark, with reduced motion, and flipped.
 
 ## Code rules
 
-- Paths below are relative to `site/`.
 - This project's Baseline target is Baseline 2024: use web platform features that are Baseline 2024 or older without fallbacks; anything newer needs a progressive-enhancement fallback.
 - Shared personal data and links live in `src/config.ts` only; components read from it. Variant-specific content lives in that variant's `index.ts`.
 - Fonts are self-hosted through `@fontsource` (Latin subsets only). The only third-party request at runtime is the live GitHub avatar (`avatars.githubusercontent.com`, by account id, so avatar changes show up without a deploy); if it fails to load, the `<img>` removes itself and the initials drawn underneath show instead (no local fallback photo). Nothing else: no Google Fonts, no analytics.
@@ -69,7 +69,7 @@ Add a folder `src/variants/<id>/`; no other file changes. The registry (`src/var
 
 ## Deployment
 
-`.github/workflows/deploy.yml` builds on every push and PR that touches `site/` (profile README edits don't trigger it), and on `main` publishes `site/dist/` to the `gh-pages` branch (GitHub Pages source). It can also be run by hand (`workflow_dispatch`).
+`.github/workflows/deploy.yml` builds on every push and PR that touches `site/` or the workflow itself (profile README edits don't trigger it), and on `main` publishes `site/dist/` to the `gh-pages` branch (GitHub Pages source). It can also be run by hand (`workflow_dispatch`).
 
 Dependabot PRs auto-merge (squash) from the same workflow's `automerge` job once the build passes: patch and minor updates only, majors wait for review. The merge uses `GITHUB_TOKEN`, which doesn't trigger push workflows, so the job then dispatches the workflow on `main` to deploy. No PAT, no branch protection needed (direct pushes to `main` stay allowed).
 
