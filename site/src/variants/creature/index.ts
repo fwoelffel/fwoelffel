@@ -10,7 +10,7 @@ export default defineVariant({
   label: 'Créature',
   order: 1,
   stage: 'Base',
-  level: 42,
+  level: 13,
   hp: 120,
   /** The creature's original element, drawn by `Emblem.astro`. */
   element: 'Code',
