@@ -1,0 +1,53 @@
+---
+import CardBack from '../../components/card/Back.astro';
+import { identity } from '../../config';
+import './theme.css';
+---
+
+<CardBack>
+  <div class='crest'>
+    <b>{identity.initials}</b>
+  </div>
+</CardBack>
+
+<style>
+  /* A gilt shield crowned with a crystal, the initials on its deep core. */
+  .crest {
+    position: relative;
+    width: 9em;
+    height: 10.5em;
+    display: grid;
+    place-items: center;
+    clip-path: polygon(50% 0, 100% 12%, 100% 58%, 50% 100%, 0 58%, 0 12%);
+    background: var(--hero-gold);
+  }
+
+  .crest::before,
+  .crest::after {
+    content: '';
+    position: absolute;
+  }
+
+  .crest::before {
+    inset: 0.6em;
+    clip-path: inherit;
+    background: var(--hero-stone);
+  }
+
+  .crest::after {
+    top: 1.5em;
+    width: 1.6em;
+    height: 1.9em;
+    clip-path: polygon(50% 0, 100% 30%, 50% 100%, 0 30%);
+    background: linear-gradient(160deg, #ffe3a0, #ff8a3d 50%, #a63a10);
+  }
+
+  b {
+    position: relative;
+    margin-top: 0.6em;
+    font: 700 3.2em var(--display);
+    background: var(--hero-gold);
+    background-clip: text;
+    color: transparent;
+  }
+</style>

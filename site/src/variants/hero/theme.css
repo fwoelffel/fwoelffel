@@ -1,0 +1,59 @@
+/* Héros palette, shared by its front and back, and the tokens of the shared
+   card parts (Frame, Portrait, Links, Foil). */
+[data-variant='hero'] {
+  --hero-ink: #2b1d0e;
+  --hero-gold: linear-gradient(
+    160deg,
+    #fff1b8,
+    #e0a93b 40%,
+    #8a5a14 75%,
+    #f2cf6e
+  );
+  --hero-gold-line: #e7b955;
+  --hero-stone: radial-gradient(circle at 50% 30%, #3e2d6b, #1d1538 70%);
+  --hero-rainbow: #ff5f6d, #ffc93c, #5dff8f, #4cc3ff, #b57bff, #ff5f6d;
+
+  /* Rainbow edge: the tilt turns it, so it shimmers while the card moves
+     and rests with it. */
+  --frame-bg: conic-gradient(
+    from calc(var(--ry) * 9 - var(--rx) * 6),
+    var(--hero-rainbow)
+  );
+  --frame-padding: 0.35em;
+  --frame-ink: var(--hero-ink);
+
+  --back-bg:
+    repeating-conic-gradient(
+      from 0deg at 50% 45%,
+      rgb(231 185 85 / 0.08) 0 6deg,
+      transparent 6deg 18deg
+    ),
+    var(--hero-stone);
+  --back-ink: var(--hero-gold-line);
+
+  --portrait-radius: 0;
+  --portrait-initials-color: var(--hero-gold-line);
+  --portrait-backdrop: radial-gradient(
+    circle at 50% 40%,
+    #ffd9a0,
+    #c0572e 45%,
+    #3d1838
+  );
+
+  --link-gap: 0.15em;
+  --link-bg: transparent;
+  --link-bg-hover: rgb(120 80 20 / 0.12);
+  --link-border: none;
+  --link-radius: 0.4em;
+  --link-color: var(--hero-ink);
+  --link-focus: #5b2d8c;
+  --link-badge-bg: var(--hero-stone);
+  --link-badge-color: var(--hero-gold-line);
+
+  --foil-gradient: linear-gradient(115deg, var(--hero-rainbow));
+  --foil-size: 280%;
+  --foil-blend: overlay;
+  --foil-strength: 1;
+  --glare-color: rgb(255 240 200 / 0.7);
+  --sweep-color: rgb(255 230 160 / 0.55);
+}
