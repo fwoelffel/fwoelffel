@@ -10,7 +10,7 @@
  * sets `data-js="pending"` (the cards stay hidden until the right one is
  * shown); `data-js="ready"` once mounted.
  */
-import { setFlipped, toggleFlip } from './flip';
+import { setFlipped } from './flip';
 import { watchDeviceTilt } from './gyro';
 import { createTilt } from './tilt';
 import { trackTouches } from './touch';
@@ -18,13 +18,11 @@ import { trackTouches } from './touch';
 type Step = 1 | -1;
 
 /** Elements where ArrowLeft/ArrowRight edit text: leave them alone. */
-const NON_TEXT_INPUTS = new Set(['radio', 'checkbox', 'button', 'submit']);
-const isTextField = (el: EventTarget | null) =>
-  el instanceof HTMLElement &&
-  (el.isContentEditable ||
-    el instanceof HTMLTextAreaElement ||
-    el instanceof HTMLSelectElement ||
-    (el instanceof HTMLInputElement && !NON_TEXT_INPUTS.has(el.type)));
+const isTextField = (el: Element) =>
+  (el as HTMLElement).isContentEditable ||
+  el.matches(
+    'textarea,select,input:not([type=radio],[type=checkbox],[type=button],[type=submit])',
+  );
 
 /** Run a CSS animation class once, then drop it. Cancelled if removed. */
 function play(el: HTMLElement, className: string, done?: () => void): void {
@@ -39,8 +37,7 @@ function play(el: HTMLElement, className: string, done?: () => void): void {
 }
 
 export function mountDeck(): void {
-  const deck = document.querySelector<HTMLElement>('[data-deck]');
-  if (!deck) return;
+  const deck = document.querySelector<HTMLElement>('[data-deck]')!;
   const slots = [...deck.querySelectorAll<HTMLElement>('[data-slot]')];
   const ids = slots.map((slot) => slot.dataset.slot);
   const cards = slots.map((slot) =>
@@ -57,17 +54,14 @@ export function mountDeck(): void {
 
   function setLive(slot: HTMLElement, live: boolean): void {
     slot.inert = !live;
-    if (live) slot.removeAttribute('aria-hidden');
-    else slot.setAttribute('aria-hidden', 'true');
+    slot.ariaHidden = live ? null : 'true';
   }
 
   /** Done leaving: stop painting it, and turn it back front side up. */
   function stash(slot: HTMLElement): void {
-    const card = cards[slots.indexOf(slot)];
     slot.classList.remove('is-leaving');
     slot.hidden = true;
-    setFlipped(card, false);
-    tilt.release(card);
+    setFlipped(cards[slots.indexOf(slot)], false);
   }
 
   function indexFromHash(): number {
@@ -85,11 +79,7 @@ export function mountDeck(): void {
   function syncHash(): void {
     const hash = active === 0 ? '' : `#${ids[active]}`;
     if (location.hash === hash) return;
-    history.replaceState(
-      history.state,
-      '',
-      hash || location.pathname + location.search,
-    );
+    history.replaceState(null, '', hash); // '' drops the fragment
   }
 
   function show(index: number, step: Step, animate = true): void {
@@ -109,8 +99,7 @@ export function mountDeck(): void {
     leaving = null;
 
     // The intro only plays once, on the card shown on load.
-    for (const card of cards) card.classList.remove('is-intro');
-    setFlipped(cards[next], false);
+    cards[active].classList.remove('is-intro');
 
     // Keep keyboard focus with the selection: on the card it left, or on
     // the radios (the arrow keys bypass their native navigation).
@@ -125,14 +114,14 @@ export function mountDeck(): void {
 
     radios.forEach((radio, i) => (radio.checked = i === next));
     dots.forEach((dot, i) => dot.classList.toggle('is-active', i === next));
-    if (hadFocus) radios[next]?.focus();
+    if (hadFocus) radios[next].focus();
     syncHash();
 
     if (!animate || reducedMotion.matches) {
       stash(from);
       return;
     }
-    deck!.style.setProperty('--step', String(step));
+    deck.style.setProperty('--step', String(step));
     leaving = from;
     play(from, 'is-leaving', () => {
       if (leaving !== from) return;
@@ -145,15 +134,16 @@ export function mountDeck(): void {
   // ---- Inputs ---------------------------------------------------------------
 
   deck.addEventListener('change', (e) => {
+    // The radios are the deck's only form controls.
     const index = radios.indexOf(e.target as HTMLInputElement);
-    if (index >= 0) show(index, index > active ? 1 : -1);
+    show(index, index > active ? 1 : -1);
   });
 
   document.addEventListener('keydown', (e) => {
     if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey || e.shiftKey)
       return;
     const step = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
-    if (!step || slots.length < 2 || isTextField(e.target)) return;
+    if (!step || slots.length < 2 || isTextField(e.target as Element)) return;
     e.preventDefault(); // also keeps a focused radio from moving on its own
     show(active + step, step);
   });
@@ -168,7 +158,8 @@ export function mountDeck(): void {
   deck.addEventListener('click', (e) => {
     const target = e.target as Element;
     const card = target.closest<HTMLElement>('[data-card]');
-    if (card === cards[active] && !target.closest('a')) toggleFlip(card);
+    if (card === cards[active] && !target.closest('a'))
+      setFlipped(card, !card.classList.contains('is-flipped'));
   });
 
   const touches = trackTouches({

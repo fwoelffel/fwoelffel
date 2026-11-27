@@ -21,20 +21,19 @@ export function watchDeviceTilt(
   if (!coarse || !Orientation || reducedMotion.matches) return;
 
   let baseline: number | null = null;
-  // Sensor angles are in the device frame; remap them to the screen frame.
-  const screenAngle = () => ((screen.orientation.angle % 360) + 360) % 360;
   screen.orientation.addEventListener('change', () => (baseline = null));
 
   window.addEventListener('deviceorientation', (e) => {
     if (e.beta === null || e.gamma === null || paused()) return;
     const { beta, gamma } = e;
-    // side: left/right roll as seen on screen; forward: tilt toward the user.
-    const [side, forward] = {
-      0: [gamma, beta],
-      90: [beta, -gamma],
-      180: [-gamma, -beta],
-      270: [-beta, gamma],
-    }[screenAngle() as 0 | 90 | 180 | 270] ?? [gamma, beta];
+    // Sensor angles are in the device frame: rotate them by the screen
+    // angle. side: left/right roll as seen on screen; forward: tilt toward
+    // the user.
+    const a = (screen.orientation.angle * Math.PI) / 180;
+    const cos = Math.cos(a);
+    const sin = Math.sin(a);
+    const side = gamma * cos + beta * sin;
+    const forward = beta * cos - gamma * sin;
     // Remember how the phone is held at first, and tilt relative to that,
     // easing the baseline so it re-centres over time.
     baseline ??= clamp(forward, 10, 70);
@@ -50,14 +49,12 @@ export function watchDeviceTilt(
   // access from a user gesture, so ask on the visitor's first touch
   // anywhere on the page. No button needed; until then (or if refused)
   // touch drag and the idle drift drive the foil.
-  if (typeof Orientation.requestPermission === 'function') {
-    const request = Orientation.requestPermission;
+  if (Orientation.requestPermission)
     document.addEventListener(
       'touchend',
       () => {
-        request.call(Orientation).catch(() => {});
+        Orientation.requestPermission!().catch(() => {});
       },
       { once: true, passive: true },
     );
-  }
 }

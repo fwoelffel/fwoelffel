@@ -13,8 +13,6 @@
 export interface Tilt {
   /** Drive this card from now on, starting from rest. */
   attach(card: HTMLElement): void;
-  /** Return a card no longer driven to rest (once it is out of sight). */
-  release(card: HTMLElement): void;
   /** Aim at a point in card units (0..1, may overshoot a little). */
   input(x: number, y: number, hot?: boolean): void;
   /** Aim at a viewport point. */
@@ -25,20 +23,18 @@ const IDLE_AFTER = 2500; // ms without input before the idle drift resumes
 const DRIFT_FOR = 12000; // ms of idle drift before the card settles and stops
 const TILT_X = 22; // max rotateY, degrees
 const TILT_Y = 18; // max rotateX, degrees
-const PROPS = ['--rx', '--ry', '--px', '--py', '--bx', '--by', '--ho'];
 
 export const clamp = (v: number, min: number, max: number) =>
   Math.min(max, Math.max(min, v));
 
 export function createTilt(reducedMotion: MediaQueryList): Tilt {
-  let card: HTMLElement | null = null;
+  let card!: HTMLElement;
   const target = { x: 0.5, y: 0.5 };
   const current = { x: 0.5, y: 0.5 };
   let hot = false; // brighter foil while someone is interacting
   let lastInput = -Infinity;
-  let frame = 0;
+  let frame = 0; // rAF id, 0 while the loop is stopped
   let lastFrame = 0;
-  let running = false;
   let driftStart: number | null = null;
 
   function input(x: number, y: number, isHot = true): void {
@@ -50,13 +46,11 @@ export function createTilt(reducedMotion: MediaQueryList): Tilt {
   }
 
   function pointAt(clientX: number, clientY: number): void {
-    if (!card) return;
     const r = card.getBoundingClientRect();
     input((clientX - r.left) / r.width, (clientY - r.top) / r.height);
   }
 
   function render(): void {
-    if (!card) return;
     const { x, y } = current;
     const style = card.style;
     style.setProperty('--rx', `${((y - 0.5) * -TILT_Y).toFixed(2)}deg`);
@@ -70,7 +64,7 @@ export function createTilt(reducedMotion: MediaQueryList): Tilt {
 
   function tick(now: number): void {
     // Keyboard users inside the card count as active: no drift under focus.
-    if (card?.contains(document.activeElement)) lastInput = now;
+    if (card.contains(document.activeElement)) lastInput = now;
     const idle = now - lastInput > IDLE_AFTER;
     let settled = false;
     if (idle) {
@@ -101,41 +95,37 @@ export function createTilt(reducedMotion: MediaQueryList): Tilt {
   }
 
   function start(): void {
-    if (running || reducedMotion.matches || document.hidden) return;
-    running = true;
+    if (frame || reducedMotion.matches || document.hidden) return;
     lastFrame = 0;
     frame = requestAnimationFrame(tick);
   }
 
   function stop(): void {
-    running = false;
     cancelAnimationFrame(frame);
+    frame = 0;
   }
 
-  function rest(): void {
-    stop();
+  /** Back to the flat pose. */
+  function center(): void {
     current.x = target.x = 0.5;
     current.y = target.y = 0.5;
     hot = false;
     render();
   }
 
+  function rest(): void {
+    stop();
+    center();
+  }
+
   function attach(next: HTMLElement): void {
-    if (card !== next) {
-      // The previous card keeps its pose while it leaves (see release);
-      // the new one starts flat, with its own short drift.
-      card = next;
-      current.x = target.x = 0.5;
-      current.y = target.y = 0.5;
-      hot = false;
-      lastInput = -Infinity;
-    }
+    // The previous card keeps its pose while it leaves; the new one starts
+    // flat, with its own short drift.
+    card = next;
+    lastInput = -Infinity;
     driftStart = null;
-    if (reducedMotion.matches) rest();
-    else {
-      render();
-      start();
-    }
+    center();
+    start();
   }
 
   document.addEventListener('visibilitychange', () =>
@@ -154,10 +144,5 @@ export function createTilt(reducedMotion: MediaQueryList): Tilt {
     { passive: true },
   );
 
-  function release(released: HTMLElement): void {
-    if (released !== card)
-      for (const prop of PROPS) released.style.removeProperty(prop);
-  }
-
-  return { attach, release, input, pointAt };
+  return { attach, input, pointAt };
 }

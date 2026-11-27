@@ -24,7 +24,7 @@ export interface TouchOptions {
   onSwipe(step: 1 | -1): void;
 }
 
-const isZoomed = () => (window.visualViewport?.scale ?? 1) > 1.01;
+const isZoomed = () => visualViewport!.scale > 1.01;
 
 export function trackTouches(options: TouchOptions): { touching(): boolean } {
   let id: number | null = null;
@@ -36,7 +36,7 @@ export function trackTouches(options: TouchOptions): { touching(): boolean } {
   let multi = false;
   let ignoreClicksUntil = 0;
 
-  window.visualViewport?.addEventListener('resize', () =>
+  visualViewport!.addEventListener('resize', () =>
     document.documentElement.classList.toggle('is-zoomed', isZoomed()),
   );
 
