@@ -8,7 +8,6 @@
  *  --portrait-glow              box-shadow of that backdrop
  *  --portrait-border            border of the photo (default none)
  *  --portrait-shadow            box-shadow of the photo
- *  --portrait-initials-size     font size of the fallback initials
  *  --portrait-initials-color    their outline colour
  * The root is a centring grid: size or place it with a `class`.
  */
@@ -67,7 +66,7 @@ const {
 
   span {
     position: absolute;
-    font: 700 var(--portrait-initials-size, 4.6em) var(--display);
+    font: 700 4.6em var(--display);
     color: transparent;
     -webkit-text-stroke: 0.03em var(--portrait-initials-color, #fff);
     letter-spacing: 0.02em;

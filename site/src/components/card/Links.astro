@@ -10,8 +10,7 @@
  *  --link-radius              corners
  *  --link-color               text colour
  *  --link-focus               focus outline colour
- *  --link-font                label font
- *  --link-badge-bg, --link-badge-color, --link-badge-radius  icon badge
+ *  --link-badge-bg, --link-badge-color  icon badge
  * For anything else, style the parts from the variant with `:global()`
  * under the class you pass (e.g. `.links :global(small)`).
  */
@@ -84,7 +83,7 @@ const { class: className, ...rest } = Astro.props;
   i {
     width: 2em;
     height: 2em;
-    border-radius: var(--link-badge-radius, 50%);
+    border-radius: 50%;
     display: grid;
     place-items: center;
     flex: none;
@@ -100,7 +99,7 @@ const { class: className, ...rest } = Astro.props;
   }
 
   b {
-    font: 700 1.15em var(--link-font, var(--display));
+    font: 700 1.15em var(--display);
     letter-spacing: 0.04em;
     text-transform: uppercase;
   }

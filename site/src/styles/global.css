@@ -7,7 +7,6 @@
   --focus: #3a4170;
   --display: 'Barlow Condensed', 'Arial Narrow', sans-serif;
   --body: 'Bricolage Grotesque', system-ui, sans-serif;
-  color-scheme: light;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -18,7 +17,6 @@
     --line: rgb(255 255 255 / 0.28);
     --stars: 0.55;
     --focus: #ffb300;
-    color-scheme: dark;
   }
 }
 

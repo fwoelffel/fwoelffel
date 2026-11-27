@@ -12,7 +12,6 @@
  *  --foil-blend         blend mode of the foil (default color-dodge)
  *  --foil-strength      multiplier of the live strength --ho (default 1)
  *  --glare-color        hotspot colour (default rgb(255 255 255 / 0.7))
- *  --glare-blend        blend mode of the hotspot (default soft-light)
  *  --sweep-color        colour of the intro sweep
  */
 interface Props {
@@ -71,7 +70,7 @@ const { sweep = false } = Astro.props;
   }
 
   .glare {
-    mix-blend-mode: var(--glare-blend, soft-light);
+    mix-blend-mode: soft-light;
     background: radial-gradient(
       circle at var(--px) var(--py),
       var(--glare-color, rgb(255 255 255 / 0.7)),

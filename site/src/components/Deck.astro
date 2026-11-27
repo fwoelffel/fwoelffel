@@ -70,16 +70,14 @@ const many = variants.length > 1;
 
 <style>
   .deck {
-    --step: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: var(--deck-gap, 0);
   }
 
   /* Room under the card for the switcher (read by the card's sizing). */
   .deck.many[data-js] {
-    --deck-gap: 0.5rem;
+    gap: 0.5rem;
     --card-reserve: 1rem;
   }
 
@@ -100,7 +98,6 @@ const many = variants.length > 1;
   }
 
   .slot.is-leaving {
-    pointer-events: none;
     animation: deck-leave 0.4s cubic-bezier(0.4, 0, 0.7, 0.4) both;
   }
 
@@ -175,7 +172,7 @@ const many = variants.length > 1;
   /* Mouse or trackpad: the segmented control instead of the dots. */
   @media (hover: hover) and (pointer: fine) {
     .deck.many[data-js] {
-      --deck-gap: 0.75rem;
+      gap: 0.75rem;
       --card-reserve: 3rem;
     }
 

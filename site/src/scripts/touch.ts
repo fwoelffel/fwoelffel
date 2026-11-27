@@ -16,7 +16,7 @@ const SWIPE_RATIO = 1.5; // horizontal travel / vertical travel
 const SWIPE_MAX_MS = 700;
 const CLICK_GRACE = 600; // ms after a drag during which a click is ignored
 
-export interface TouchOptions {
+interface TouchOptions {
   /** Whether a touch starting on this element drives the tilt. */
   canDrag(target: Element): boolean;
   onDrag(clientX: number, clientY: number): void;

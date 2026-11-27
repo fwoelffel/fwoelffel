@@ -10,7 +10,7 @@
  * prefers-reduced-motion.
  */
 
-export interface Tilt {
+interface Tilt {
   /** Drive this card from now on, starting from rest. */
   attach(card: HTMLElement): void;
   /** Aim at a point in card units (0..1, may overshoot a little). */
