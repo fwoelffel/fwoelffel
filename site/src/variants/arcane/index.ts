@@ -15,7 +15,7 @@ export default defineVariant({
   /** The same cost, spelled out for screen readers. */
   costLabel: 'un engrenage, une balise et un grain de café',
   type: 'Arcaniste',
-  keywords: 'Curiosité, Refactorisation',
+  keywords: 'Event Storming, Architecture hexagonale',
   flavor: 'Il ne lance pas de sorts : il les compile.',
   power: 4,
   toughness: 5,

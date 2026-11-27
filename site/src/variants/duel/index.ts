@@ -12,9 +12,9 @@ export default defineVariant({
   order: 3,
   /** Attribute, spelled out for screen readers (the medallion draws "</>"). */
   attribute: 'Code',
-  level: 8,
+  level: 13,
   effect:
-    'Lorsque cette carte est révélée : ouvrez l’un de ses liens. Chaque matin, changez un café en fonctionnalité.',
+    'Lorsque cette carte est révélée : invoquez un module NestJS. Tant qu’elle est sur le terrain, aucun job en file d’attente n’est perdu.',
   attack: 2800,
   defence: 2500,
 });

@@ -16,9 +16,9 @@ export const identity = {
   lastName,
   fullName: `${firstName} ${lastName}`,
   initials: 'FW',
-  role: 'Ingénieur logiciel',
+  role: 'Ingénieur logiciel senior',
   description:
-    'Frédéric Woelffel, ingénieur logiciel. Retrouvez-moi sur GitHub et LinkedIn.',
+    'Frédéric Woelffel, ingénieur logiciel senior (TypeScript, Node.js) à Strasbourg. Retrouvez-moi sur GitHub et LinkedIn.',
   url,
   host: new URL(url).host,
   /**

@@ -14,13 +14,15 @@ export default defineVariant({
   sticker: 'COMMIT !',
   /** Each rated out of `maxPower`. */
   powers: [
-    { label: 'Force', value: 2 },
-    { label: 'Intelligence', value: 4 },
-    { label: 'Code', value: 5 },
+    { label: 'TypeScript', value: 5 },
+    { label: 'Node.js', value: 5 },
+    { label: 'Architecture', value: 4 },
     { label: 'Café', value: 5 },
   ],
   maxPower: 5,
-  affiliation: 'Open Source',
+  affiliation: 'Open Source (NestJS)',
+  origin: 'labos d’imagerie médicale',
+  base: 'Strasbourg',
   threat: 'élevé (pour les bugs)',
   issue: 'Nº\u00a01',
 });

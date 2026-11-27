@@ -10,20 +10,20 @@ export default defineVariant({
   label: 'Créature',
   order: 1,
   stage: 'Base',
-  level: 42,
+  level: 13,
   hp: 120,
   /** The creature's original element, drawn by `Emblem.astro`. */
   element: 'Code',
   habitat: 'terminal',
   talent: {
-    name: 'Café-script',
-    text: 'chaque café bu devient un commit.',
+    name: 'File d’attente',
+    text: 'aucune tâche qu’on lui confie n’est jamais perdue.',
   },
   weakness: { label: 'Réunions', value: '×2' },
   resistance: { label: 'Bugs', value: '−30' },
   /** Retreat cost, in coffee cups. */
   retreat: 2,
   flavor:
-    'Se nourrit de café et de pull requests. Plus actif la nuit, près des terminaux allumés.',
+    'Éclose dans les labos d’imagerie médicale, elle a migré vers la fintech puis l’industrie. Se nourrit de café et de pull requests.',
   credit: 'Illus. avatar GitHub',
 });
