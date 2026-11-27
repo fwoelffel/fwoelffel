@@ -23,7 +23,7 @@ const backs = import.meta.glob<AstroComponentFactory>('./*/Back.astro', {
 export const collectorNumber = (index: number, count: number) =>
   [index + 1, count].map((n) => String(n).padStart(3, '0')).join('/');
 
-/** All variants, sorted by `order`. The first one is the default. */
+/** All variants, sorted by `order`. The first one shows without JavaScript. */
 export const variants: Variant[] = Object.entries(metas)
   .map(([path, meta]) => {
     const dir = path.slice(0, path.lastIndexOf('/'));
@@ -40,6 +40,8 @@ export const variants: Variant[] = Object.entries(metas)
   .sort((a, b) => a.order - b.order);
 
 if (variants[0]?.order !== 0)
-  throw new Error('Exactly one variant needs order 0 (the default card)');
+  throw new Error(
+    'Exactly one variant needs order 0 (the card shown without JavaScript)',
+  );
 if (new Set(variants.map((v) => v.order)).size !== variants.length)
   throw new Error('Variant orders must be unique');

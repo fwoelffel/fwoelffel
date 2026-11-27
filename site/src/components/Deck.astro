@@ -7,8 +7,8 @@
  * readers). Behaviour: src/scripts/deck.ts.
  *
  * On arrival, the inline script shows the card the hash names (#id), or
- * else a random one (never the one this tab showed last), before the first
- * paint. Without JavaScript, the first card shows and the switcher stays
+ * else (and on every reload) a random one, never the one this tab showed
+ * last, before the first paint. Without JavaScript, the first card shows and the switcher stays
  * hidden.
  */
 import Card from './card/Card.astro';
@@ -71,7 +71,10 @@ const many = variants.length > 1;
       const deck = document.currentScript.parentElement;
       const slots = [...deck.querySelectorAll('[data-slot]')];
       const ids = slots.map((slot) => slot.dataset.slot);
-      let i = ids.indexOf(location.hash.slice(1));
+      // A reload always deals another card, even with a hash.
+      const reload =
+        performance.getEntriesByType('navigation')[0]?.type === 'reload';
+      let i = reload ? -1 : ids.indexOf(location.hash.slice(1));
       if (i < 0) {
         if (location.hash)
           history.replaceState(null, '', location.pathname + location.search);
@@ -81,10 +84,10 @@ const many = variants.length > 1;
         } catch {}
         do i = Math.floor(Math.random() * ids.length);
         while (ids.length > 1 && ids[i] === last);
-        try {
-          sessionStorage.card = ids[i];
-        } catch {}
       }
+      try {
+        sessionStorage.card = ids[i];
+      } catch {}
       if (i) {
         const radios = deck.querySelectorAll('[name="card-style"]');
         const dots = deck.querySelectorAll('[data-dot]');
@@ -97,8 +100,14 @@ const many = variants.length > 1;
           slots[j]
             .querySelector('[data-card]')
             .classList.toggle('is-intro', on);
-          if (radios[j]) radios[j].checked = on;
-          dots[j]?.classList.toggle('is-active', on);
+          // Only the card shown fetches its photo eagerly.
+          const img = slots[j].querySelector('img');
+          if (img) {
+            img.loading = on ? 'eager' : 'lazy';
+            img.fetchPriority = on ? 'high' : 'auto';
+          }
+          radios[j].checked = on;
+          dots[j].classList.toggle('is-active', on);
         }
       }
       deck.dataset.js = '';

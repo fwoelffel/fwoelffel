@@ -6,7 +6,7 @@ export interface VariantMeta {
   readonly id: string;
   /** Name shown in the style selector (French). */
   readonly label: string;
-  /** Position in the deck; the variant with order 0 is the default. */
+  /** Position in the deck; order 0 is the card shown without JavaScript. */
   readonly order: number;
 }
 

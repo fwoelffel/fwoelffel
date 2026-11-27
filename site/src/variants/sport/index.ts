@@ -1,8 +1,8 @@
 import { defineVariant } from '../types';
 
 /**
- * Sport: the default card, in the style of football trading cards. Its
- * stats are made up, and the card says so to assistive tech.
+ * Sport: in the style of football trading cards. Its stats are made up, and
+ * the card says so to assistive tech.
  */
 export default defineVariant({
   id: 'sport',

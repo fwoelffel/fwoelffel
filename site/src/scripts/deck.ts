@@ -97,6 +97,9 @@ export function mountDeck(): void {
     if (hadFocus) radios[next].focus();
     // The address names the card chosen, so it can be shared (#id).
     history.replaceState(null, '', `#${ids[next]}`);
+    try {
+      sessionStorage.card = ids[next]; // a reload deals another one
+    } catch {}
 
     if (reducedMotion.matches) {
       stash(from);
