@@ -12,11 +12,11 @@ export default defineVariant({
   rank: 'SNR',
   edition: '★ Holo',
   stats: [
-    { value: 94, label: 'TS' },
-    { value: 93, label: 'NODE' },
-    { value: 95, label: 'NEST' },
-    { value: 91, label: 'ARCH' },
-    { value: 89, label: 'TEST' },
-    { value: 88, label: 'DDD' },
+    { value: 94, label: 'TS', name: 'TypeScript' },
+    { value: 93, label: 'NODE', name: 'Node.js' },
+    { value: 95, label: 'NEST', name: 'NestJS' },
+    { value: 91, label: 'ARCH', name: 'Architecture' },
+    { value: 89, label: 'TEST', name: 'Tests' },
+    { value: 88, label: 'ORM', name: 'TypeORM' },
   ],
 });

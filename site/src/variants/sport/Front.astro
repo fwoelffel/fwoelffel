@@ -28,7 +28,8 @@ const { number, eager } = Astro.props;
       {sport.stats.map((s) => (
         <li>
           <b>{s.value}</b>
-          {s.label}
+          <span aria-hidden='true'>{s.label}</span>
+          <span class='sr-only'>{s.name}</span>
         </li>
       ))}
     </ul>

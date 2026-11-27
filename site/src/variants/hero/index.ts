@@ -9,8 +9,8 @@ export default defineVariant({
   id: 'hero',
   label: 'Héros',
   order: 4,
-  cost: 13,
+  cost: 7,
   attack: 5,
   health: 8,
-  keyword: { name: 'Mainteneur', text: '242 commits sur @nestjs/bull.' },
+  keyword: { name: 'Contributeur', text: '242 commits sur @nestjs/bull.' },
 });

@@ -10,7 +10,7 @@ export default defineVariant({
   label: 'Créature',
   order: 1,
   stage: 'Base',
-  level: 13,
+  level: 42,
   hp: 120,
   /** The creature's original element, drawn by `Emblem.astro`. */
   element: 'Code',
@@ -24,6 +24,6 @@ export default defineVariant({
   /** Retreat cost, in coffee cups. */
   retreat: 2,
   flavor:
-    'Éclose dans les labos d’imagerie médicale, elle a migré vers la fintech puis l’industrie. Se nourrit de café et de pull requests.',
+    'Éclose dans la recherche en imagerie médicale, elle a migré vers la fintech puis l’industrie. Se nourrit de café et de pull requests.',
   credit: 'Illus. avatar GitHub',
 });
