@@ -6,6 +6,10 @@
  * (where a horizontal swipe switches; the radios stay available to screen
  * readers). Without JavaScript only the default card shows and the
  * switcher stays hidden. Behaviour: src/scripts/deck.ts.
+ *
+ * On arrival (JavaScript on, motion allowed), a sealed pack opens and the
+ * real cards fan out of it, then gather with the active card in front:
+ * `data-pack` on the deck, set by the inline script, removed by deck.ts.
  */
 import Card from './card/Card.astro';
 import { identity } from '../config';
@@ -17,15 +21,19 @@ const many = variants.length > 1;
 <div class:list={['deck', { many }]} data-deck>
   <script is:inline>
     // Before the cards paint: a shared #id link waits for deck.ts to show
-    // the right card instead of flashing the default one.
-    document.currentScript.parentElement.dataset.js =
-      location.hash.length > 1 ? 'pending' : 'ready';
+    // the right card instead of flashing the default one. The pack opens
+    // on arrival only: inline scripts do not rerun on a back/forward restore.
+    const deck = document.currentScript.parentElement;
+    deck.dataset.js = location.hash.length > 1 ? 'pending' : 'ready';
+    if (!matchMedia('(prefers-reduced-motion: reduce)').matches)
+      deck.dataset.pack = '';
   </script>
   <div class='stack'>
     {variants.map(({ id, Front, Back }, i) => (
       <div
         class='slot'
         data-slot={id}
+        style={`--f: ${i - (variants.length - 1) / 2}`}
         hidden={i > 0}
         inert={i > 0}
         aria-hidden={i > 0 ? 'true' : undefined}>
@@ -42,6 +50,14 @@ const many = variants.length > 1;
         </Card>
       </div>
     ))}
+    <div class='pack' aria-hidden='true'>
+      <div class='pack-top'></div>
+      <div class='pack-body'>
+        <b>{identity.initials}</b>
+        <span>{identity.host}</span>
+        <small>Édition holo</small>
+      </div>
+    </div>
   </div>
   {many && (
     <>
@@ -126,6 +142,240 @@ const many = variants.length > 1;
   @keyframes deck-wait {
     from {
       visibility: hidden;
+    }
+  }
+
+  /* ---- Opening pack (2.4s) --------------------------------------------
+     The pack pops in, its crimped top tears off, it drops away while the
+     cards (every slot, f = position from the middle) rise, fan out around
+     their bottom edge, then gather: the active card ends in front, the
+     others fade out. Only transforms and opacity. The cards stay opaque
+     behind the pack, so the default card's photo paints (LCP) at once. */
+  .pack {
+    display: none;
+    grid-area: 1 / 1;
+    z-index: 2;
+    position: relative;
+    margin: -6% -4%;
+    container-type: inline-size;
+    pointer-events: none;
+  }
+
+  .pack-top,
+  .pack-body {
+    position: absolute;
+    inset: 0;
+    --teeth: conic-gradient(
+        from var(--a) at 50% var(--y),
+        #0000,
+        #000 1deg 89deg,
+        #0000 90deg
+      )
+      50% var(--y) / 4cqi 51% repeat-x;
+  }
+
+  /* Crimped band with a zigzag top edge and a dashed tear line. */
+  .pack-top {
+    bottom: auto;
+    height: 14%;
+    --a: 135deg;
+    --y: 0%;
+    mask:
+      var(--teeth),
+      linear-gradient(#000 0 0) 0 100% / 100% 51% no-repeat;
+    background:
+      repeating-linear-gradient(
+        90deg,
+        rgb(255 255 255 / 0.3) 0 0.6cqi,
+        rgb(0 0 0 / 0.15) 0.6cqi 1.6cqi
+      ),
+      linear-gradient(#8a93d8, #3b3f86);
+    border-bottom: 0.5cqi dashed rgb(255 255 255 / 0.7);
+    transform-origin: 100% 100%;
+  }
+
+  .pack-body {
+    top: 14%;
+    background:
+      repeating-linear-gradient(
+        60deg,
+        rgb(255 255 255 / 0.07) 0 1px,
+        transparent 1px 7cqi
+      ),
+      repeating-linear-gradient(
+        -60deg,
+        rgb(255 255 255 / 0.07) 0 1px,
+        transparent 1px 7cqi
+      ),
+      linear-gradient(
+        160deg,
+        #1d2160,
+        #5b34b0 35%,
+        #1b7fa8 62%,
+        #c0478f 85%,
+        #1d2160
+      );
+    --a: -45deg;
+    --y: 100%;
+    mask:
+      var(--teeth),
+      linear-gradient(#000 0 0) 0 0 / 100% 51% no-repeat;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3cqi;
+    padding-bottom: 8%;
+    color: #fff;
+    font-family: var(--display);
+    text-transform: uppercase;
+    text-align: center;
+  }
+
+  .pack-body b {
+    font-size: 34cqi;
+    line-height: 0.8;
+    letter-spacing: 0.04em;
+    text-shadow:
+      0 0 4cqi rgb(120 200 255 / 0.8),
+      0.6cqi 0.6cqi 0 #c0478f;
+  }
+
+  .pack-body span {
+    font-size: 7cqi;
+    letter-spacing: 0.18em;
+  }
+
+  .pack-body small {
+    padding: 1cqi 3cqi;
+    border: 0.4cqi solid;
+    border-radius: 99px;
+    font-size: 4.5cqi;
+    letter-spacing: 0.3em;
+  }
+
+  /* A glint crossing the foil. */
+  .pack-body::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    background: linear-gradient(
+      105deg,
+      transparent 35%,
+      rgb(255 255 255 / 0.45) 50%,
+      transparent 65%
+    );
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .deck[data-pack] .pack {
+      display: block;
+      animation: pack-open 2.4s both;
+    }
+
+    .deck[data-pack] .pack-top {
+      animation: pack-tear 0.45s 0.6s ease-in both;
+    }
+
+    .deck[data-pack] .pack-body::after {
+      animation: pack-glint 0.7s 0.15s ease-out;
+    }
+
+    /* Every card is painted while the pack is open, hidden ones too. */
+    .deck[data-pack] .slot {
+      --fan: 1;
+      display: block;
+      transform-origin: 50% 100%;
+      animation: pack-fan 2.4s cubic-bezier(0.3, 0, 0.3, 1) both;
+    }
+
+    /* Portrait phones, narrow windows: a tighter fan that stays on screen. */
+    @media (max-aspect-ratio: 4 / 5), (max-width: 37.5rem) {
+      .deck[data-pack] .slot {
+        --fan: 0.52;
+      }
+    }
+
+    .deck[data-pack] .slot:not([inert]) {
+      z-index: 1;
+    }
+
+    .deck[data-pack] .slot[inert] {
+      --pack-o: 0;
+    }
+  }
+
+  @keyframes pack-open {
+    0% {
+      scale: 0.92;
+      translate: 0 4%;
+      animation-timing-function: cubic-bezier(0.3, 1.6, 0.5, 1);
+    }
+    15% {
+      scale: 1;
+      translate: 0;
+    }
+    40% {
+      scale: 1;
+      translate: 0;
+      animation-timing-function: ease-in;
+    }
+    50% {
+      opacity: 1;
+    }
+    /* Shrinks as it drops, so it never overflows the page. */
+    60%,
+    100% {
+      scale: 0.88;
+      translate: 0 4%;
+      opacity: 0;
+    }
+  }
+
+  @keyframes pack-tear {
+    30% {
+      transform: rotate(3deg);
+    }
+    to {
+      opacity: 0;
+      transform: translateY(-150%) rotate(-14deg);
+    }
+  }
+
+  @keyframes pack-glint {
+    from {
+      opacity: 1;
+      translate: -100% 0;
+    }
+    to {
+      opacity: 1;
+      translate: 100% 0;
+    }
+  }
+
+  @keyframes pack-fan {
+    0%,
+    40% {
+      transform: translateY(-8%) scale(0.76);
+    }
+    60% {
+      transform: translateY(-30%) scale(calc(0.6 * var(--fan)));
+    }
+    76%,
+    86% {
+      transform: translate(
+          calc(var(--f) * 11% * var(--fan)),
+          calc((0.55 * var(--fan) - 1) * 50%)
+        )
+        rotate(calc(var(--f) * 9deg)) scale(calc(0.55 * var(--fan)));
+      opacity: 1;
+      animation-timing-function: cubic-bezier(0.5, 0, 0.2, 1);
+    }
+    100% {
+      transform: none;
+      opacity: var(--pack-o, 1);
     }
   }
 

@@ -8,7 +8,8 @@
  * `[data-slot=id]` per variant, each wrapping a `[data-card]`; optional
  * radios (value = id) and `[data-dot]` markers. A non-empty hash on load
  * sets `data-js="pending"` (the cards stay hidden until the right one is
- * shown); `data-js="ready"` once mounted.
+ * shown); `data-js="ready"` once mounted. `data-pack` while the opening
+ * pack plays (CSS only, first load).
  */
 import { setFlipped } from './flip';
 import { watchDeviceTilt } from './gyro';
@@ -52,6 +53,10 @@ export function mountDeck(): void {
   let active = 0;
   let leaving: HTMLElement | null = null;
 
+  function endPack(): boolean {
+    return 'pack' in deck.dataset && delete deck.dataset.pack;
+  }
+
   function setLive(slot: HTMLElement, live: boolean): void {
     slot.inert = !live;
     slot.ariaHidden = live ? null : 'true';
@@ -85,6 +90,7 @@ export function mountDeck(): void {
   function show(index: number, step: Step, animate = true): void {
     const next = (index + slots.length) % slots.length;
     if (next === active) return;
+    if (animate) endPack();
     const from = slots[active];
     const to = slots[next];
 
@@ -97,9 +103,6 @@ export function mountDeck(): void {
       if (leaving === to) void to.offsetWidth;
     }
     leaving = null;
-
-    // The intro only plays once, on the card shown on load.
-    cards[active].classList.remove('is-intro');
 
     // Keep keyboard focus with the selection: on the card it left, or on
     // the radios (the arrow keys bypass their native navigation).
@@ -174,12 +177,35 @@ export function mountDeck(): void {
     touches.touching,
   );
 
+  // ---- Opening pack -----------------------------------------------------------
+  // Over when its animation is (even if this script loads late, or reduced
+  // motion cancels it), or at once on any tap, click or key (the tap that
+  // skips it is swallowed: no flip, no link), on a card switch, or on a
+  // back/forward restore. Capture phase: before the deck's own handlers.
+
+  let swallow = false;
+  const pack = deck
+    .getAnimations({ subtree: true })
+    .find((a) => (a as CSSAnimation).animationName === 'pack-open');
+  pack?.finished.then(endPack, endPack);
+  addEventListener('pointerdown', () => (swallow = endPack()), true);
+  addEventListener('keydown', endPack, true);
+  addEventListener(
+    'click',
+    (e) => {
+      if (swallow && e.detail) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+      }
+      swallow = false;
+    },
+    true,
+  );
+  addEventListener('pageshow', (e) => e.persisted && endPack());
+
   // ---- Go -------------------------------------------------------------------
 
-  const initial = indexFromHash();
-  show(initial, 1, false);
-  // A shared link (#id): that card plays the intro instead of the default.
-  if (initial !== 0) cards[initial].classList.add('is-intro');
+  show(indexFromHash(), 1, false);
   syncHash();
   tilt.attach(cards[active]);
   deck.dataset.js = 'ready';
