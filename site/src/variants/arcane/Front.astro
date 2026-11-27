@@ -48,7 +48,7 @@ const glyphs: Record<(typeof arcane.cost)[number], string> = {
     </p>
     <div class='rules'>
       <p class='keywords'>{arcane.keywords}</p>
-      <Links class='abilities' />
+      <Links class='abilities' inline />
       <p class='flavor'>« {arcane.flavor} »</p>
     </div>
     <div class='foot'>
@@ -207,30 +207,13 @@ const glyphs: Record<(typeof arcane.cost)[number], string> = {
   }
 
   /* The links read as activated abilities: "[icon] GitHub : Mon code." */
-  .abilities :global(a > span:first-of-type) {
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-items: baseline;
-    column-gap: 0.35em;
-  }
-
   .abilities :global(b) {
     font-size: 1.05em;
-    text-transform: none;
-  }
-
-  .abilities :global(b)::after {
-    content: ' :' / '';
   }
 
   .abilities :global(small) {
     font-size: 0.85em;
     font-style: italic;
-    opacity: 1;
-  }
-
-  .abilities :global(small)::after {
-    content: '.' / '';
   }
 
   .abilities :global(i) {

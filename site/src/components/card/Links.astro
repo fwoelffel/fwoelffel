@@ -11,6 +11,8 @@
  *  --link-color               text colour
  *  --link-focus               focus outline colour
  *  --link-badge-bg, --link-badge-color  icon badge
+ * `inline` sets the label and caption on one line, read as card text:
+ * "GitHub : Mon code."
  * For anything else, style the parts from the variant with `:global()`
  * under the class you pass (e.g. `.links :global(small)`).
  */
@@ -18,12 +20,12 @@ import type { HTMLAttributes } from 'astro/types';
 import Icon from './Icon.astro';
 import { links } from '../../config';
 
-type Props = HTMLAttributes<'ul'>;
+type Props = HTMLAttributes<'ul'> & { inline?: boolean };
 
-const { class: className, ...rest } = Astro.props;
+const { class: className, inline, ...rest } = Astro.props;
 ---
 
-<ul class:list={['links', className]} {...rest}>
+<ul class:list={['links', { inline }, className]} {...rest}>
   {links.map((link) => (
     <li>
       <a class='link' href={link.href} target='_blank' rel='noopener me'>
@@ -107,6 +109,29 @@ const { class: className, ...rest } = Astro.props;
   small {
     font-size: 0.7em;
     opacity: 0.8;
+  }
+
+  .inline span {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: baseline;
+    column-gap: 0.35em;
+  }
+
+  .inline b {
+    text-transform: none;
+  }
+
+  .inline b::after {
+    content: ' :' / '';
+  }
+
+  .inline small {
+    opacity: 1;
+  }
+
+  .inline small::after {
+    content: '.' / '';
   }
 
   em {
