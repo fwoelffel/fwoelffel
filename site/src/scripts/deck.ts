@@ -2,14 +2,12 @@
  * The deck: one card per variant, stacked; only the active one is shown,
  * interactive and driven by the tilt engine. Switch with the style selector
  * (radio group), ArrowLeft/ArrowRight, a horizontal swipe on touch screens,
- * or the URL hash (#id; no hash or an unknown one is the default card).
+ * or the URL hash (#id).
  *
  * Markup contract (src/components/Deck.astro): `[data-deck]` holds one
  * `[data-slot=id]` per variant, each wrapping a `[data-card]`; optional
- * radios (value = id) and `[data-dot]` markers. A non-empty hash on load
- * sets `data-js="pending"` (the cards stay hidden until the right one is
- * shown); `data-js="ready"` once mounted. `data-pack` while the opening
- * pack plays (CSS only, first load).
+ * radios (value = id) and `[data-dot]` markers. The deck's inline script
+ * has already shown the starting card (the only slot not `hidden`).
  */
 import { setFlipped } from './flip';
 import { watchDeviceTilt } from './gyro';
@@ -50,12 +48,8 @@ export function mountDeck(): void {
   const dots = [...deck.querySelectorAll<HTMLElement>('[data-dot]')];
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   const tilt = createTilt(reducedMotion);
-  let active = 0;
+  let active = slots.findIndex((slot) => !slot.hidden);
   let leaving: HTMLElement | null = null;
-
-  function endPack(): boolean {
-    return 'pack' in deck.dataset && delete deck.dataset.pack;
-  }
 
   function setLive(slot: HTMLElement, live: boolean): void {
     slot.inert = !live;
@@ -69,28 +63,9 @@ export function mountDeck(): void {
     setFlipped(cards[slots.indexOf(slot)], false);
   }
 
-  function indexFromHash(): number {
-    let id = '';
-    try {
-      id = decodeURIComponent(location.hash.slice(1));
-    } catch {
-      // A malformed escape (#%E0) is just an unknown hash.
-    }
-    const index = ids.indexOf(id);
-    return index < 0 ? 0 : index;
-  }
-
-  /** The address shows the active card, so it can be shared (#id). */
-  function syncHash(): void {
-    const hash = active === 0 ? '' : `#${ids[active]}`;
-    if (location.hash === hash) return;
-    history.replaceState(null, '', hash || location.pathname + location.search);
-  }
-
-  function show(index: number, step: Step, animate = true): void {
+  function show(index: number, step: Step): void {
     const next = (index + slots.length) % slots.length;
     if (next === active) return;
-    if (animate) endPack();
     const from = slots[active];
     const to = slots[next];
 
@@ -109,6 +84,8 @@ export function mountDeck(): void {
     const hadFocus =
       from.contains(document.activeElement) ||
       radios.includes(document.activeElement as HTMLInputElement);
+    // The intro only plays once, on the card shown on arrival.
+    cards[active].classList.remove('is-intro');
     setLive(from, false);
     to.hidden = false;
     setLive(to, true);
@@ -118,9 +95,10 @@ export function mountDeck(): void {
     radios.forEach((radio, i) => (radio.checked = i === next));
     dots.forEach((dot, i) => dot.classList.toggle('is-active', i === next));
     if (hadFocus) radios[next].focus();
-    syncHash();
+    // The address names the card chosen, so it can be shared (#id).
+    history.replaceState(null, '', `#${ids[next]}`);
 
-    if (!animate || reducedMotion.matches) {
+    if (reducedMotion.matches) {
       stash(from);
       return;
     }
@@ -152,9 +130,8 @@ export function mountDeck(): void {
   });
 
   window.addEventListener('hashchange', () => {
-    const index = indexFromHash();
-    show(index, index > active ? 1 : -1);
-    syncHash(); // drop an unknown hash
+    const index = ids.indexOf(location.hash.slice(1));
+    if (index >= 0) show(index, index > active ? 1 : -1);
   });
 
   // A click on the active card flips it, except on its links.
@@ -177,36 +154,7 @@ export function mountDeck(): void {
     touches.touching,
   );
 
-  // ---- Opening pack -----------------------------------------------------------
-  // Over when its animation is (even if this script loads late, or reduced
-  // motion cancels it), or at once on any tap, click or key (the tap that
-  // skips it is swallowed: no flip, no link), on a card switch, or on a
-  // back/forward restore. Capture phase: before the deck's own handlers.
-
-  let swallow = false;
-  const pack = deck
-    .getAnimations({ subtree: true })
-    .find((a) => (a as CSSAnimation).animationName === 'pack-open');
-  pack?.finished.then(endPack, endPack);
-  addEventListener('pointerdown', () => (swallow = endPack()), true);
-  addEventListener('keydown', endPack, true);
-  addEventListener(
-    'click',
-    (e) => {
-      if (swallow && e.detail) {
-        e.preventDefault();
-        e.stopImmediatePropagation();
-      }
-      swallow = false;
-    },
-    true,
-  );
-  addEventListener('pageshow', (e) => e.persisted && endPack());
-
   // ---- Go -------------------------------------------------------------------
 
-  show(indexFromHash(), 1, false);
-  syncHash();
   tilt.attach(cards[active]);
-  deck.dataset.js = 'ready';
 }

@@ -6,16 +6,15 @@
  *  - `--rx --ry` (tilt), `--px --py` (pointer, %), `--bx --by` (pointer
  *    clamped to the card, %), `--ho` (foil strength) on `[data-card]`;
  *  - `.is-flipped` on `[data-card]`, `inert`/`aria-hidden` on `[data-face]`;
- *  - `.is-intro`: the card plays its intro (turn over + foil sweep), only
- *    without JavaScript: with it (`[data-js]` on the deck) the deck's
- *    opening pack takes its place.
+ *  - `.is-intro`: the card plays its intro (turn over + foil sweep), on
+ *    the card shown on arrival only.
  */
 interface Props {
   /** Variant id, exposed as `data-variant` for the variant's theme. */
   variant: string;
   /** Accessible name of the front face. */
   label: string;
-  /** Play the intro animation (the card shown on load, without JS). */
+  /** Play the intro animation (the card shown on arrival). */
   intro?: boolean;
 }
 
@@ -121,8 +120,7 @@ const { variant, label, intro = false } = Astro.props;
     visibility: visible;
   }
 
-  /* Intro (no JS): the card starts on its back and turns over at 0.5s +
-     0.14s. */
+  /* Intro: the card starts on its back and turns over at 0.5s + 0.14s. */
   @media (prefers-reduced-motion: no-preference) {
     .flipper {
       transition: transform 0.95s cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -132,15 +130,15 @@ const { variant, label, intro = false } = Astro.props;
       transition: visibility 0s linear 0.12s;
     }
 
-    :global([data-deck]:not([data-js])) .card.is-intro .flipper {
+    .card.is-intro .flipper {
       animation: card-intro 1.1s 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
     }
 
-    :global([data-deck]:not([data-js])) .card.is-intro .front {
+    .card.is-intro .front {
       animation: card-face-swap 0.64s step-end;
     }
 
-    :global([data-deck]:not([data-js])) .card.is-intro .back {
+    .card.is-intro .back {
       animation: card-face-swap-back 0.64s step-end;
     }
   }

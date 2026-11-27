@@ -1,6 +1,6 @@
 # Conventions
 
-Personal homepage of Frédéric Woelffel, served at https://fwoelffel.me. Its job is to own the domain and point visitors to his profiles (GitHub, LinkedIn, more later). The experience is an interactive holographic trading card, available in several styles (variants) the visitor can switch between. The sport card is the default.
+Personal homepage of Frédéric Woelffel, served at https://fwoelffel.me. Its job is to own the domain and point visitors to his profiles (GitHub, LinkedIn, more later). The experience is an interactive holographic trading card, available in several styles (variants) the visitor can switch between. Each visit starts on a random card.
 
 ## Repository layout
 
@@ -23,18 +23,18 @@ This repository is named after the GitHub username, so it is also the **GitHub p
 - Never block pinch-zoom (`touch-action: pinch-zoom` on the card, no `user-scalable=no`), and keep card text scaling with browser zoom (rem floor on the card width).
 - Check every change on desktop, in portrait (375×812, 393×659, 320×568) and in short landscape (812×375), for every variant: links stay ≥ 44 px and the card footer is fully visible.
 - Safari is the reference for the 3D flip: blend modes must stay isolated inside each face (`isolation: isolate`), otherwise Safari flattens the card (mirrored back, faces bleeding through). Faces are also hidden with `visibility` at the 90° mark.
-- Opening: on arrival (JavaScript on, motion allowed) a sealed pack opens (its soft crimped top peels off, light pours out of the slit), then the opaque pack is pulled down while the real cards slide up out of its top (never a fade-in from behind it), fan out, then gather with the active card in front (~2.5 s, CSS only, `data-pack` in `Deck.astro`). Any tap, click or key skips it; never on switches, hash changes or back/forward restores. It replaces the card intro, which now plays only without JavaScript.
+- Arrival: the card named by the URL hash, otherwise a random one, never the one the tab showed last (`sessionStorage`), so a reload shows another card. Picked by the inline script in `Deck.astro` before the first paint (no flash of another card). That card plays the intro (turns over, foil sweep), once.
 - Honour `prefers-reduced-motion` (no tilt loop, no flip/intro animation) and `prefers-color-scheme` (light and dark backgrounds).
-- The page works without JavaScript: the front of the default card and its links are plain HTML; the other variants and the switcher stay hidden.
+- The page works without JavaScript: the front of the first card (`order` 0) and its links are plain HTML; the other variants and the switcher stay hidden.
 - Accessibility: real links and buttons, visible focus, only the visible face of the active card is focusable (`inert` + `aria-hidden` on the other face and on inactive cards), touch targets at least 44 px.
 - Site copy is in French.
 - The card stats are made up for fun; keep them labelled as such for assistive tech.
 
 ## Variants
 
-Each card style is a variant. Variant ids: `sport` (default), `creature`, `arcane`.
+Each card style is a variant. Variant ids: `sport`, `creature`, `arcane`, `duel`, `hero`, `comic`.
 
-- Switching: on mouse/trackpad devices (`(hover: hover) and (pointer: fine)`), a small segmented control under the card (a native radio group named "Style de carte"); on touch screens, a horizontal swipe anywhere on the page (left = next, right = previous, wrapping), with non-interactive dots under the card (the radios stay available to screen readers). ArrowLeft/ArrowRight switch too (not in text fields, not with modifiers). The URL hash names the active card (`#creature`; no hash or an unknown one = default) so a style can be shared.
+- Switching: on mouse/trackpad devices (`(hover: hover) and (pointer: fine)`), a small segmented control under the card (a native radio group named "Style de carte"); on touch screens, a horizontal swipe anywhere on the page (left = next, right = previous, wrapping), with non-interactive dots under the card (the radios stay available to screen readers). ArrowLeft/ArrowRight switch too (not in text fields, not with modifiers). The URL hash names the active card (`#creature`; no hash or an unknown one = a random card) so a style can be shared.
 - Touch: |dx| ≥ 50 px, |dx| > 1.5·|dy| and < 700 ms is a swipe (never flips nor opens a link); a tap under the slop flips; anything else tilts (only when started on the card).
 - Switch animation: the cards slide out/in horizontally with a slight rotation (~400 ms, transform/opacity only); the incoming card shows its front and the intro never replays. Reduced motion: instant swap.
 - With a single variant, no selector, no dots.
@@ -42,7 +42,7 @@ Each card style is a variant. Variant ids: `sport` (default), `creature`, `arcan
 
 ### Adding a variant
 
-Add a folder `src/variants/<id>/`; no other file changes. The registry (`src/variants/index.ts`) finds it with `import.meta.glob` and sorts by `order` (0 = default; orders unique; the folder name must equal the id).
+Add a folder `src/variants/<id>/`; no other file changes. The registry (`src/variants/index.ts`) finds it with `import.meta.glob` and sorts by `order` (0 = the card shown without JavaScript; orders unique; the folder name must equal the id).
 
 - `index.ts`: `export default defineVariant({ id, label, order, ...data })` (`label` is the French name shown in the selector; extra fields are the variant's own content, e.g. made-up stats).
 - `Front.astro`: the front face. It declares `type Props = FrontProps` (from `../types`): `number` is its collector number (show it in the footer), `eager` goes to its `Portrait`. Root element: a `Frame` (fills the face, rounded, clipped, shadow).

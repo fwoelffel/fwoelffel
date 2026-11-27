@@ -1,8 +1,7 @@
 ---
 /**
  * Holographic layers: rainbow foil, glare hotspot and (optionally) the intro
- * light sweep (without JS, see Card.astro, and during the deck's opening
- * pack). Place it last inside a positioned box: it covers that box and
+ * light sweep (see `.is-intro` in Card.astro). Place it last inside a positioned box: it covers that box and
  * paints over earlier content, except elements with `z-index: 1` (text).
  *
  * Driven by the shell's tilt properties; themed by:
@@ -100,14 +99,9 @@ const { sweep = false } = Astro.props;
     }
   }
 
-  /* The deck's opening pack: every card sweeps as the fan opens. */
   @media (prefers-reduced-motion: no-preference) {
-    :global([data-deck]:not([data-js]) .is-intro) .sweep {
+    :global(.is-intro) .sweep {
       animation: foil-sweep 1.3s 1.4s ease-out;
-    }
-
-    :global([data-pack]) .sweep {
-      animation: foil-sweep 0.9s 1.5s ease-out;
     }
   }
 </style>
