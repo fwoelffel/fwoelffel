@@ -1,0 +1,64 @@
+---
+import CardBack from '../../components/card/Back.astro';
+import { identity } from '../../config';
+import './theme.css';
+---
+
+<CardBack>
+  <div class='vortex'>
+    <svg viewBox='-50 -50 100 100' aria-hidden='true'>
+      <circle r='48'></circle>
+      {Array.from({ length: 10 }, (_, i) => (
+        <path
+          d='M0 0C10-14 30-16 46-4C30-10 14-8 0 0Z'
+          transform={`rotate(${i * 36})`}
+        />
+      ))}
+    </svg>
+    <b>{identity.initials}</b>
+  </div>
+</CardBack>
+
+<style>
+  /* A vortex: ten curved blades turning around a copper seal holding the
+     initials, inside a copper ring. */
+  .vortex {
+    position: relative;
+    width: 14em;
+    aspect-ratio: 1;
+    display: grid;
+    place-items: center;
+  }
+
+  svg {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    box-shadow: 0 0 2em rgb(201 131 76 / 0.35);
+  }
+
+  circle {
+    fill: #1f1610;
+    stroke: var(--duel-copper-line);
+    stroke-width: 1.2;
+  }
+
+  path {
+    fill: var(--duel-copper-line);
+    opacity: 0.8;
+  }
+
+  b {
+    position: relative;
+    width: 2.1em;
+    aspect-ratio: 1;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    font: 700 2.4em var(--display);
+    background: var(--duel-copper);
+    border: 0.06em solid var(--duel-pale);
+    box-shadow: 0 0 0.5em rgb(0 0 0 / 0.6);
+    color: var(--duel-ink);
+  }
+</style>
