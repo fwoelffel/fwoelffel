@@ -1,0 +1,87 @@
+/* Comics palette, shared by its front and back, and the tokens of the shared
+   card parts (Frame, Portrait, Links, Foil). */
+[data-variant='comic'] {
+  --comic-ink: #141414;
+  --comic-paper: #f6ecd2;
+  --comic-yellow: #ffd60a;
+  --comic-red: #e63946;
+  --comic-cyan: #1d9bf0;
+  --comic-dots: radial-gradient(
+      circle,
+      rgb(20 20 20 / 0.14) 0.09em,
+      transparent 0.11em
+    )
+    0 0 / 0.45em 0.45em;
+  --comic-burst: polygon(
+    50% 0,
+    59% 15%,
+    75% 7%,
+    75% 25%,
+    93% 25%,
+    85% 41%,
+    100% 50%,
+    85% 59%,
+    93% 75%,
+    75% 75%,
+    75% 93%,
+    59% 85%,
+    50% 100%,
+    41% 85%,
+    25% 93%,
+    25% 75%,
+    7% 75%,
+    15% 59%,
+    0 50%,
+    15% 41%,
+    7% 25%,
+    25% 25%,
+    25% 7%,
+    41% 15%
+  );
+
+  /* White print margin. */
+  --frame-bg: #fffdf6;
+  --frame-padding: 0.5em;
+  --frame-ink: var(--comic-ink);
+
+  --back-bg:
+    var(--comic-dots),
+    repeating-conic-gradient(
+      from 0deg at 50% 45%,
+      var(--comic-red) 0 10deg,
+      #ff5c68 10deg 20deg
+    );
+  --back-ink: var(--comic-paper);
+  --back-gap: 1.6em;
+  --back-radius: 0.3em;
+
+  --portrait-backdrop: var(--comic-yellow);
+  --portrait-border: 0.16em solid var(--comic-ink);
+  --portrait-shadow: 0.25em 0.25em 0 var(--comic-ink);
+  --portrait-initials-color: var(--comic-ink);
+
+  /* Bright CMYK foil, overlaid so the primaries stay punchy. */
+  --foil-gradient: linear-gradient(
+    120deg,
+    #00e5ff,
+    #ff2bd6 25%,
+    #fff200 50%,
+    #00e5ff 75%,
+    #ff2bd6
+  );
+  --foil-size: 280%;
+  --foil-blend: overlay;
+  --foil-strength: 0.8;
+  --sweep-color: rgb(255 255 230 / 0.6);
+
+  /* Links are action captions. */
+  --link-gap: 0.35em;
+  --link-bg: var(--comic-yellow);
+  --link-bg-hover: #ffe45c;
+  --link-border: 0.12em solid var(--comic-ink);
+  --link-radius: 0;
+  --link-color: var(--comic-ink);
+  --link-focus: var(--comic-red);
+  --link-badge-bg: var(--comic-ink);
+  --link-badge-color: var(--comic-yellow);
+}

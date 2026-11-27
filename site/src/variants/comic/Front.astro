@@ -1,0 +1,220 @@
+---
+import Foil from '../../components/card/Foil.astro';
+import Frame from '../../components/card/Frame.astro';
+import Links from '../../components/card/Links.astro';
+import Portrait from '../../components/card/Portrait.astro';
+import { identity } from '../../config';
+import { madeUp, type FrontProps } from '../types';
+import comic from './index';
+import './theme.css';
+
+type Props = FrontProps;
+const { number, eager } = Astro.props;
+---
+
+<Frame>
+  <div class='inner'>
+    <div class='caption'>
+      <h1>{identity.fullName}</h1>
+      <p>alias : {comic.alias}</p>
+    </div>
+    <div class='panel'>
+      <Portrait class='portrait' sizes='8rem' eager={eager} />
+      <p class='pow' aria-hidden='true'>
+        {comic.sticker}
+      </p>
+      <Foil sweep />
+    </div>
+    <ul class='powers' aria-label={`Pouvoirs ${madeUp}`}>
+      {comic.powers.map((p) => (
+        <li>
+          {p.label}
+          <b
+            role='img'
+            aria-label={`${p.value} sur ${comic.maxPower}`}
+            style={`--v: ${p.value / comic.maxPower}`}
+          />
+        </li>
+      ))}
+    </ul>
+    <p class='file'>
+      <span>
+        <b>Affiliation :</b> {comic.affiliation}
+      </span>
+      <span>
+        <b>Niveau de menace :</b> {comic.threat}
+        <span class='sr-only'>{madeUp}</span>
+      </span>
+    </p>
+    <Links class='actions' />
+    <div class='foot' aria-hidden='true'>
+      <span>
+        {comic.issue} · {number}
+      </span>
+      <span>{identity.host}</span>
+    </div>
+  </div>
+</Frame>
+
+<style>
+  .inner {
+    height: 100%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4em;
+    padding: 0.5em 0.55em 0.35em;
+    border: 0.18em solid var(--comic-ink);
+    border-radius: 0.3em;
+    background: var(--comic-dots), var(--comic-paper);
+  }
+
+  p,
+  h1 {
+    margin: 0;
+  }
+
+  /* Slanted title caption, its ink shadow offset like a print misregister. */
+  .caption {
+    align-self: flex-start;
+    max-width: 100%;
+    padding: 0.2em 0.6em 0.25em;
+    rotate: -2deg;
+    transform: skewX(-8deg);
+    border: 0.14em solid var(--comic-ink);
+    background: var(--comic-yellow);
+    box-shadow: 0.22em 0.22em 0 var(--comic-red);
+  }
+
+  h1 {
+    font: 700 1.55em/1 var(--display);
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+
+  .caption p {
+    font: 600 0.8em/1.2 var(--display);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--comic-red);
+  }
+
+  /* The panel takes whatever height is left, so the card fits whatever
+     the link rows cost at small sizes. */
+  .panel {
+    position: relative;
+    flex: 1 1 0;
+    min-height: 4.5em;
+    container-type: size;
+    overflow: hidden;
+    border: 0.16em solid var(--comic-ink);
+    background:
+      var(--comic-dots),
+      repeating-conic-gradient(
+        from 0deg at 50% 55%,
+        var(--comic-cyan) 0 6deg,
+        #63c3ff 6deg 12deg
+      );
+  }
+
+  .portrait {
+    --portrait-w: min(8em, 72cqh);
+    height: 100%;
+  }
+
+  /* Sound-effect starburst: an ink burst behind a yellow one. */
+  .pow {
+    position: absolute;
+    top: 0.3em;
+    right: 0.3em;
+    width: 5.6em;
+    aspect-ratio: 1;
+    display: grid;
+    place-items: center;
+    isolation: isolate;
+    rotate: 12deg;
+    clip-path: var(--comic-burst);
+    background: var(--comic-ink);
+    font: 700 1.1em/1 var(--display);
+    color: var(--comic-red);
+  }
+
+  .pow::before {
+    content: '';
+    position: absolute;
+    inset: 0.2em;
+    z-index: -1;
+    clip-path: inherit;
+    background: var(--comic-yellow);
+  }
+
+  .powers {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.25em 0.8em;
+    font: 700 0.8em/1 var(--display);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .powers li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.4em;
+  }
+
+  /* Seven cells: ink dividers over a red fill of --v (0 to 1). */
+  .powers b {
+    flex: 0 1 5.6em;
+    height: 0.7em;
+    border: 0.12em solid var(--comic-ink);
+    background:
+      repeating-linear-gradient(
+        90deg,
+        transparent 0 calc(100% / 7 - 0.12em),
+        var(--comic-ink) 0 calc(100% / 7)
+      ),
+      linear-gradient(90deg, var(--comic-red) calc(var(--v) * 100%), #fff 0);
+  }
+
+  .file {
+    display: flex;
+    flex-direction: column;
+    padding: 0.2em 0.5em;
+    border: 0.12em solid var(--comic-ink);
+    background: #fff;
+    font-size: 0.62em;
+    line-height: 1.3;
+  }
+
+  .file b {
+    font: 700 1.1em var(--display);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .actions :global(.link) {
+    box-shadow: 0.18em 0.18em 0 var(--comic-ink);
+  }
+
+  .actions :global(b)::after {
+    content: ' !' / '';
+  }
+
+  .actions :global(small) {
+    font-style: italic;
+    opacity: 1;
+  }
+
+  .foot {
+    display: flex;
+    justify-content: space-between;
+    font: 700 0.55em var(--display);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+</style>

@@ -1,0 +1,60 @@
+---
+import CardBack from '../../components/card/Back.astro';
+import { identity } from '../../config';
+import comic from './index';
+import './theme.css';
+---
+
+<CardBack>
+  <div class='logo'>
+    <b>{identity.initials}</b>
+    <span>{comic.alias}</span>
+  </div>
+</CardBack>
+
+<style>
+  /* Cover logo: the initials in a yellow starburst with an ink rim, a
+     slanted banner with the alias across it. */
+  .logo {
+    display: grid;
+    justify-items: center;
+  }
+
+  b {
+    position: relative;
+    width: 2.7em;
+    aspect-ratio: 1;
+    display: grid;
+    place-items: center;
+    isolation: isolate;
+    clip-path: var(--comic-burst);
+    background: var(--comic-ink);
+    font: italic 700 4.4em/1 var(--display);
+    letter-spacing: 0.04em;
+    color: var(--comic-red);
+    text-shadow: 0.06em 0.06em 0 var(--comic-ink);
+    -webkit-text-stroke: 0.03em var(--comic-ink);
+  }
+
+  b::before {
+    content: '';
+    position: absolute;
+    inset: 0.06em;
+    z-index: -1;
+    clip-path: inherit;
+    background: var(--comic-yellow);
+  }
+
+  span {
+    margin-top: -1.2em;
+    padding: 0.25em 0.8em;
+    rotate: -6deg;
+    border: 0.14em solid var(--comic-ink);
+    background: var(--comic-cyan);
+    box-shadow: 0.2em 0.2em 0 var(--comic-ink);
+    font: 700 1.2em var(--display);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #fff;
+  }
+</style>
