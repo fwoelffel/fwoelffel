@@ -58,7 +58,7 @@ Add a folder `src/variants/<id>/`; no other file changes. The registry (`src/var
 - This project's Baseline target is Baseline 2024: use web platform features that are Baseline 2024 or older without fallbacks; anything newer needs a progressive-enhancement fallback.
 - Shared personal data and links live in `src/config.ts` only; components read from it. Variant-specific content lives in that variant's `index.ts`.
 - Fonts are self-hosted through `@fontsource` (Latin subsets only). The only third-party request at runtime is the live GitHub avatar (`avatars.githubusercontent.com`, by account id, so avatar changes show up without a deploy); if it fails to load, the `<img>` removes itself and the initials drawn underneath show instead (no local fallback photo). Nothing else: no Google Fonts, no analytics.
-- Icons come from `@phosphor-icons/core`, inlined at build time through `src/components/card/Icon.astro`.
+- Icons come from `@phosphor-icons/core`, inlined once at build time as an SVG sprite (`src/components/card/IconSprite.astro`, rendered by the deck); `Icon.astro` references it with `<use>`.
 - The only image file is `public/favicon.svg`. No PNG favicons, no `og.png`, no local photo: link previews (`og:image`) also use the live GitHub avatar.
 - Before committing: `npx prettier --check .`, `npm run check`, `npm run build`. CI runs the same.
 - Pin exact versions for runtime dependencies.

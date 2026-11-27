@@ -2,7 +2,7 @@
 /**
  * The live GitHub avatar over the initials. If the photo fails to load, the
  * <img> removes itself and the initials show instead. Themed by:
- *  --portrait-w, --portrait-h   photo box (default 9em, square)
+ *  --portrait-w, --portrait-h   photo box (h defaults to w: square)
  *  --portrait-radius            its corners (default 50%: a disc)
  *  --portrait-backdrop          background drawn behind the photo
  *  --portrait-glow              box-shadow of that backdrop
@@ -48,7 +48,7 @@ const {
 
 <style>
   .portrait {
-    --_w: var(--portrait-w, 9em);
+    --_w: var(--portrait-w);
     --_h: var(--portrait-h, var(--_w));
     position: relative;
     display: grid;
@@ -60,8 +60,8 @@ const {
     width: var(--_w);
     height: var(--_h);
     border-radius: var(--portrait-radius, 50%);
-    background: var(--portrait-backdrop, rgb(255 255 255 / 0.15));
-    box-shadow: var(--portrait-glow, none);
+    background: var(--portrait-backdrop);
+    box-shadow: var(--portrait-glow);
   }
 
   span {
@@ -78,8 +78,8 @@ const {
     height: var(--_h);
     border-radius: var(--portrait-radius, 50%);
     object-fit: cover;
-    border: var(--portrait-border, none);
-    box-shadow: var(--portrait-shadow, none);
+    border: var(--portrait-border);
+    box-shadow: var(--portrait-shadow);
     -webkit-user-drag: none;
   }
 </style>

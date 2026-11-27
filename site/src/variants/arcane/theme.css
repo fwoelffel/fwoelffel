@@ -5,27 +5,7 @@
   --arcane-gold: linear-gradient(#fbe7a8, #c9963f);
   --arcane-gold-line: #d9b46a;
   --arcane-pale: #f3dfa6;
-  --arcane-violet: #5b2d8c;
   --arcane-plate: linear-gradient(#f4ead2, #d3c095);
-  --arcane-parchment:
-    radial-gradient(
-      circle at 18% 12%,
-      rgb(255 255 255 / 0.55),
-      transparent 55%
-    ),
-    repeating-linear-gradient(
-      0deg,
-      rgb(120 85 35 / 0.05) 0 2px,
-      transparent 2px 5px
-    ),
-    #ebdcb9;
-  --arcane-aura:
-    radial-gradient(
-      circle at 80% 15%,
-      rgb(170 130 255 / 0.35),
-      transparent 50%
-    ),
-    linear-gradient(160deg, #47306e, #26304f 55%, #18403f);
 
   /* Dark stone border. */
   --frame-bg:
@@ -64,7 +44,7 @@
   --link-border: 1px solid rgb(90 55 20 / 0.28);
   --link-radius: 0.4em;
   --link-color: var(--arcane-ink);
-  --link-focus: var(--arcane-violet);
+  --link-focus: #5b2d8c;
   --link-badge-bg: radial-gradient(circle at 35% 30%, #4a3a63, #17121f);
   --link-badge-color: var(--arcane-pale);
 

@@ -12,6 +12,7 @@
  * `data-pack` on the deck, set by the inline script, removed by deck.ts.
  */
 import Card from './card/Card.astro';
+import IconSprite from './card/IconSprite.astro';
 import { identity } from '../config';
 import { collectorNumber, variants } from '../variants';
 
@@ -19,15 +20,16 @@ const many = variants.length > 1;
 ---
 
 <div class:list={['deck', { many }]} data-deck>
+  {/* Before the cards paint: a shared #id link waits for deck.ts to show
+      the right card instead of flashing the default one. The pack opens
+      on arrival only: inline scripts do not rerun on a back/forward restore. */}
   <script is:inline>
-    // Before the cards paint: a shared #id link waits for deck.ts to show
-    // the right card instead of flashing the default one. The pack opens
-    // on arrival only: inline scripts do not rerun on a back/forward restore.
     const deck = document.currentScript.parentElement;
     deck.dataset.js = location.hash.length > 1 ? 'pending' : 'ready';
     if (!matchMedia('(prefers-reduced-motion: reduce)').matches)
       deck.dataset.pack = '';
   </script>
+  <IconSprite />
   <div class='stack'>
     {variants.map(({ id, Front, Back }, i) => (
       <div
@@ -110,11 +112,16 @@ const many = variants.length > 1;
      right; previous (step -1): the other way round. */
   .slot.is-entering {
     z-index: 1;
-    animation: deck-enter 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) both;
   }
 
-  .slot.is-leaving {
-    animation: deck-leave 0.4s cubic-bezier(0.4, 0, 0.7, 0.4) both;
+  @media (prefers-reduced-motion: no-preference) {
+    .slot.is-entering {
+      animation: deck-enter 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    }
+
+    .slot.is-leaving {
+      animation: deck-leave 0.4s cubic-bezier(0.4, 0, 0.7, 0.4) both;
+    }
   }
 
   @keyframes deck-enter {
@@ -223,7 +230,6 @@ const many = variants.length > 1;
     mask:
       var(--teeth),
       linear-gradient(#000 0 0) 0 0 / 100% 51% no-repeat;
-    overflow: hidden;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -324,7 +330,7 @@ const many = variants.length > 1;
     }
 
     .deck[data-pack] .pack-body::after {
-      animation: pack-glint 0.7s 0.15s ease-out;
+      animation: foil-sweep 0.7s 0.15s ease-out; /* keyframes in card/Foil.astro */
     }
 
     .deck[data-pack] .stack::before,
@@ -333,7 +339,6 @@ const many = variants.length > 1;
       grid-area: 1 / 1;
       margin: -6% -4%;
       pointer-events: none;
-      opacity: 0;
     }
 
     .deck[data-pack] .stack::before {
@@ -403,7 +408,6 @@ const many = variants.length > 1;
     /* Swells as the light builds up inside, then settles. */
     36% {
       scale: 1.025;
-      translate: 0;
       animation-timing-function: cubic-bezier(0.4, 0, 0.6, 1);
     }
     /* Pulled down, still opaque, while the cards slide up out of it: the
@@ -411,7 +415,6 @@ const many = variants.length > 1;
     40% {
       scale: 1;
       translate: 0;
-      opacity: 1;
       animation-timing-function: cubic-bezier(0.4, 0, 0.3, 1);
     }
     58% {
@@ -421,7 +424,6 @@ const many = variants.length > 1;
     }
     66%,
     100% {
-      scale: 1;
       translate: 0 62%;
       opacity: 0;
     }
@@ -490,17 +492,6 @@ const many = variants.length > 1;
     }
     to {
       opacity: 1;
-    }
-  }
-
-  @keyframes pack-glint {
-    from {
-      opacity: 1;
-      translate: -100% 0;
-    }
-    to {
-      opacity: 1;
-      translate: 100% 0;
     }
   }
 
@@ -577,7 +568,7 @@ const many = variants.length > 1;
     }
     /* Out of the top of the pack, as it is pulled down. */
     58% {
-      transform: translate(0, -38%) rotate(calc(var(--f) * 2.5deg)) scale(0.66);
+      transform: translateY(-38%) rotate(calc(var(--f) * 2.5deg)) scale(0.66);
       animation-timing-function: cubic-bezier(0.4, 0, 0.3, 1);
     }
     72% {
@@ -586,7 +577,6 @@ const many = variants.length > 1;
           calc((0.55 * var(--fan) - 1) * 50%)
         )
         rotate(calc(var(--f) * 9deg)) scale(calc(0.55 * var(--fan)));
-      opacity: 1;
       animation-timing-function: linear;
     }
     80% {
@@ -599,7 +589,6 @@ const many = variants.length > 1;
       animation-timing-function: cubic-bezier(0.55, 0, 0.25, 1);
     }
     100% {
-      transform: none;
       opacity: var(--pack-o, 1);
     }
   }
@@ -717,13 +706,6 @@ const many = variants.length > 1;
   .switcher input:focus-visible + span {
     outline: 3px solid var(--focus);
     outline-offset: 2px;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .slot.is-entering,
-    .slot.is-leaving {
-      animation: none;
-    }
   }
 </style>
 

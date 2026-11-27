@@ -28,7 +28,7 @@ const { class: className, inline, ...rest } = Astro.props;
 <ul class:list={['links', { inline }, className]} {...rest}>
   {links.map((link) => (
     <li>
-      <a class='link' href={link.href} target='_blank' rel='noopener me'>
+      <a class='link' href={link.href} target='_blank' rel='me'>
         <i>
           <Icon name={link.icon} />
         </i>
@@ -78,7 +78,7 @@ const { class: className, inline, ...rest } = Astro.props;
   }
 
   .link:focus-visible {
-    outline: 2px solid var(--link-focus, #fff);
+    outline: 2px solid var(--link-focus);
     outline-offset: 2px;
   }
 
@@ -90,8 +90,8 @@ const { class: className, inline, ...rest } = Astro.props;
     place-items: center;
     flex: none;
     font-size: 0.95em;
-    background: var(--link-badge-bg, #fff);
-    color: var(--link-badge-color, #222);
+    background: var(--link-badge-bg);
+    color: var(--link-badge-color);
   }
 
   span {

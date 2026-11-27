@@ -113,11 +113,6 @@ export function createTilt(reducedMotion: MediaQueryList): Tilt {
     render();
   }
 
-  function rest(): void {
-    stop();
-    center();
-  }
-
   function attach(next: HTMLElement): void {
     // The previous card keeps its pose while it leaves; the new one starts
     // flat, with its own short drift.
@@ -131,9 +126,12 @@ export function createTilt(reducedMotion: MediaQueryList): Tilt {
   document.addEventListener('visibilitychange', () =>
     document.hidden ? stop() : start(),
   );
-  reducedMotion.addEventListener('change', () =>
-    reducedMotion.matches ? rest() : start(),
-  );
+  reducedMotion.addEventListener('change', () => {
+    if (reducedMotion.matches) {
+      stop();
+      center();
+    } else start();
+  });
 
   // Mouse and pen: hovering anywhere on the page tilts the card.
   window.addEventListener(

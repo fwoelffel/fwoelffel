@@ -19,7 +19,7 @@ const { number, eager } = Astro.props;
       <p>alias : {comic.alias}</p>
     </div>
     <div class='panel'>
-      <Portrait class='portrait' sizes='8rem' eager={eager} />
+      <Portrait sizes='8rem' eager={eager} />
       <p class='pow' aria-hidden='true'>
         {comic.sticker}
       </p>
@@ -104,7 +104,7 @@ const { number, eager } = Astro.props;
     font: 600 0.8em/1.2 var(--display);
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: var(--comic-red-dark);
+    color: #a4161a;
   }
 
   /* The panel takes whatever height is left, so the card fits whatever
@@ -139,7 +139,6 @@ const { number, eager } = Astro.props;
     aspect-ratio: 1;
     display: grid;
     place-items: center;
-    isolation: isolate;
     rotate: 12deg;
     clip-path: var(--comic-burst);
     background: var(--comic-ink);

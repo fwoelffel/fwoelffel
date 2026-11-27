@@ -1,3 +1,25 @@
+/* Fonts self-hosted from @fontsource, woff2 only (Baseline 2024). */
+@font-face {
+  font-family: 'Barlow Condensed';
+  font-display: swap;
+  font-weight: 600;
+  src: url('@fontsource/barlow-condensed/files/barlow-condensed-latin-600-normal.woff2')
+    format('woff2');
+}
+@font-face {
+  font-family: 'Barlow Condensed';
+  font-display: swap;
+  font-weight: 700;
+  src: url('@fontsource/barlow-condensed/files/barlow-condensed-latin-700-normal.woff2')
+    format('woff2');
+}
+@font-face {
+  font-family: 'Bricolage Grotesque';
+  font-display: swap;
+  src: url('@fontsource/bricolage-grotesque/files/bricolage-grotesque-latin-400-normal.woff2')
+    format('woff2');
+}
+
 :root {
   --s1: #e9ecff;
   --s2: #c3c9ea;

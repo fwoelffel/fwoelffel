@@ -1,23 +1,12 @@
 ---
-import github from '@phosphor-icons/core/assets/bold/github-logo-bold.svg?raw';
-import linkedin from '@phosphor-icons/core/assets/bold/linkedin-logo-bold.svg?raw';
-import arrow from '@phosphor-icons/core/assets/bold/arrow-up-right-bold.svg?raw';
 import type { IconName } from '../../config';
 
 interface Props {
   name: IconName | 'arrow';
 }
-
-const sources: Record<Props['name'], string> = {
-  github,
-  linkedin,
-  arrow,
-};
-// Inlined at build time: no icon font, no extra request.
-const svg = sources[Astro.props.name].replace(
-  '<svg ',
-  '<svg aria-hidden="true" width="1em" height="1em" ',
-);
+// Points at the shared sprite (IconSprite.astro): one copy of each path.
 ---
 
-<Fragment set:html={svg} />
+<svg aria-hidden='true' width='1em' height='1em' fill='currentColor'>
+  <use href={`#icon-${Astro.props.name}`}></use>
+</svg>

@@ -1,0 +1,16 @@
+---
+import github from '@phosphor-icons/core/assets/bold/github-logo-bold.svg?raw';
+import linkedin from '@phosphor-icons/core/assets/bold/linkedin-logo-bold.svg?raw';
+import arrow from '@phosphor-icons/core/assets/bold/arrow-up-right-bold.svg?raw';
+
+// Inlined at build time once, used by every Icon: no icon font, no request.
+const sources = { github, linkedin, arrow };
+const symbols = Object.entries(sources)
+  .map(
+    ([name, svg]) =>
+      `<symbol id="icon-${name}" viewBox="0 0 256 256">${svg.replace(/^<svg[^>]*>|<\/svg>\s*$/g, '')}</symbol>`,
+  )
+  .join('');
+---
+
+<svg style='display: none' aria-hidden='true' set:html={symbols} />

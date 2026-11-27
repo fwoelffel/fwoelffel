@@ -89,10 +89,6 @@ const { sweep = false } = Astro.props;
     );
   }
 
-  :global([data-deck]:not([data-js]) .is-intro) .sweep {
-    animation: foil-sweep 1.3s 1.4s ease-out;
-  }
-
   @keyframes foil-sweep {
     from {
       opacity: 1;
@@ -106,14 +102,12 @@ const { sweep = false } = Astro.props;
 
   /* The deck's opening pack: every card sweeps as the fan opens. */
   @media (prefers-reduced-motion: no-preference) {
+    :global([data-deck]:not([data-js]) .is-intro) .sweep {
+      animation: foil-sweep 1.3s 1.4s ease-out;
+    }
+
     :global([data-pack]) .sweep {
       animation: foil-sweep 0.9s 1.5s ease-out;
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    :global([data-deck]:not([data-js]) .is-intro) .sweep {
-      animation: none;
     }
   }
 </style>
