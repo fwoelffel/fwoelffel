@@ -65,7 +65,6 @@ jobs:
         with:
           branch: gh-pages
           folder: dist
-          clean: true
           single-commit: true
           commit-message: 'chore: deploy ${{ github.sha }}'
 
