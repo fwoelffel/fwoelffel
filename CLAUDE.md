@@ -23,6 +23,7 @@ This repository is named after the GitHub username, so it is also the **GitHub p
 - Never block pinch-zoom (`touch-action: pinch-zoom` on the card, no `user-scalable=no`), and keep card text scaling with browser zoom (rem floor on the card width).
 - Check every change on desktop, in portrait (375×812, 393×659, 320×568) and in short landscape (812×375), for every variant: links stay ≥ 44 px and the card footer is fully visible.
 - Safari is the reference for the 3D flip: blend modes must stay isolated inside each face (`isolation: isolate`), otherwise Safari flattens the card (mirrored back, faces bleeding through). Faces are also hidden with `visibility` at the 90° mark.
+- Opening: on arrival (JavaScript on, motion allowed) a sealed pack opens and the real cards fan out, then gather with the active card in front (~2.4 s, CSS only, `data-pack` in `Deck.astro`). Any tap, click or key skips it; never on switches, hash changes or back/forward restores. It replaces the card intro, which now plays only without JavaScript.
 - Honour `prefers-reduced-motion` (no tilt loop, no flip/intro animation) and `prefers-color-scheme` (light and dark backgrounds).
 - The page works without JavaScript: the front of the default card and its links are plain HTML; the other variants and the switcher stay hidden.
 - Accessibility: real links and buttons, visible focus, only the visible face of the active card is focusable (`inert` + `aria-hidden` on the other face and on inactive cards), touch targets at least 44 px.
