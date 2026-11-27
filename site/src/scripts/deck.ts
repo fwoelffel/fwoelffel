@@ -79,7 +79,7 @@ export function mountDeck(): void {
   function syncHash(): void {
     const hash = active === 0 ? '' : `#${ids[active]}`;
     if (location.hash === hash) return;
-    history.replaceState(null, '', hash); // '' drops the fragment
+    history.replaceState(null, '', hash || location.pathname + location.search);
   }
 
   function show(index: number, step: Step, animate = true): void {
