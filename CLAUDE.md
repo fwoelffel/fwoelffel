@@ -67,6 +67,7 @@ Add a folder `src/variants/<id>/`; no other file changes. The registry (`src/var
 
 - Commit directly on `main`.
 - Commit messages follow Conventional Commits (`feat:`, `fix:`, `chore:`, `docs:`, `ci:`, `refactor:`…), with a short body: a few lines at most.
+- Author: `Frédéric Woelffel <hello@fwoelffel.me>` (set in the repository's git config). No `Co-Authored-By` or other AI attribution trailer.
 
 ## Deployment
 
